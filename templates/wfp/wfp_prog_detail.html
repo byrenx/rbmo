@@ -1,0 +1,84 @@
+<h3>{{wfp.activity}}</h3>
+<div class="panel panel-default">
+  <table class="table">
+    <thead>
+      <tr>
+	<th colspan="5">Physical Performance Target</th>
+      </tr>
+      <tr>
+	<th>Performance Indicator</th>
+	<th>Q1</th>
+	<th>Q2</th>
+	<th>Q3</th>
+	<th>Q4</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for target in perf_targets%}
+      <tr>
+	<td>{{target.indicator}}</td>
+	<td>{{target.q1}}</td>
+	<td>{{target.q2}}</td>
+	<td>{{target.q3}}</td>
+	<td>{{target.q4}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="panel panel-default">
+  <form class="form-inline">
+    <>
+  </form>
+  {%load humanize%}
+  <table class="table">
+    <thead>
+      <tr>
+	<th colspan="2">Monthly Finanacial Target</th>
+      </tr>
+      <tr>
+	<th>Month</th>
+	<th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+	<td>January</td><td>{{wfp.jan|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>February</td><td>{{wfp.feb|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>March</td><td>{{wfp.mar|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>April</td><td>{{wfp.apr|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>May</td><td>{{wfp.apr|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>June</td><td>{{wfp.jun|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>July</td><td>{{wfp.jul|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>August</td><td>{{wfp.aug|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>September</td><td>{{wfp.sept|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>October</td><td>{{wfp.oct|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>November</td><td>{{wfp.nov|intcomma}}</td>
+      </tr>
+      <tr>
+	<td>December</td><td>{{wfp.dec|intcomma}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

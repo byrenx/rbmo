@@ -1,0 +1,29 @@
+<h4>Contract of Service Submission - {{year}}</h4>
+<div class="panel panel-default">
+  <div class="panel-body">
+    <form action="/admin/submit_cos" method="POST">{%csrf_token%}
+      <div class="form-group">
+	<input type="hidden" name="agency_id" value="{{agency.id}}">
+	<input type="checkbox" name="cos_submit">&nbsp;
+	Check this box if you receive Contract of Service today, then
+	submit
+      </div>
+      <div class="form-group">
+	<button type="submit" class="btn btn-primary">
+	  Submit
+	</button>
+      </div>
+    </form>
+  </div>
+  {% if cos_submitted %}
+  <table class="table">
+     {%for cos in cos_submitted%}
+      <tr>
+	<td><span class="glyphicon glyphicon-check"></span></td>
+	<td>{{cos.date_submitted}}</td>
+      </tr>
+     {%endfor%}
+  </table>
+  {% endif %}
+</div>
+</div>

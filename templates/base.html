@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	
+	<link href="/static/css/bootstrap.min.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="/static/css/bootstrap.min.css" media="print" rel="stylesheet" type="text/css" />
+	<link href="/static/css/rbmo.css" media="screen" rel="stylesheet" type="text/css" />
+	<link href="/static/css/rbmo.css" media="print" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="/static/js/jQuery/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+	<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.PrintArea.js_4.js"></script>
+  	
+	{% block css %}{% endblock %}
+	
+	
+	<title>
+		{%block title%}{%endblock%}
+	</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-inverse" role="navigation" style="border-radius:0">
+    <div class="container">      
+      <div class="navbar-header">
+        <a class="navbar-brand" href="#">  {{system_name}}</a>
+      </div>
+    
+      <div class="collapse navbar-collapse" id="pis-navbar">
+        <ul class="nav navbar-nav">
+        {% block navbar_li %}{% endblock %}
+        </ul>
+       
+        <ul class="nav navbar-nav navbar-right">
+	  <a class="navbar-brand">  </a>
+	  {% if user.get_full_name %}
+          <li class="dropdown">
+	    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+	       {{user.get_full_name}} {{ email }}<span class="caret"></span>
+	    </a>
+	    <ul class="dropdown-menu">
+	      <li><a href="">Change Password</a></li>
+	      <li><a href="/logout">Logout</a></li>
+	    </ul>
+	  </li>
+	  {% endif %}
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>	
+	
+  {%block content%}
+  {%endblock%}
+<!---	{%block footer%}
+		<footer>
+      <div class="container">
+        <h4 style="float:left; margin:0">Philippine Integrated School</h4>
+        <ul type="none" style="padding-right:15px; float:right">
+        	<li style="float:left"><a href="/">Dashboard</a></li>
+        	<li style="float:left">&nbsp;|&nbsp;<a href="/billing">Billing</a></li>
+        	<li style="float:left">&nbsp;|&nbsp;<a href="/registration">Registrar</a></li>
+        	<li style="float:left">&nbsp;|&nbsp;<a href="#">Grading</a></li>
+        	<li style="float:left">&nbsp;|&nbsp;<a href="/security/login">Security</a></li>
+        </ul>
+      </div>
+    </footer>
+  {%endblock%}--->
+
+  {% block scripts %}
+  {% endblock scripts %}
+</body>
+</html>

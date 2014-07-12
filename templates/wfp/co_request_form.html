@@ -1,0 +1,62 @@
+{%extends "./admin/base.html" %}
+
+{%block headerpage%}
+<div class="container">
+    <h3>{{agency.name}}</h3>
+    <hr/>
+</div>
+{% endblock %}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9" style="background-color: rgba(250,250,250,.5); min-height: 450px;">
+  <h3>Request Received</h3>
+  {% include "msg_pane.html" %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
+    <input type="hidden" id="form_action" name="form_action" value="{{form_action}}">
+    <div class="form-group">
+      <label>
+	Date Received
+      </label>
+      <input type="date" id="date_received" name="date_received" class="form-control">
+    </div>
+
+    <div class="form-group">
+      <label>
+	Subject
+      </label>
+      {{form.subject}}
+    </div>
+
+    <div class="form-group">
+      <label>
+	Action Taken
+      </label>
+	{{form.action}}
+    </div>
+
+    <div class="form-group">
+      <label>
+	Status
+      </label>
+      {{form.status}}
+    </div>
+
+    <div class="form-group">
+      <button type="submit" class="btn btn-primary">
+	Save
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
+{% endblock %}

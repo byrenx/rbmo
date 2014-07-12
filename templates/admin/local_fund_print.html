@@ -1,0 +1,25 @@
+<div >
+
+  <table border="1" class="table">
+     <thead> 
+        <tr>
+        <th>Month</th>
+        <th>Total of {{allocate_name}}</th>
+        <th>Total Release</th>
+        <th>Balance</th>          
+        </tr>
+
+    </thead>
+
+    <tbody>
+        {% for x in result %}
+          <tr>
+            <td>{{x.month}}</td>
+            <td>{{x.amount}}</td>
+            <td>{{x.release}}</td>
+            <td>{{x.balance}}</td>
+          </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>

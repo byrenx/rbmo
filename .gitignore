@@ -1,0 +1,10 @@
+*.py~
+*.pyc~
+*.pyc
+*.html~
+*.css~
+*.js~
+*.pydevproject.bak
+*.pydevproject
+*.project
+*.gitignore~

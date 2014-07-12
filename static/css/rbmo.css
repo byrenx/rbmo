@@ -1,0 +1,49 @@
+.home-banner{
+    background-color: rgba(0, 204, 0, .3);
+    color: black;
+}
+
+tr.hover{
+    cursor: pointer;
+}
+
+th.decimal{
+    text-align: right;
+}
+
+td.decimal{
+    text-align: right;
+}
+
+tr.header-g{
+    background-color: rgba(145, 123, 154, 0.4);
+}
+
+.login-form{
+    background-color: rgba(240, 240,240,.4);
+    border: 1px solid;
+    border-color: rgba(230,230,230,.4);
+}
+
+.table-normal{
+    border-collapse:collapse;
+    font-size: 12px;
+    width: 100%;
+
+}
+
+.table-normal td{
+    border-color: rgb(230,230,230);
+    border: 1px solid rgb(0,0,0);
+    padding: 5px;
+}
+
+
+.table-normal th{
+   border: 1px solid black;
+   padding: 5px;
+}
+
+.table-normal th.center{
+   text-align: center;
+}

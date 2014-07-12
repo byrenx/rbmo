@@ -1,0 +1,122 @@
+{%extends "./admin/base.html" %}
+
+{%block headerpage%}
+<div class="container">
+    <h3>{{agency.name}}</h3>
+    <hr/>
+</div>
+{% endblock %}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9" style="background-color: rgba(250,250,250,.5); min-height: 450px;">
+  <h4>{{year}}&nbsp;Work and Financial Plan Information</h4>
+  <div class="col-sm-8">
+    {% if current_year == year and wfp_submit %}
+    <a href="/agency/wfp/wfp_form?agency_id={{agency.id}}" class="btn btn-success">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+      Add Program
+    </a>
+    <a href="/agency/wfp/wfp_print?agency_id={{agency.id}}&year={{year}}" class="btn btn-default" target="blank">
+      <span class="glyphicon glyphicon-print"></span>
+      Print
+    </a>
+    {% endif %}
+  </div>
+  <div class="col-sm-4">
+    <form action="" class="form-horizontal">{% csrf_token %}
+      <div class="form-group">
+	<input type="hidden" name="agency_id" value="{{agency.id}}">
+	<div class="col-sm-10">
+	  <select name="year" class="form-control">
+	    {% for year in years %}
+	    <option value="{{year}}">{{year}}</option>
+	    {% endfor %}
+	  </select>
+	</div>
+	<button type="submit" class="btn btn-default">
+	  <span class="glyphicon glyphicon-search"></span>
+	</button>
+	</div>
+    </form>
+  </div>
+  <hr/>
+  <div class="col-sm-6">
+    <!---PS--->
+    {% if pss|length_is:"0" %}
+    Currently NO PS Allocation
+    {% else %}
+    <table class="table">
+      <thead>
+	<tr>
+	  <th>Program</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr><th colspan="2">PS</th></tr>
+	{% for ps in pss %}
+	<tr>
+	  <td width="70px">
+	    <a href="">
+	      <span class="glyphicon glyphicon-edit"></span>
+	    </a>&nbsp;
+	    <a href="">
+	      <span class="glyphicon glyphicon-remove text-danger"></span>
+	    </a>&nbsp;
+	  </td>
+	  <td onclick="getWFPData({{ps.id}});" 
+	    onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">{{ps.activity}}</td>
+	</tr>
+	{% endfor %}
+    {% endif %}
+    {% if mooes %}
+	<tr><th colspan="2">MOOE</th></tr>
+	{% for mooe in mooes %}
+	  <tr>
+	    <td>
+	      <a href="">
+		<span class="glyphicon glyphicon-edit"></span>
+	      </a>&nbsp;
+	      <a href="">
+		<span class="glyphicon glyphicon-remove text-danger"></span>
+	      </a>&nbsp;
+	    </td>
+	    <td onclick="getWFPData({{mooe.id}})" 
+	      onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">{{mooe.activity}}</td>
+	  </tr>
+	  {% endfor %}
+    {% endif %}
+	  
+    {%if cos%}
+	  <tr><th colspan="2">CO</th></tr>
+	{% for co in cos %}
+	<tr>
+	  <td>
+	    <a href="">
+		<span class="glyphicon glyphicon-edit"></span>
+	      </a>&nbsp;
+	      <a href="">
+		<span class="glyphicon glyphicon-remove text-danger"></span>
+	      </a>&nbsp;
+	  </td>
+	  <td onclick="getWFPData({{co.id}})" 
+	    onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">{{co.activity}}</td>
+	</tr>
+	{% endfor %}
+    {% endif %}
+      </tbody>
+    </table>
+  </div>
+  <!-- wfp row details -->
+  <div class="col-sm-6" id="wfp_detail">
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
+{% endblock %}

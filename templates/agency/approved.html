@@ -1,0 +1,132 @@
+{% extends 'agentbase.html' %}
+
+{% block content %}
+<content>
+<br><br><br>
+<div class="container">
+<ul class="nav nav-pills nav-stacked col-md-2">
+  <li ><a href="/agency/home"> Notification </a></li>
+  <li><a href="/agency/requirements"> Requirement Status </a></li>
+  <li><a href="/agency/balance"> Balances </a></li>
+  <li class="active"><a href="/agency/balance"> Total Approved Budget</a></li>
+</ul>
+
+<div class="col-md-3 panel panel-default">
+<form action="/agency/balance" class="form-inline" role="form">
+  <label> Search by year:  </label>
+  <select name="year" class="form-control">
+    <option value="2014">2014</option>
+    <option value="2013">2013</option>
+    <option value="2012">2012</option>
+    <option value="2011">2011</option>
+    <option value="2010">2010</option>
+    <option value="2009">2009</option>
+    <option value="2008">2008</option>
+    <option value="2007">2007</option>
+    <option value="2006">2006</option>
+    <option value="2005">2005</option>
+    <option value="2004">2004</option>
+    <option value="2003">2003</option>
+    <option value="2002">2002</option>
+    <option value="2001">2001</option>
+    <option value="2000">2000</option>
+  </select>
+  <button type="submit" class="btn btn-default">
+    <span class="glyphicon glyphicon-search">
+  </button>
+</form>
+</div>
+
+{%if total and totalRelease%}
+
+<div class="col-md-10">
+<h2><small>{{success}}</small></h2>
+  <table class="table table-bordered">{%load humanize%}
+    <tr>
+    <th></th>
+    <th style="text-align: center">PS</th>
+    <th style="text-align: center">MOOE</th>
+    <th style="text-align: center">CO</th>
+    <th style="text-align: center">Total</th>
+    </tr>
+    <tr>
+      <td>Total Budget</td>
+      <td style="text-align: right">
+      {%if PS%}
+      {{PS|intcomma}}
+      {%endif%}
+      </td>
+      <td style="text-align: right">
+      {%if MOOE%}
+      {{MOOE|intcomma}}      
+      {%endif%}
+      <td style="text-align: right">
+	{%if CO%}
+	{{CO|intcomma}}
+	{%endif%}
+      </td>
+      <td style="text-align: right">
+	{%if total%}<b>
+	{{total|intcomma}}
+	{%endif%}</b>
+      </td>
+    </tr>
+    <tr><td>Total Released</td>
+      <td style="text-align: right">
+	{%if PSR%}
+	{{PSR|intcomma}}
+	{%endif%}
+      </td>
+      <td style="text-align: right">
+	{%if MOOER%}
+	{{MOOER|intcomma}}
+	{%endif%}
+      </td>
+      <td style="text-align: right">
+	{%if COR%}
+	{{COR|intcomma}}
+	{%endif%}
+      </td>
+      <td style="text-align: right">
+	{%if totalRelease%}<b>
+	{{totalRelease|intcomma}}
+	{%endif%}</b>
+      </td>
+    </tr>
+
+    <tr><td><b>Remaining Balance </b></td>
+      <td style="text-align: right"><b>
+	{%if ps_remaining%}
+	{{ps_remaining|intcomma}}
+	{%endif%}</b>
+      </td>
+      <td style="text-align: right">
+	{%if MOOE_remaining%}<b>
+	{{MOOE_remaining|intcomma}}
+	{%endif%}</b>
+      </td>
+      <td style="text-align: right">
+	{%if CO_remaining%}<b>
+	{{CO_remaining|intcomma}}
+	{%endif%}</b>
+      </td>
+      <td style="text-align: right">
+	{%if overall_balance%}<b>
+	{{overall_balance|intcomma}}
+	{%endif%}</b>
+      </td>
+    </tr>
+  </table>
+</div>
+{%elif error%}
+<div class="jumbotron col-md-10">
+  <h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
+</div>
+{%else%}
+<div class="jumbotron col-md-10">
+  <h3> Records not found! <small>Please try another year</small><h3> 
+</div>
+{%endif%}
+</div>
+</content>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% if agencies %}
+<table class="table table-condensed">
+  <thead>
+    <th>Agency/Office</th>
+    <th>Email</th>
+    <th>Sector</th>
+  </thead>
+  <tbody>
+    {%for agency in agencies%}
+    <tr onclick="window.location = '/admin/manage_agency_docs?agency_id={{agency.id}}'"
+       onmouseover="$(this).addClass('warning')" onmouseout="$(this).removeClass()" style="cursor: pointer">
+      <td>{{agency.name}}</td>
+      <td>{{agency.email}}</td>
+      <td>{{agency.sector.name}}</td>
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+{% else %}
+<div class="alert alert-warning">
+  <b>No Agencies/Offices Found!</b>
+</div>
+{% endif %}

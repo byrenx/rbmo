@@ -1,0 +1,74 @@
+{% extends "./admin/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div style="width: 20%" > 
+      <form action="/admin/yearly_fund" class="form-inline" style="margin-bottom:24px">
+        <div class="input-group col-sm-1">
+            <select style="width: 100px; " class="btn btn-default dropdown-toggle" type="radio" id="year_choose" name="year_choose">
+              {% for year in year_choices %}
+                 <option value="{{year}}">{{year}}</option>
+              {% endfor %}
+            </select>
+            <select style="width: 100px; " class="btn btn-default dropdown-toggle" type="radio" id="allocate" name="allocate">
+                <option value="all">All</option>
+                <option value="PS">PS</option>
+                <option value="MOOE">MOOE</option>
+                <option value="CO">CO</option>
+            </select>
+          <div class="input-group-btn">
+            <button class="btn btn-primary btn-small">Generate Report</button>
+          </div>
+        </div>
+      </form>
+
+</div>
+{%if result%}
+<div>
+ <a href="javascript:$('#local_fund_print').printArea()" class="btn btn-default">
+    <span class="glyphicon glyphicon-print"></span>&nbsp;Print
+  </a> 
+  <table style="width: 70%" border="1" class="table">
+    <thead> 
+        <tr>
+        <th>Month</th>
+        <th>Total of {{allocate_name}}</th>
+        <th>Total Release</th>
+        <th>Balance</th>          
+        </tr>
+
+    </thead>
+
+    <tbody>
+        {% for x in result %}
+          <tr>
+            <td>{{x.month}}</td>
+            <td>{{x.amount}}</td>
+            <td>{{x.release}}</td>
+            <td>{{x.balance}}</td>
+          </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+</div>
+ <div id="local_fund_print" style="display:none">
+    {% include 'admin/local_fund_print.html' %}
+  </div>
+{% else %}
+  <p>
+    ang gwapo ko pre
+    ang gwapo ko pre
+    ang gwapo ko pre
+    ang gwapo ko pre
+    ang gwapo ko pre
+    ang gwapo ko pre
+    ang gwapo ko pre
+  </p>
+{% endif %}
+{% endblock %}
+{%block scripts%}
+{%endblock%}
+

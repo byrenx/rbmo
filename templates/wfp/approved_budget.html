@@ -1,0 +1,92 @@
+{% extends  "./admin/base.html" %}
+
+{% block css %}
+{% endblock %}
+
+{%block headerpage%}
+<div class="container">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+</div>
+{%endblock%}
+
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9">
+  <h3>Total Approved Budget for the Year&nbsp;{{year}}</h3>
+  <div class="col-sm-12">
+    <div class="col-sm-3">
+	<a href="javascript:$('#approved_budget_print').printArea();" class="btn btn-success">
+	  <span class="glyphicon glyphicon-print"></span>&nbsp;Print
+	</a>
+    </div>
+    <div class="col-sm-3 col-sm-offset-6" style="text-align:right;">
+      <form action="/agency/wfp/approved_budget" class="form-inline" method="GET">
+
+	<div class="form-group">
+	  <input type="hidden" name="agency_id" value="{{agency.id}}">
+	  <select class="form-control">
+	    {% for year in years %}
+	    <option value="{{year}}">{{year.year}}</option>
+	    {% endfor %}
+	  </select>
+      </div>
+	<button type="submit" class="btn btn-default">
+	  <span class="glyphicon glyphicon-search"></span>
+	</button>
+      </form>
+    </div>
+  </div>
+  </br></br>
+  <div class="col-sm-12">
+    <table class="table">
+      <thead>
+	<tr>
+	  <th></th>
+	  <th class="decimal">Jan</th>
+	  <th class="decimal">Feb</th>
+	  <th class="decimal">Mar</th>
+	  <th class="decimal">Apr</th>
+	  <th class="decimal">May</th>
+	  <th class="decimal">June</th>
+	  <th class="decimal">Jul</th>
+	  <th class="decimal">Aug</th>
+	  <th class="decimal">Sept</th>
+	  <th class="decimal">Oct</th>
+	  <th class="decimal">Nov</th>
+	  <th class="decimal">Dec</th>
+	  <th class="decimal">Total</th>
+	</tr>
+      </thead>
+      {% load humanize %}
+      <tbody>
+	{% for budget in approved_budget %}
+	<tr>
+	  <th class="decimal">{{budget.name}}</th>
+	  <td class="decimal">{{budget.jan|intcomma}}</td>
+	  <td class="decimal">{{budget.feb|intcomma}}</td>
+	  <td class="decimal">{{budget.mar|intcomma}}</td>
+	  <td class="decimal">{{budget.apr|intcomma}}</td>
+	  <td class="decimal">{{budget.may|intcomma}}</td>
+	  <td class="decimal">{{budget.jun|intcomma}}</td>
+	  <td class="decimal">{{budget.jul|intcomma}}</td>
+	  <td class="decimal">{{budget.aug|intcomma}}</td>
+	  <td class="decimal">{{budget.sept|intcomma}}</td>
+	  <td class="decimal">{{budget.oct|intcomma}}</td>
+	  <td class="decimal">{{budget.nov|intcomma}}</td>
+	  <td class="decimal">{{budget.dec|intcomma}}</td>
+	  <td class="decimal">{{budget.total|intcomma}}</td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{%include "./wfp/approved_budget_print.html" %}
+
+

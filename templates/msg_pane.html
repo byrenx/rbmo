@@ -1,0 +1,17 @@
+{%if s_msg%}
+  <p class="alert alert-success">
+    <strong>{{s_msg}}</strong>
+  </p>
+{%endif%}
+
+{%if e_msg%}
+  <p class="alert alert-danger">
+    <strong>{{e_msg}}</strong>
+  </p>
+{%endif%}
+
+{%if frm_errors%}
+  <div class="alert alert-danger">
+    <strong>{{frm_errors}}</strong>
+  </div>
+{%endif%}

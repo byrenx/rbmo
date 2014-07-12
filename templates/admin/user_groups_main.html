@@ -1,0 +1,23 @@
+{% extends "./admin/base.html" %}
+
+{%block right-content%}
+<div class="col-sm-9">
+  <h2>{{page_title}}</h2>
+  <p>
+    Each User group has set of Access Priviliges to the System
+  </p>
+  
+  <div class="col-sm-9">
+    {%include "./admin/user_search_form.html"%}
+  </div>
+  <div class="col-sm-3">
+    <a href="/admin/add_edit_ugroup" class="btn btn-default">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+      Add User Group
+    </a>
+  </div>
+  <div class="col-sm-12 div">
+    {%include "./admin/user_groups_table.html"%}
+  </div>
+</div>
+{%endblock%}

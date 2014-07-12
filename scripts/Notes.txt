@@ -1,0 +1,7 @@
+* Create triggers for updating balance remaining for every amount releases to a office or agency
+   - on insert trigger
+   - on update trigger
+   - on delete trigger
+
+* alter auth_user character varying length to 75
+* add home link for a agency on the admin page

@@ -1,0 +1,47 @@
+{% extends 'agentbase.html' %}
+
+{% block content %}
+<content>
+<div class="container">
+<br><br><br>
+<ul class="nav nav-pills nav-stacked col-md-2">
+  <li><a href="/agency/home"> Notification </a></li>
+  <li class="active"><a href="/agency/requirements"> Requirement Status </a></li>
+  <li><a href="/agency/balance"> Balances </a></li>
+  <li><a href="/agency/approved"> Total Approved Budget</a></li>
+</ul>
+
+
+<div class="col-md-4">
+  
+  <form class="form-inline" action="#">{% csrf_token %}
+     <label class="control-label">2014</label>
+     <select class="form-control">
+	<option>January</option>
+	<option>February</option>
+	<option>March</option>
+	<option>April</option>
+	<option>May</option>
+	<option>June</option>
+	<option>July</option>
+	<option>August</option>
+	<option>September</option>
+	<option>October</option>
+	<option>November</option>
+	<option>December</option>
+      </select>
+     <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
+  </form>
+</div> 
+
+<br><br><br>
+<div class="col-md-10 panel panel-default">
+
+<h2> Sample Content Here....</h2>
+<p> Lorem ipsum dolor </p>
+<p> Lorem ipsum dolor </p>
+<p> Lorem ipsum dolor </p>
+</div>
+</div>
+</content>
+{% endblock %}

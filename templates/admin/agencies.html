@@ -1,0 +1,35 @@
+{% extends "./admin/base.html" %}
+
+{% block right-content %}
+<div class="col-sm-12">
+  <h2> List of Agency/Office </h2>
+  <hr/>
+  <div class="col-sm-12">
+    {% if has_add %}
+    <div class="col-sm-4" >
+      <a href="/admin/pm_agency" class="btn btn-default">
+	<span class="glyphicon glyphicon-plus-sign"></span>
+	&nbsp;Add Angency/Office 
+      </a>
+    </div>
+    {% endif %}
+    <div class="col-sm-5 col-sm-offset-3" style="text-align:right">
+      <form method="POST" id='srch_stud' action="/billing/student" class="form-search">
+	<div class="input-group">
+	  <input name="search_student" value="" id='search_student' type="text" class="form-control" placeholder="Search">
+	  <span class="input-group-btn">
+	    <button name="submit" value="submit" class="btn btn-success" type="submit">
+	      <span class="glyphicon glyphicon-search"></span>
+	    </button>
+	  </span>
+	</div><!-- /btn-group -->
+      </form>
+    </div>
+  </div>
+  <div class="col-sm-12 div">
+    <!---agency table-->
+    {% include "./admin/agency_table.html" %}
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,150 @@
+{% extends "./admin/base.html" %}
+{% block css%}
+<script type="text/javascript" src="/static/js/list.js"></script>
+{% endblock %}
+
+{% block headerpage %}
+<div class="container">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+</div>
+{% endblock %}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9" style="background-color:rgba(250,250,250,0.5); min-height:400px;">
+  <h3>Monthly Physical and Financial Report of Operation</h3>
+  <a href="/admin/monthly_reports?agency_id={{agency.id}}">
+    <span class="glyphicon glyphicon-arrow-left"></span>
+    Back
+  </a>
+  <hr/>
+  {% include "msg_pane.html" %}
+  <form class="form-horizontal">
+    <input type="hidden" name="action" value="{{action}}">
+    <input type="hidden" name="agency_id" value="{{agency.id}}">
+
+    <div class="form-group">
+      <label class="col-sm-3">Year</label>
+      <div class="col-sm-6">
+	<select name="year" id="year" class="form-control">
+	  
+	</select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3">Month</label>
+      <div class="col-sm-6">
+	<select name="month" id="month" class="form-control">
+	  <option value="1">January</option>
+	  <option value="2">February</option>
+	  <option value="3">March</option>
+	  <option value="4">April</option>
+	  <option value="5">May</option>
+	  <option value="6">June</option>
+	  <option value="7">July</option>
+	  <option value="8">August</option>
+	  <option value="9">September</option>
+	  <option value="10">October</option>
+	  <option value="11">November</option>
+	  <option value="12">December</option>
+	</select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3">Activity</label>
+      <div class="col-sm-9">
+	<select class="form-control">
+	  <option>--Activity--</option>
+	</select>
+      </div>
+    </div>
+    
+   
+
+    <div class="form-group">
+      <label class="col-sm-3">Allotment Received</label>
+      <div class="col-sm-5">
+	<input type="number" class="form-control" name="allot_rcv">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="col-sm-3">Obligation Incurred</label>
+      <div class="col-sm-5">
+	<input type="number" class="form-control" name="allot_rcv">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-3">Remarks</label>
+      <div class="col-sm-5">
+	<textarea class="form-control"></textarea>
+      </div>
+    </div>
+
+    <div class="col-sm-12" style="border: 1px solid;padding: 20px;margin-bottom:30px;">
+      <div class="form-group">
+	<label class="col-sm-3">Performance Indicator</label>
+	<div class="col-sm-9">
+	  <input type="text" id="pi" name="pi" class="form-control">
+	</div>
+      </div>
+
+      <div class="form-group">
+	<label class="col-sm-3">Phyical Target</label>
+	<div class="col-sm-2">
+	  <input type="text" id="pt" name="pt" class="form-control">
+	</div>
+      </div>
+
+      <div class="form-group">
+	<label class="col-sm-3">Accomplished</label>
+	<div class="col-sm-2">
+	  <input type="text" id="acc" name="acc" class="form-control">
+	</div>
+      </div>
+      <div class="form-group">
+	<div class="col-sm-3 col-sm-offset-3">
+	  <a href="javascript:addAccTarget()" class="btn btn-default">
+	    <span class="glyphicon glyphicon-plus-sign"></span>
+	    Add
+	  </a>
+	</div>
+      </div>
+      <div class="col-sm-9 col-sm-offset-3">
+	<table class="table-condensed" border="1" style="font-size: 12px">
+	  <thead>
+	    <tr>
+	      <th></th>
+	      <th>performance Indicator</th>
+	      <th>Physical Target</th>
+	      <th>Accomplished</th>
+	      <th>Variance</th>
+	    </tr>
+	  </thead>
+	  <tbody id="pi_acc">
+	  </tbody>
+	</table>
+      </div>
+    </div>
+    </br>
+    </br>
+    <div class="form-group">
+      <button type="submit" class="btn btn-success" style="width:100%">
+	  Save
+      </button>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+{%block scripts%}
+<script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
+{%endblock%}
+

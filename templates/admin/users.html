@@ -1,0 +1,10 @@
+{% extends "./admin/base.html" %}
+
+{%block right-content%}
+<div class="col-sm-6">
+  <h2>{{page_title}}</h2>
+  <hr/>
+  {%include "./admin/user_search_form.html"%}
+  {%include "./admin/users_table.html"%}
+</div>
+{%endblock%}

@@ -1,0 +1,65 @@
+{% extends "./admin/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <center>
+    <h3>Comprehensive Allotment Releases Report</h3>
+  </center>
+  <div class="col-sm-12">
+    <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
+      <span class="glyphicon glyphicon-print"></span>
+      Print
+    </a>
+  </div>
+  </br> </br>
+  <div class="col-sm-12" id="allot_print">
+      
+    {% if agencies_releases %}
+    <table border="1" class="table-normal">
+      {%load humanize%}
+      <thead>
+	<tr>
+	  <th rowspan="4" colspan="2" class="center">Agency/Office</th>
+	</tr>
+	<tr>
+	  <th colspan="4" class="center">Allotment Releases</th>
+	</tr>
+	<tr>
+	  <th colspan="4" class="center">AS OF {{today}} </th>
+	  </tr>
+	<tr>
+	  <th class="center">PS</th>
+	  <th class="center">MOOE</th>
+	  <th class="center">CO</th>
+	  <th class="center">TOTAL</th>
+	</tr>
+      </thead>
+      {% for releases in agencies_releases%}
+      <tr>
+	<td>{{releases.count}}</td>
+	<td>{{releases.agency}}</td>
+	<td class="decimal">{{releases.ps|intcomma}}</td>
+	<td class="decimal">{{releases.mooe|intcomma}}</td>
+	<td class="decimal">{{releases.co|intcomma}}</td>
+	<td class="decimal">{{releases.total|intcomma}}</td>
+      </tr>
+	{% endfor %}
+      <tr>
+	<th colspan="2">Grand Total</th>
+	<th class="decimal">{{grand_total.ps|intcomma}}</th>
+	<th class="decimal">{{grand_total.mooe|intcomma}}</th>
+	<th class="decimal">{{grand_total.co|intcomma}}</th>
+	<th class="decimal">{{grand_total.total|intcomma}}</th>
+      </tr>
+    </table>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+{%block scripts%}
+{%endblock%}
+

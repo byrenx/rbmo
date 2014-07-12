@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block css %}
+<link rel="stylesheet" href="/static/css/rbmo.css">
+{% endblock %}
+
+{% block content %}
+
+<content>
+  <div class="container">
+    <div class="col-sm-6 col-sm-offset-3">
+      <div class="col-sm-12 login-form">
+	<div class="media" style="margin-top:10px;">
+	  <a href=""class="pull-left">
+	    <img class="media-object" src="/static/images/Client.png" width="100px" height="100px"/>
+	  </a>
+	  <div class="media-body">
+	    <h3 class="media-heading">Login</h3>
+	    <p>If youre an active  Agency, Please Enter your valid <b>email</b> and <b> Access Key</b> to <b> Login </b></p>
+	  </div>
+	</div>
+	<br/>
+	<form action="/agency/login" role="form" method="POST">{% csrf_token %}
+	  {%include "msg_pane.html"%}
+	  <div class="form-group">
+	    {{form.email}}
+	  </div>
+
+	  <div class="form-group">
+	    {{form.acces_key}}
+	  </div>
+
+	  <div class="form-group">
+	    <button type="submt" class="btn btn-primary">Login</button>
+	  </div>
+	</form>
+      </div>
+    </div>
+  </div>
+</content>
+
+{% endblock %}

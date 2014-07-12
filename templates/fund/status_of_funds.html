@@ -1,0 +1,55 @@
+{%extends "./admin/base.html" %}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9">
+  <h2>{{agency.name}}</h2>
+  <hr/>
+  <h3>{{year}}&nbsp;-&nbsp; Status of Funds</h3>
+  <div class="col-sm-12" style="">
+    <table class="table table-hover">
+      <thead>
+	<tr>
+	  <th>Allocation</th>
+	  <th class="decimal">Allocated Budget</th>
+	  <th class="decimal">Total Release</th>
+	  <th class="decimal">Remaining Balance</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr class="hover" onclick="viewFundStatDetails({{agency.id}}, {{year}}, 'PS')">
+	  <td><b>PS</b></td>
+	  <td class="decimal">{{total_ps}}</td>
+	  <td class="decimal">{{total_ps_release}}</td>
+	  <td class="decimal">{{bal_ps}}</td>
+	</tr>
+	
+	<tr class="hover" onclick="viewFundStatDetails({{agency.id}}, {{year}}, 'MOOE')">
+	  <td><b>MOOE</b></td>
+	  <td class="decimal">{{total_mooe}}</td>
+	  <td class="decimal">{{total_mooe_release}}</td>
+	  <td class="decimal">{{bal_mooe}}</td>
+	</tr>
+
+	<tr class="hover" onclick="viewFundStatDetails({{agency.id}}, {{year}}, 'CO')">
+	  <td><b>CO</b></td>
+	  <td class="decimal">{{total_co}}</td>
+	  <td class="decimal">{{total_co_release}}</td>
+	  <td class="decimal">{{bal_co}}</td>
+	</tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="col-sm-12" id="fund_stat_detail" style="border:1px solid;margin-top: 20px;">
+    
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+{% endblock %}

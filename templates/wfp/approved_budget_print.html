@@ -1,0 +1,52 @@
+<div class="col-sm-12" id="approved_budget_print" style="display: none">
+  <center>
+    <h4>AUTONOMOUS REGION IN MULSIM MINDANAO</h4>
+    <h5>Total Approved Budget for the Year&nbsp;{{year}}</h5>
+  </center>
+  <strong>Agency Name: </strong>&nbsp;{{agency.name}}
+  <div class="col-sm-12">
+    <table class="table">
+      <thead>
+	<tr>
+	  <th></th>
+	  <th>Jan</th>
+	  <th>Feb</th>
+	  <th>Mar</th>
+	  <th>Apr</th>
+	  <th>May</th>
+	  <th>June</th>
+	  <th>Jul</th>
+	  <th>Aug</th>
+	  <th>Sept</th>
+	  <th>Oct</th>
+	  <th>Nov</th>
+	  <th>Dec</th>
+	  <th>Total</th>
+	</tr>
+      </thead>
+      {% load humanize %}
+      <tbody>
+	{% for budget in approved_budget %}
+	<tr>
+	  <th class="decimal">{{budget.name}}</th>
+	  <td class="decimal">{{budget.jan|intcomma}}</td>
+	  <td class="decimal">{{budget.feb|intcomma}}</td>
+	  <td class="decimal">{{budget.mar|intcomma}}</td>
+	  <td class="decimal">{{budget.apr|intcomma}}</td>
+	  <td class="decimal">{{budget.may|intcomma}}</td>
+	  <td class="decimal">{{budget.jun|intcomma}}</td>
+	  <td class="decimal">{{budget.jul|intcomma}}</td>
+	  <td class="decimal">{{budget.aug|intcomma}}</td>
+	  <td class="decimal">{{budget.sept|intcomma}}</td>
+	  <td class="decimal">{{budget.oct|intcomma}}</td>
+	  <td class="decimal">{{budget.nov|intcomma}}</td>
+	  <td class="decimal">{{budget.dec|intcomma}}</td>
+	  <td class="decimal">{{budget.total|intcomma}}</td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+

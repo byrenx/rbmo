@@ -1,0 +1,62 @@
+{% extends "./admin/base.html" %}
+
+{%block right-content%}
+<div class="col-sm-12">
+  <h3>Remaining Balances of All Agencies for Fiscal Year {{year}}</h3>
+  <form class="form-inline">
+    <a href="#" class="btn btn-default">
+      <span class="glyphicon glyphicon-print"></span>&nbsp;Print
+    </a>
+    &nbsp;|&nbsp;
+    <div class="form-group">
+      <select class="form-control">
+	{% for year in years %}
+	<option value="{{year}}">{{year}}</option>
+	{% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-default">
+      <span class="glyphicon glyphicon-search"></span>
+    </button>
+  </form>
+  <hr/>
+  <table class="table-normal">
+    <thead>
+      <tr>
+	<th rowspan="4" class="center" colspan="2">AGENCY/OFFICE</th>
+      </tr>
+      <tr>
+	<th class="center">APPROVED</th>
+	<th class="center">RELEASE</th>
+	<th class="center">BALANCES</th>
+      </tr>
+      <tr>
+	<th class="center" colspan="3">AS of {{today}}</th>
+      </tr>
+      <tr>
+	<th class="center">TOTAL</th>
+	<th class="center">TOTAL</th>
+	<th class="center">TOTAL</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% load humanize %}
+      {%for bal in balances %}
+      <tr>
+	<td></td>
+	<td>{{bal.agency_name}}</td>
+	<td class="decimal">{{bal.budget|intcomma}}</td>
+	<td class="decimal">{{bal.release|intcomma}}</td>
+	<td class="decimal">{{bal.balance|intcomma}}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+	<th colspan="2">GRAND TOTAL</th>
+	<th class="decimal">{{total_sum.total_budget|intcomma}}</th>
+	<th class="decimal">{{total_sum.total_release|intcomma}}</th>
+	<th class="decimal">{{total_sum.total_balance|intcomma}}</th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{%endblock%}

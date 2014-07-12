@@ -1,0 +1,119 @@
+{%extends "./admin/base.html" %}
+
+{%block css%}
+{%endblock%}
+{%block headerpage%}
+<div class="container">
+    <h3>{{agency.name}}</h3>
+    <hr/>
+</div>
+{%endblock%}
+
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9">
+  <h4>Monthly Cash Allocation</h4>
+  {%load humanize%}
+  <form action="/agency/fund/monthly_alloc" class="form-inline" method="POST">{%csrf_token%}
+    <input type="hidden" name="agency_id" value="{{agency.id}}">
+    <label>{{c_year}}</label>
+    <div class="form-group">
+      <select class="form-control" name="month">
+	<option value="1" {% if month == 1%}selected{% endif %}>January</option>
+	<option value="2" {% if month == 2%}selected{% endif %}>February</option>
+	<option value="3" {% if month == 3%}selected{% endif %}>March</option>
+	<option value="4" {% if month == 4%}selected{% endif %}>April</option>
+	<option value="5" {% if month == 5%}selected{% endif %}>May</option>
+	<option value="6" {% if month == 6%}selected{% endif %}>June</option>
+	<option value="7" {% if month == 7%}selected{% endif %}>July</option>
+	<option value="8" {% if month == 8%}selected{% endif %}>August</option>
+	<option value="9" {% if month == 9%}selected{% endif %}>September</option>
+	<option value="10" {% if month == 10%}selected{% endif %}>October</option>
+	<option value="11" {% if month == 11%}selected{% endif %}>November</option>
+	<option value="12" {% if month == 12%}selected{% endif %}>December</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <input type="hidden" name="year" value="{{c_year}}">
+    </div>
+    <div class="form-group">
+      <select class="form-control" name="allocation">
+	<option value="PS">PS</option>
+	<option value="MOOE">MOOE</option>
+	<option value="CO">CO</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <button class="btn btn-default">
+	<span class="glyphicon glyphicon-search"></span>
+      </button>
+    </div>
+  </form>
+  <br/>
+  {% if monthly_alloc_stat%}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4>{{month_str}} - {{year}} </h4>
+    </div>
+    <div class="panel-body">
+      <h4>
+	  {% if allocation == "PS" %}
+	  Personnel Services
+	  {% elif allocation == "MOOE" %}
+	  Maintenance and  Other Operating Expenses
+	  {% elif allocation == "CO" %}
+	  Capital Outlay  
+	  {% endif %}
+      </h4>
+      </br>
+      <p><strong>STATUS</strong>&nbsp;: 
+        {% if monthly_alloc_stat.stat == "PENDING"%}
+            <span class="glyphicon glyphicon-stop text-danger"></span>
+	    {{monthly_alloc_stat.stat }}
+	    <p>The Following requirements must be submitted:</p>
+	    <ul>
+	       {% for q_req in monthly_alloc_stat.quarter_reqs %}
+                  <li>{{q_req.name}}</li>
+	       {% endfor %}
+	    </ul>
+	    {% include "./fund/compliance_note.html" %}
+	    <a href="javascript:printNC()" class="btn btn-default">
+	    <span class="glyphicon glyphicon-print"></span>&nbsp;Notice of Compliance
+	    </a>
+	{% elif monthly_alloc_stat.stat == "PROCESSED"%}
+            <span class="glyphicon glyphicon-stop text-success"></span>&nbsp;
+	     {{ monthly_alloc_stat.stat }}
+	     </br></br>
+	     <b>ALLOCATION</b>&nbsp;:&nbsp;Php. {{amount|intcomma}}
+	     </br></br>
+	     <a href="javascript:$('#transmittal').printArea()" class="btn btn-default">
+	       <span class="glyphicon glyphicon-print"></span>
+	       &nbsp;Transmittal Letter
+	     </a>
+	     <a href="javascript:printTransNote()" class="btn btn-default">
+	       <span class="glyphicon glyphicon-print"></span>
+	       &nbsp;Notice of Transmittal
+	     </a>
+	     {% include "./fund/notice_of_allocation.html" %}
+	     {% include "./fund/transmittal_note.html" %}
+	{% elif monthly_alloc_stat.stat == "NO ALLOCATED FUND" %}
+	       <span class="glyphicon glyphicon-stop text-danger"></span>
+	       &nbsp;NO ALLOCATED FUND
+	{% else %}
+	     <span class="glyphicon glyphicon-check text-success"></span>
+	     Release is already made for this month
+	{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+{% endblock %}
+

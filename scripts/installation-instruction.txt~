@@ -1,0 +1,20 @@
+Enable to run this program, the ff. application must be installed
+1. Python 2.7
+2. Django 1.6
+3. Install Mysqlserver 5.xx
+4. install mysql-python for python 2.7
+
+After all the application are installed
+change database settings in settings.py located in rbmo/rbmo/settings.py
+it should look like this:
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'rbmo',                      
+        'USER': 'root',
+        'PASSWORD': 'byrenx',
+        'HOST': 'localhost',
+        'PORT': '3306',     
+    }
+}

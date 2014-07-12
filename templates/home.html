@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block css %}
+<link href="/static/css/rbmo.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<content>
+  <div class="jumbotron" style="padding-bottom: 10px">
+    <div class="container">
+ <img width="100%" src="/static/images/rbmo_banner3.png"> 
+    </div>
+  </div>
+  <div class="row">
+  <div class="container" style="min-height: 336px">
+
+  <div class="col-md-6">
+    <div class="thumbnail">
+      <div class="media">
+      	<a class="pull-left" href="/admin">
+	  <img class="media-object" src="/static/images/lock-icon.png" alt="..." width="100px"/>
+	</a>
+	<div class="media-body">
+	  <h3 class="media-heading"> RBMO Employee </h3>
+	  <p> Log in as Employee to use the RBMO System. </p>
+	  <p><a href="/admin" class="btn btn-primary" role="button"> Login here</a></p>
+	</div>
+      </div>
+    </div>
+    </div>
+    <div class="col-md-6">
+      <div class="thumbnail">
+	<div class="media">
+	  <a class="pull-left" href="/agency/login">
+	    <img class="media-object" src="/static/images/Client.png" alt="..." width="100px">
+	  </a>
+  <div class="media-body">
+	    <h3 class="media-heading"> Agency/Office </h3> 
+	    <p> Log in as ....</p>
+	    <p><a href="/agency/login" class="btn btn-primary" role="button">Login here</a></p>
+	  </div>
+	</div>
+      </div>
+    </div>
+   </div>
+    <!--right panel-->
+<!---
+    <div class="col-sm-9 panel panel-default">
+      <h3>Activities</h3>
+      <hr/>
+    </div>
+---->
+</content>
+{% endblock %}

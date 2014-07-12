@@ -1,0 +1,53 @@
+{% extends "./admin/base.html" %}
+
+{% block headerpage %}
+<div class="container">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+</div>
+{% endblock %}
+
+{%block left-content%}
+  {% include "./admin/agency_tabs.html" %}
+{%endblock%}
+
+{% block right-content %}
+<div class="col-sm-9">
+  <form class="form-inline" method="GET">
+    <input type="hidden" name="agency_id" value="{{agency.id}}">
+    <div class="form-group">
+      <label>Year</label>&nbsp;
+      <select class="form-control" name="year">
+	{%for year in years%}
+	<option name="{{year}}">{{year}}</option>
+	{%endfor%}
+      </select>
+    </div>
+    <div class="form-group">
+      <button type="submit" class="btn btn-default">Go</button>
+    </div>
+  </form>
+  <hr/>
+</div>
+<div class="col-sm-9">
+  <div class="col-sm-4" id="mpfr">
+    {% include "./admin/monthly_reqs.html" %}
+  </div>
+
+  <div class="col-sm-8" id="wfp">
+    {% include "./admin/wfp_reqs.html" %}
+  </div>
+
+  <div class="col-sm-8" id="wfp">
+    {% include "./admin/quarterly_reqs.html" %}
+  </div>
+
+  <div class="col-sm-8" id="wfp">
+    {% include "./admin/cos_submission.html" %}
+  </div>
+
+</div>
+{% endblock %}
+{%block scripts%}
+<script type="text/javascript" src="/static/js/reqs.js"></script>
+{%endblock%}
