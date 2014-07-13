@@ -70,11 +70,12 @@ def viewWFP(request):
 
     data['year'] = year
     data['agency'] = agency
+    """
     try:
         data['wfp_submit'] = WFPSubmission.objects.get(year=year, agency=agency)
     except WFPSubmission.DoesNotExist:
         pass
-    
+    """
     data['pss'] = WFPData.objects.raw(query, ['PS', agency.id, year])
     data['mooes'] = WFPData.objects.raw(query, ['MOOE', agency.id, year])
     data['cos'] = WFPData.objects.raw(query, ['CO', agency.id, year])
