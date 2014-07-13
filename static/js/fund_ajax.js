@@ -62,3 +62,7 @@ function printTransNote(){
     $('#trans_note').printArea();
 }
 
+
+$('#id_ada').keydown(function(){
+    return allNumbers(event);
+});
