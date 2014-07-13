@@ -608,7 +608,22 @@ def AgenciesbalanceSumm(request):
     data['balances'] = dictfetchall(cursor)
     return render_to_response('./fund/running_balances.html', data, context)
 
-#yearly releases summary
-#def totalReleases(request):
-    
+def getAllotmentBal(request):
+    context = RequestContext(request)
+
+    year = int(request.GET.get('year'))
+    allocation = request.GET.get('allocation')
+    month = int(request.GET.get('month'))
+    agency = Agency.objects.get(id=request.GET.get('agency_id'))
+    balance = 0
+    try:
+        #budget
+        budget = gettotalAllocation(year, month, agency, allocation)
+        #getRelease
+        release = getReleaseAmount(year, month, agency, allocation)
+        balance = budget
+        return HttpResponse(balance)
+    except:
+        return HttpResponse(balance)
+
     

@@ -11,4 +11,5 @@ urlpatterns = patterns('',
     url(r'^view_fstat_detail$',  viewFundStatDetails),
     url(r'^running_balances$',  agenciesBudgetSummary),
     url(r'^allotment_releases$',  allotmentReleases),
+    url(r'^allotment_balance$',  getAllotmentBal),
 )

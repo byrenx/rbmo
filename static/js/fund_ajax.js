@@ -62,7 +62,24 @@ function printTransNote(){
     $('#trans_note').printArea();
 }
 
-
 $('#id_ada').keydown(function(){
     return allNumbers(event);
+});
+
+$('#id_amount').keydown(function(){
+    return Decimals(event);
+});
+
+$('#id_month').change(function(){
+    var params = {'year'       : $('#year').val(),
+		  'month'      : $('#id_month').val(),
+		  'agency_id'  : $('#agency_id').val(),
+		  'allocation' : $('#allocation').val()
+		 }
+    $.get('/agency/fund/allotment_balance',
+	  params, 
+	  function(data){
+	      $('#id_amount').val(data);
+	  }
+	 );
 });
