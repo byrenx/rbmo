@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import *
-from fund.views import isMRS, is_allQRS
+from fund.views import isMRS, is_allQRS, lqm
 from datetime import datetime, date
 from decimal import *
 import time
@@ -654,3 +654,39 @@ def agenciesCompReqList(request):
             'total'        : count-1
     }
     return render_to_response('./admin/agencies_with_comp_reqs_list.html', data, context)
+
+
+def agenciesIncReqList(request):
+    context = RequestContext(request)
+    year = datetime.today().year
+    month = datetime.today().month
+    agency_list = []
+    if request.method=='POST':
+        month = int(request.POST.get('month'))
+
+    agencies = Agency.objects.all()
+    count = 1
+    for agency in agencies:
+        monthly = isMRS(year, month, agency)
+        quarterly = is_allQRS(year, month, agency)
+        if not monthly or not quarterly:
+            lack_reqs = lqm(year, month, agency)
+            if not monthly:
+                req_name = '%s - Monthly Physical and Financial Report' %(stringify_month(month-1))
+                lack_reqs.append({'name' : req_name})
+            agency_list.append({'count' : count,
+                                'name'  : agency.name,
+                                'reqs'  : lack_reqs
+                            })
+            count+=1
+    
+    data = {'system_name'  : SYSTEM_NAME,
+            'year'         : year,
+            'month'        : month,
+            'month_str'    : stringify_month(month),
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'agencies'     : agency_list,
+            'form'         : MonthForm({'month': month}),
+            'total'        : count-1
+    }
+    return render_to_response('./admin/agencies_with_inc_reqs_list.html', data, context)

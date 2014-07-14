@@ -26,4 +26,5 @@ urlpatterns = patterns('',
     url(r'^total_monthly_release$', totalMonthlyReleases),
     url(r'^submit_cos$', submitCOS),
     url(r'^agencies_with_compreqs$', agenciesCompReqList),
+    url(r'^agencies_with_increqs$', agenciesIncReqList),
 )

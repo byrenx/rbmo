@@ -6,8 +6,8 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-sm-6 col-sm-offset-3">
-    <form action="/admin/agencies_with_compreqs" class="form-inline" method="POST">{%csrf_token%}
+  <div class="col-sm-8 col-sm-offset-2">
+    <form action="/admin/agencies_with_increqs" class="form-inline" method="POST">{%csrf_token%}
       <a href="javascript:$('#pie_chart').printArea()" class="btn btn-default">
 	<span class="glyphicon glyphicon-print"></span>
 	Print
@@ -25,11 +25,11 @@
     <hr/>
   </div>
   </br></br>
-  <div class="col-sm-6 col-sm-offset-3"> 
+  <div class="col-sm-8 col-sm-offset-2"> 
 
     {%if agencies%}
     <center>
-      <h4>Agencies with Complete Requirements</h4>
+      <h4>Agencies with Incomplete Requirements</h4>
       <h5>For {{month_str}}-{{year}}</h5>
     </center>
       <table class="table-normal">
@@ -37,18 +37,26 @@
 	  <caption><b>Total: {{total}} agencie(s)</b></caption>
 	  <tr>
 	    <th colspan="2">Agencies</th>
+	    <th>Requirements Lacking</th>
 	  </tr>
 	</thead>
         {% for agency in agencies %}
         <tr>
 	  <td width="30px" align="center">{{agency.count}}</td>
 	  <td>{{agency.name}}</td>
+	  <td>
+	    <ul>
+	    {%for req in agency.reqs%}
+	       <li>{{req.name}}</li>
+	    {%endfor%}
+	    </ul>
+	  </td>
 	</tr>
         {% endfor %}
       </table>
     {%else%}
       <div class="alert alert-info">
-	Currently No Agencies have completed the requirements yet for <b>{{month_str}} - {{year}}</b>
+	Currently No Agencies have Incomplete requirements for <b>{{month_str}} - {{year}}</b>
       </div>
       </div>
     {%endif%}

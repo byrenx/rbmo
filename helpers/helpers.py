@@ -26,7 +26,7 @@ def get_allowed_tabs(user_id):
         reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
     if has_permission(user_id, 'view', "monthly reports"):
         reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/admin/agencies_with_compreqs'})
-        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': ''})
+        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/admin/agencies_with_increqs'})
     if has_permission(user_id, 'view', "analysis report"):
         pass
     if has_permission(user_id, 'view', "fund utilization"):
