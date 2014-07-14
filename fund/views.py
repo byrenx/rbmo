@@ -101,7 +101,8 @@ def allotmentReleases(request):
 def monthlyAlloc(request):
     context = RequestContext(request)
     data = {'system_name' : SYSTEM_NAME,
-            'c_year'      : time.strftime('%Y')
+            'c_year'      : time.strftime('%Y'),
+            'c_month'     : int(datetime.today().month)
     }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
     if request.method=='POST':
@@ -357,13 +358,13 @@ def fundReleaseForm(request):
             release = getReleaseAmount(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
             balance = numify(budget)-numify(release)
             if budget==0:
-                data['e_msg'] = 'No Allocated amount for %s under %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+                data['e_msg'] = 'No Alloted amount for %s - %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
             elif balance <=0 :
-                data['e_msg'] = 'No Remaining Balance for %s under %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+                data['e_msg'] = 'No Remaining Balance for %s - %s Allocation' %(stringify_month(int(allot_release.month)), allot_release.allocation)
             elif allot_release.amount_release<=0:
                 data['e_msg'] = 'Please Enter a valid amount'
             elif allot_release.amount_release>balance:
-                data['e_msg'] = 'The amount you enter exceeds the remaining Balance for %s-%s. Please enter a valid amount' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+                data['e_msg'] = 'The amount you enter an amount that does not exceeds the allotment balance' %(stringify_month(int(allot_release.month)), allot_release.allocation)
             else:
                 allot_release.save()
                 data['s_msg'] = 'Fund Release was succesfully saved'
