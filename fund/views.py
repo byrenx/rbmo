@@ -101,8 +101,7 @@ def allotmentReleases(request):
 def monthlyAlloc(request):
     context = RequestContext(request)
     data = {'system_name' : SYSTEM_NAME,
-            'c_year'      : time.strftime('%Y'),
-            'c_month'     : int(datetime.today().month)
+            'c_year'      : time.strftime('%Y')
     }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
     if request.method=='POST':
@@ -112,11 +111,12 @@ def monthlyAlloc(request):
         data['agency'] = agency
         year = int(request.POST.get('year'))
         month = int(request.POST.get('month'))
-        data['month'] = month
         data['month_str'] = stringify_month(month)
         data['year'] = year
         unsubmitted_reqs = []
-
+        
+        data['form']   = MCASearchForm({'month': month, 'allocation' : allocation})
+        
         if allocation == 'PS':
             data['amount'] = gettotalAllocation(year, month, agency, 'PS')
             has_cos = hasCOSSubmitted(agency, year)
@@ -159,6 +159,7 @@ def monthlyAlloc(request):
         try:
             agency = Agency.objects.get(id=request.GET.get('agency_id'))
             data['agency'] = agency
+            data['form']   = MCASearchForm({'month': datetime.today().month, 'allocation' : 'MOOE'})
             return render_to_response('./fund/monthly_allocation.html', data, context)
         except Agency.DoesNotExist:
             return HttpResponseRedirect('/admin/agencies')
