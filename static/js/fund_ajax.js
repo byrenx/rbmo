@@ -70,7 +70,19 @@ $('#id_amount').keydown(function(){
     return Decimals(event);
 });
 
+$(document).ready(function(){
+    getAllotmentBal();
+});
+
+$('#allocation').change(function(){
+    getAllotmentBal();
+});
+
 $('#id_month').change(function(){
+    getAllotmentBal();
+});
+
+function getAllotmentBal(){
     var params = {'year'       : $('#year').val(),
 		  'month'      : $('#id_month').val(),
 		  'agency_id'  : $('#agency_id').val(),
@@ -82,4 +94,4 @@ $('#id_month').change(function(){
 	      $('#id_amount').val(data);
 	  }
 	 );
-});
+}

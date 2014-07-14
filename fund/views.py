@@ -329,15 +329,15 @@ def is_allQRS(year, month, agency): # is all quarter requirement submitted
 @login_required(login_url='/admin/')
 def fundReleaseForm(request):
     context = RequestContext(request)
-    data = {'form'        : AllotmentReleaseForm(),
-            'system_name' : SYSTEM_NAME,
+    data = {'system_name' : SYSTEM_NAME,
             'agency_id'   : request.GET.get('agency_id'),
             'year'        : time.strftime('%Y'),
             'agency_tab'  : 'fund_rel'
     }
 
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-
+    release_form = AllotmentReleaseForm({'month': datetime.today().month})
+    data['form'] = release_form
     if request.method == 'POST':
         allot_release_form = AllotmentReleaseForm(request.POST)
         if allot_release_form.is_valid():
@@ -615,13 +615,13 @@ def getAllotmentBal(request):
     allocation = request.GET.get('allocation')
     month = int(request.GET.get('month'))
     agency = Agency.objects.get(id=request.GET.get('agency_id'))
-    balance = 0
+    balance = 0.00
     try:
         #budget
         budget = gettotalAllocation(year, month, agency, allocation)
         #getRelease
         release = getReleaseAmount(year, month, agency, allocation)
-        balance = budget
+        balance = budget-numify(release)
         return HttpResponse(balance)
     except:
         return HttpResponse(balance)
