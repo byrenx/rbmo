@@ -340,6 +340,7 @@ def fundReleaseForm(request):
     data['form'] = release_form
     if request.method == 'POST':
         allot_release_form = AllotmentReleaseForm(request.POST)
+
         if allot_release_form.is_valid():
             allot_release = AllotmentReleases(
                 ada_no = allot_release_form.cleaned_data['ada'],
@@ -350,9 +351,24 @@ def fundReleaseForm(request):
                 date_release = datetime.today(),
                 amount_release = allot_release_form.cleaned_data['amount']
             )
-            allot_release.save()
+            
+            budget = gettotalAllocation(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
+            #getRelease
+            release = getReleaseAmount(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
+            balance = numify(budget)-numify(release)
+            if budget==0:
+                data['e_msg'] = 'No Allocated amount for %s under %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+            elif balance <=0 :
+                data['e_msg'] = 'No Remaining Balance for %s under %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+            elif allot_release.amount_release<=0:
+                data['e_msg'] = 'Please Enter a valid amount'
+            elif allot_release.amount_release>balance:
+                data['e_msg'] = 'The amount you enter exceeds the remaining Balance for %s-%s. Please enter a valid amount' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+            else:
+                allot_release.save()
+                data['s_msg'] = 'Fund Release was succesfully saved'
+
             data['agency'] = allot_release.agency
-            data['s_msg'] = 'Fund Release was succesfully saved'
             return render_to_response('./fund/fund_release_form.html', data, context)
         else:
             data['errors'] = fund_release_form.errors
