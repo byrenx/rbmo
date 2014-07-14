@@ -1,0 +1,64 @@
+{% extends "./admin/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="col-sm-6 col-sm-offset-3">
+    <form action="" class="form-inline" method="POST">{%csrf_token%}
+      <a href="javascript:$('#pie_chart').printArea()" class="btn btn-default">
+	<span class="glyphicon glyphicon-print"></span>
+	Print
+      </a>
+      &nbsp;|&nbsp;
+      <div class="form-group">
+	{{form.month}}
+      </div>
+      <div class="form-group">
+	<button type="submit" class="btn btn-default">
+	  <span class="glyphicon glyphicon-search"></span>
+	</button>
+      </div>
+    </form>
+    <hr/>
+  </div>
+  </br></br>
+  <div class="col-sm-6 col-sm-offset-3"> 
+
+    {%if agencies%}
+    <center>
+      <h4>Agencies with Complete Requirements</h4>
+      <h5>For {{month_str}}-{{year}}</h5>
+    </center>
+      <table class="table-normal">
+	<thead>
+	  <caption><b>Total: {{total}} agencie(s)</b></caption>
+	</thead>
+        {% for agency in agencies %}
+        <tr>
+	  <td width="30px">{{agency.count}}</td>
+	  <td>{{agency.name}}</td>
+	</tr>
+        {% endfor %}
+      </table>
+    {%else%}
+      <div class="alert alert-info">
+	Currently No Agencies have completed the requirements yet!
+      </div>
+      </div>
+    {%endif%}
+  </div>
+</div>
+{% endblock %}
+
+{%block scripts%}
+
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/jquery.jqplot.min.js"></script>
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.pieRenderer.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.1.0.8/jquery.jqplot.css" />
+<script language="javascript" type="text/javascript" src="/static/js/reportcharts.js" ></script>
+
+{%endblock%}
+

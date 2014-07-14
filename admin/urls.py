@@ -24,5 +24,6 @@ urlpatterns = patterns('',
     url(r'^yearly_fund?', yearly_fund),
     url(r'^fund_distrib$', fundDistribution),
     url(r'^total_monthly_release$', totalMonthlyReleases),
-    url(r'^submit_cos$', submitCOS)
+    url(r'^submit_cos$', submitCOS),
+    url(r'^agencies_with_compreqs$', agenciesCompReqList),
 )

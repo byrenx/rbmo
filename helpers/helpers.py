@@ -25,14 +25,14 @@ def get_allowed_tabs(user_id):
         reports.append({'tag': 'Running Balances', 'link': '/agency/fund/running_balances'})
         reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
     if has_permission(user_id, 'view', "monthly reports"):
-        reports.append({'tag': 'Monthly Reports', 'link': ''})
+        reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/admin/agencies_with_compreqs'})
+        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': ''})
     if has_permission(user_id, 'view', "analysis report"):
-        reports.append({'tag': 'Analysis Reports', 'link': ''})
+        pass
     if has_permission(user_id, 'view', "fund utilization"):
         reports.append({'tag': 'Local Fund Distribution', 'link': '/admin/fund_distrib'})
-        reports.append({'tag': 'Fund Utilization Summarry', 'link': ''})
     if has_permission(user_id, 'view', "quarterly report"):
-        reports.append({'tag': 'Quarterly Report', 'link': ''})
+       pass
     if has_permission(user_id, 'view', 'agencies with complete papers'):
         reports.append({'tag': 'List of Agencies with Complete Documents', 'link': ''})
     tabs.append({'tag':'Reports', 'menus':reports})

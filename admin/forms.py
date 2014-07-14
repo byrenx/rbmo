@@ -2,6 +2,10 @@ from django import forms
 from rbmo.models  import *
 from django.contrib.auth.models import User
 
+MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'), 
+          (5, 'May'), (6, 'June'), (7, 'July'), (8, 'August'), (9, 'September'),
+          (10, 'October'), (11, 'November'), (12, 'December'))
+
 
 class UserForm(forms.ModelForm):
     email = forms.EmailField(max_length=100,
@@ -82,4 +86,11 @@ class GroupForm(forms.Form):
                                'class' : 'form-control',
                                'required': 'True'
                            })
+    )
+
+class MonthForm(forms.Form):
+    month = forms.ChoiceField(choices=MONTHS,
+                              widget = forms.Select(attrs={
+                                  'class' : 'form-control'
+                              })
     )
