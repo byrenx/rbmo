@@ -140,8 +140,8 @@ function updateAmount(){
 	   }
     $.get('/agency/wfp/update_monthly_amount', data,
 	  function(rs){
+	      $('#monthlyModal').modal('hide');
 	      getWFPData(data.id_wfp);
-	      $('#close_modal').click();
 	  }
     );
 }
