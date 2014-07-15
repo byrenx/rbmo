@@ -83,3 +83,65 @@ function removePIAccRow(row_id, pi){
     mpfro_list.del(pi);
 }
 
+
+function setMonthlyTargetModal(id, month, amount){
+    month_str = "";
+    
+    switch(month){
+	case 1:
+	  month_str = 'January';
+	  break;
+	case 2:
+	  month_str = 'February';
+	  break;
+	case 3:
+	  month_str = 'March';
+	  break;
+	case 4:
+	  month_str = 'April';
+	  break;
+	case 5:
+	  month_str = 'May';
+	  break;
+	case 6:
+	  month_str = 'June';
+	  break;
+	case 7:
+	  month_str = 'July';
+	  break;
+	case 8:
+	  month_str = 'August';
+	  break;
+	case 9:
+	  month_str = 'September';
+	  break;
+	case 10:
+	  month_str = 'October';
+	  break;
+	case 11:
+	  month_str = 'November';
+	  break;
+	case 12:
+	  month_str = 'December';
+	  break;
+    }
+    
+    $('#id_wfp').val(id);
+    $('#month').val(month);
+    $('#amount').val(amount);
+    $('#amount').focus();
+    $('#myModalLabel').html(month_str);
+}
+
+function updateAmount(){
+    data = {'id_wfp' : $('#id_wfp').val(),
+	   'month'  : $('#month').val(),
+	   'amount' : $('#amount').val()
+	   }
+    $.get('/agency/wfp/update_monthly_amount', data,
+	  function(rs){
+	      getWFPData(data.id_wfp);
+	      $('#close_modal').click();
+	  }
+    );
+}

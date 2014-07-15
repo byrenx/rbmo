@@ -234,3 +234,41 @@ def addCORequest(request_form, agency, date_rcv):
                           status = request_form.cleaned_data['status']
                 )
     co_request.save()
+
+def updateMonthlyAmount(request):
+    month  = int(request.GET.get('month'));
+    wfp_id = int(request.GET.get('id_wfp'));
+    amount = request.GET.get('amount');
+    
+    try:
+        wfp = WFPData.objects.get(id=wfp_id)
+        
+        if month==1:
+            wfp.jan = amount
+        elif month==2:
+            wfp.feb = amount
+        elif month==3:
+            wfp.mar = amount
+        elif month==4:
+            wfp.apr = amount
+        elif month==5:
+            wfp.may = amount
+        elif month==6:
+            wfp.jun = amount
+        elif month==7:
+            wfp.jul = amount
+        elif month==8:
+            wfp.aug = amount
+        elif month==9:
+            wfp.sept = amount
+        elif month==10:
+            wfp.oct = amount
+        elif month==11:
+            wfp.nov = amount
+        else:
+            wfp.dec = amount
+        wfp.save()
+        return HttpResponse('Updated')
+    except WFPData.DoesNotExist:
+        return HttpResponse('Error')
+    

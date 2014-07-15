@@ -1,12 +1,12 @@
-<h3>{{wfp.activity}}</h3>
+<h4>{{wfp.activity}}</h4>
 <div class="panel panel-default">
-  <table class="table">
+  <table class="table table-border table-condensed">
     <thead>
       <tr>
-	<th colspan="5">Physical Performance Target</th>
+	<th colspan="6">Physical Performance Target</th>
       </tr>
       <tr>
-	<th>Performance Indicator</th>
+	<th colspan="2">Performance Indicator</th>
 	<th>Q1</th>
 	<th>Q2</th>
 	<th>Q3</th>
@@ -16,6 +16,14 @@
     <tbody>
       {% for target in perf_targets%}
       <tr>
+	<td>
+	  <a title="Edit">
+	    <span class="glyphicon glyphicon-edit"></span>
+	  </a>&nbsp;
+	  <a title="Delete">
+	    <span class="glyphicon glyphicon-remove text-danger"></span>
+	  </a>
+	</td>
 	<td>{{target.indicator}}</td>
 	<td>{{target.q1}}</td>
 	<td>{{target.q2}}</td>
@@ -28,57 +36,117 @@
 </div>
 
 <div class="panel panel-default">
-  <form class="form-inline">
-    <>
-  </form>
   {%load humanize%}
-  <table class="table">
+  <table class="table table-border table-condensed">
     <thead>
       <tr>
 	<th colspan="2">Monthly Finanacial Target</th>
       </tr>
       <tr>
 	<th>Month</th>
-	<th>Amount</th>
+	<th class="decimal">Amount</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-	<td>January</td><td>{{wfp.jan|intcomma}}</td>
+	<td>January</td>
+	<td class="decimal">{{wfp.jan|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 1, {{wfp.jan}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>February</td><td>{{wfp.feb|intcomma}}</td>
+	<td>February</td>
+	<td class="decimal">{{wfp.feb|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 2, {{wfp.feb}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>March</td><td>{{wfp.mar|intcomma}}</td>
+	<td>March</td>
+	<td class="decimal">{{wfp.mar|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 3, {{wfp.mar}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>April</td><td>{{wfp.apr|intcomma}}</td>
+	<td>April</td>
+	<td class="decimal">{{wfp.apr|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 4, {{wfp.may}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>May</td><td>{{wfp.apr|intcomma}}</td>
+	<td>May</td>
+	<td class="decimal">{{wfp.may|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 5, {{wfp.apr}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>June</td><td>{{wfp.jun|intcomma}}</td>
+	<td>June</td>
+	<td class="decimal">{{wfp.jun|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 6, {{wfp.jun}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>July</td><td>{{wfp.jul|intcomma}}</td>
+	<td>July</td>
+	<td class="decimal">{{wfp.jul|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 7, {{wfp.jul}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>August</td><td>{{wfp.aug|intcomma}}</td>
+	<td>August</td>
+	<td class="decimal">{{wfp.aug|intcomma}}&nbsp;
+	  <a href="#"  onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 8, {{wfp.aug}})" data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>September</td><td>{{wfp.sept|intcomma}}</td>
+	<td>September</td>
+	<td class="decimal">{{wfp.sept|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 9, {{wfp.sept}})" data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>October</td><td>{{wfp.oct|intcomma}}</td>
+	<td>October</td>
+	<td class="decimal">{{wfp.oct|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 10, {{wfp.oct}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>November</td><td>{{wfp.nov|intcomma}}</td>
+	<td>November</td>
+	<td class="decimal">{{wfp.nov|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 11, {{wfp.nov}})"  data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
       <tr>
-	<td>December</td><td>{{wfp.dec|intcomma}}</td>
+	<td>December</td>
+	<td class="decimal">{{wfp.dec|intcomma}}&nbsp;
+	  <a href="#" onclick="javascript:setMonthlyTargetModal({{wfp.id}}, 12, {{wfp.dec}})" data-toggle="modal" data-target="#monthlyModal">[Edit]</a>
+	</td>
       </tr>
     </tbody>
   </table>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="monthlyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <form action="javascript:updateAmount()">
+      <div class="modal-body">
+	  <input type="hidden" id="id_wfp" name="id_wfp">
+	  <input type="hidden" id="month" name="month">
+	  <div class="form-group">
+	    <label>Amount</label>
+	    <input type="text" id="amount" name="amount" class="form-control">
+	  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="close_modal" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
