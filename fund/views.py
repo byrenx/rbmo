@@ -62,8 +62,8 @@ def allotmentReleases(request):
                 'total_release'     : total_release,
                 'remaining_balance' : total_remaining_balance,
                 'allocation'        : {
-                    'name'           : allotment_release.allocation,
-                    'amount_release' : allotment_release.amount_release,
+                'name'           : allotment_release.allocation,
+                'amount_release' : allotment_release.amount_release,
                 },
             }
         
