@@ -25,7 +25,7 @@ function Decimals(e){
       key = e.which;
    }
 
-  if (key == 8){//backspace
+  if (key == 8 || key == 13){//backspace
     return true;
   }else if(key==9){//tab
     return true;

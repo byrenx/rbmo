@@ -272,3 +272,14 @@ def updateMonthlyAmount(request):
     except WFPData.DoesNotExist:
         return HttpResponse('Error')
     
+def updateActivity(request):
+    try:
+        wfp_id   = request.GET.get('wfp_id')
+        activity = request.GET.get('activity')
+        wfp = WFPData.objects.get(id=wfp_id)
+        wfp.activity = activity
+        wfp.save()
+        return HttpResponse(activity);
+    except WFPData.DoesNotExist:
+        return HttpResponse('Error')
+        

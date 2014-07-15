@@ -12,4 +12,5 @@ urlpatterns = patterns('',
     url(r'^co_request$', coRequests),
     url(r'^co_request_form$', coRequestForm),
     url(r'^update_monthly_amount$', updateMonthlyAmount),
+    url(r'^update_activity$', updateActivity),
 )

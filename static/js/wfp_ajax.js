@@ -83,7 +83,6 @@ function removePIAccRow(row_id, pi){
     mpfro_list.del(pi);
 }
 
-
 function setMonthlyTargetModal(id, month, amount){
     month_str = "";
     
@@ -145,3 +144,20 @@ function updateAmount(){
 	  }
     );
 }
+
+function setActivityModal(wfp_id){
+    $('#wfp_id').val(wfp_id);
+    activity = $('#td'+wfp_id).html();
+    $('#activity').val(activity);
+}
+
+function updateActivity(){
+    var data = {'wfp_id'   : $('#wfp_id').val(),
+		'activity' : $('#activity').val()
+	       }
+    $.get('/agency/wfp/update_activity', data, function(rs){
+	$('#td'+data.wfp_id).html(rs);
+	$('#close_activity_modal').click();
+    });
+}
+
