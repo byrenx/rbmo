@@ -244,50 +244,50 @@ def gettotalAllocation(year, month, agency, allocation):
     try:
         if month == 1:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('jan'))
-            return budget['jan__sum']
+            return numify(budget['jan__sum'])
             
         elif month == 2:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('feb'))
-            return budget['feb__sum']
+            return numify(budget['feb__sum'])
         elif month == 3:            
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('mar'))
-            return budget['mar__sum']
+            return numify(budget['mar__sum'])
 
         elif month == 4:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('apr'))
-            return budget['apr__sum']
+            return numify(budget['apr__sum'])
 
         elif month == 5:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('may'))
-            return budget['may__sum']
+            return numify(budget['may__sum'])
 
         elif month == 6:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('jun'))
-            return budget['jun__sum']
+            return numify(budget['jun__sum'])
 
         elif month == 7:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('jul'))
-            return budget['jul__sum']
+            return numify(budget['jul__sum'])
 
         elif month == 8:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('aug'))
-            return budget['aug__sum']
+            return numify(budget['aug__sum'])
 
         elif month == 9:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('sept'))
-            return budget['sept__sum']
+            return numify(budget['sept__sum'])
 
         elif month == 10:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('oct'))
-            return budget['oct__sum']
+            return numify(budget['oct__sum'])
 
         elif month == 11:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('nov'))
-            return budget['nov__sum']
+            return numify(budget['nov__sum'])
 
         elif month == 12:
             budget = WFPData.objects.filter(year=year, agency=agency, allocation=allocation).aggregate(Sum('dec'))
-            return budget['dec__sum']
+            return numify(budget['dec__sum'])
 
     except WFPData.DoesNotExist:
         return 0
