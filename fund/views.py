@@ -35,12 +35,13 @@ def allotmentReleases(request):
     total_PS      = 0
     total_MOOE    = 0
     total_CO      = 0
+    year = datetime.today().year
     
     try:
         agency                  = Agency.objects.get(id=request.GET.get('agency_id'))
-        wfp_data_PS             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=2014, allocation='PS').aggregate(total_sum = Sum('total'))
-        wfp_data_MOOE           = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=2014, allocation='MOOE').aggregate(total_sum = Sum('total'))
-        wfp_data_CO             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=2014, allocation='CO').aggregate(total_sum = Sum('total'))
+        wfp_data_PS             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='PS').aggregate(total_sum = Sum('total'))
+        wfp_data_MOOE           = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='MOOE').aggregate(total_sum = Sum('total'))
+        wfp_data_CO             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='CO').aggregate(total_sum = Sum('total'))
         allotment_releases      = AllotmentReleases.objects.filter(agency=request.GET.get('agency_id')).order_by('year', 'month')
         remaining_balance       = numify(wfp_data_PS['total_sum']) + numify(wfp_data_MOOE['total_sum']) + numify(wfp_data_CO['total_sum'])
         total_remaining_balance = remaining_balance
@@ -62,8 +63,8 @@ def allotmentReleases(request):
                 'total_release'     : total_release,
                 'remaining_balance' : total_remaining_balance,
                 'allocation'        : {
-                'name'           : allotment_release.allocation,
-                'amount_release' : allotment_release.amount_release,
+                'name'              : allotment_release.allocation,
+                'amount_release'    : allotment_release.amount_release,
                 },
             }
         
@@ -87,7 +88,9 @@ def allotmentReleases(request):
             'total_PS_balance'        : total_PS_balance,
             'total_MOOE_balance'      : total_MOOE_balance,
             'total_CO_balance'        : total_CO_balance,
-            'allowed_tabs'            : get_allowed_tabs(request.user.id)
+            'allowed_tabs'            : get_allowed_tabs(request.user.id),
+            'cur_date'                : date.today(),
+            'year'                    : year
         }
 
         #get releases

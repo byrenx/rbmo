@@ -7,51 +7,48 @@
       <h5>AUTONOMOUS REGION IN MUSLIM MINDANAO</h5>
       <p>Monthly Cash Allocation for {{year}}</p>
     </center>
-    <div style="position:absolute; left: 10px;">
       <b>Agency Name: </b>&nbsp;
       {{agency.name}}
-    </div>
-    <div style="left: 10px; position: absolute;margin-top:30px; width=100%;">
-      <table class="table">
-	<thead>
-	  <tr>
-	    <th>Program</th>
-	    <th>Jan</th>
-	    <th>Feb</th>
-	    <th>Mar</th>
-	    <th>Apr</th>
-	    <th>May</th>
-	    <th>June</th>
-	    <th>July</th>
-	    <th>Aug</th>
-	    <th>Sept</th>
-	    <th>Oct</th>
-	    <th>Nov</th>
-	    <th>Dec</th>
-	  </tr>
-	</thead>
-	<tbody>
-	   {% for data in wfp_data %}
-	   <tr>
-	     <td>{{data.activity}}</td>
-	     <td>{{data.jan}}</td>
-	     <td>{{data.feb}}</td>
-	     <td>{{data.mar}}</td>
-	     <td>{{data.apr}}</td>
-	     <td>{{data.may}}</td>
-	     <td>{{data.jun}}</td>
-	     <td>{{data.jul}}</td>
-	     <td>{{data.aug}}</td>
-	     <td>{{data.sept}}</td>
-	     <td>{{data.oct}}</td>
-	     <td>{{data.nov}}</td>
-	     <td>{{data.dec}}</td>
-	   </tr>
-	   {% endfor %}
-	</tbody>
-      </table>
-    </div>
-  </div>
+    <table class="table-normal">
+      {%load humanize%}
+      <thead>
+	<tr>
+	  <th>Program</th>
+	  <th>Jan</th>
+	  <th>Feb</th>
+	  <th>Mar</th>
+	  <th>Apr</th>
+	  <th>May</th>
+	  <th>June</th>
+	  <th>July</th>
+	  <th>Aug</th>
+	  <th>Sept</th>
+	  <th>Oct</th>
+	  <th>Nov</th>
+	  <th>Dec</th>
+	</tr>
+      </thead>
+      <tbody>
+	{% for data in wfp_data %}
+	<tr>
+	  <td>{{data.activity}}</td>
+	  <td>{{data.jan|intcomma}}</td>
+	  <td>{{data.feb|intcomma}}</td>
+	  <td>{{data.mar|intcomma}}</td>
+	  <td>{{data.apr|intcomma}}</td>
+	  <td>{{data.may|intcomma}}</td>
+	  <td>{{data.jun|intcomma}}</td>
+	  <td>{{data.jul|intcomma}}</td>
+	  <td>{{data.aug|intcomma}}</td>
+	  <td>{{data.sept|intcomma}}</td>
+	  <td>{{data.oct|intcomma}}</td>
+	  <td>{{data.nov|intcomma}}</td>
+	  <td>{{data.dec|intcomma}}</td>
+	</tr>
+	{% endfor %}
+      </tbody>
+    </table>
+</div>
 </content>
 {% endblock %}
 

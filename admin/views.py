@@ -506,10 +506,10 @@ def yearly_fund(request):
         if allocate == 'all':
             data['allocate_name'] = 'PS, MOOE, and CO'
             ps_query = '''
-            SELECT sum(jan) as 'jan', sum(feb) as 'feb', sum(mar) as 'mar',
-                sum(apr) as 'apr', sum(may) as 'may', sum(jun) as 'jun', sum(jul) as 'jul',
-                sum(aug) as 'aug', sum(sept) as 'sept', sum(oct) as 'oct', sum(nov) as 'nov',
-                sum(`dec`) as 'dec' FROM wfp_data
+            SELECT sum(jan) as jan, sum(feb) as feb, sum(mar) as mar,
+                sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul,
+                sum(aug) as aug, sum(sept) as sept, sum(oct) as oct, sum(nov) as nov,
+                sum("dec") as "dec" FROM wfp_data
             where year=%s;
             '''
             month=['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
