@@ -1,9 +1,9 @@
 {% extends "./admin/base.html" %}
 
 {%block right-content%}
-<h2>{{page_title}}&nbsp;<small><a href="/admin/home/">Show Registered Users</a></small></h2>
+<h2>{{page_title}}&nbsp;<small><a href="/admin/users/">Show Registered Users</a></small></h2>
 <div class="col-sm-8 div">
-  <form action="/admin/add_edit_user/" class="form-horizontal" method="POST">{%csrf_token%}
+  <form action="/admin/add_edit_user" class="form-horizontal" method="POST">{%csrf_token%}
     {%include "msg_pane.html"%}
     <input type="hidden" id="action" name="action" value="{{action}}">
     <input type="hidden" id="user_id" name="user_id" value="{{user_id}}">

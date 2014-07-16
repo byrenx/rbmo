@@ -152,7 +152,23 @@ def addEditUser(request):
             return render_to_response('./admin/user_form.html', data, context)
     else:
         data['action'] = request.GET.get('action', 'add')
-        return render_to_response('./admin/user_form.html', data, context)
+        if data['action']=='edit':
+            user_id = request.GET.get('u_id')
+            try:
+                data['page_title'] = 'Edit System User'
+                user = User.objects.get(id=user_id)
+                u_group = UserGroup.objects.get(user=user)
+                data['form'] = UserForm({'email'      : user.username,
+                                         'first_name' : user.first_name,
+                                         'last_name'  : user.last_name,
+                                         'group'      : u_group.group
+                                     })
+                data['user_id'] = user.id
+                return render_to_response('./admin/user_form.html', data, context)
+            except:
+                return render_to_response('./admin/user_form.html', data, context)
+        else:
+            return render_to_response('./admin/user_form.html', data, context)
 
 
 @login_required(login_url='/admin/')
