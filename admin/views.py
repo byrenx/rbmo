@@ -193,7 +193,7 @@ def agencies(request):
 def addEditAgency(request):
     context = RequestContext(request)
     data = {'form': AgencyForm(),
-            'mode': request.GET.get('mode', 'add'),
+            'mode': request.GET.get('action', 'add'),
             'system_name': SYSTEM_NAME
     }
     if not has_permission(request.user.id, 'add', 'agency'):
@@ -209,13 +209,34 @@ def addEditAgency(request):
             data['s_msg'] = 'New Agency/Office was succesfully added.'
             return render_to_response('./admin/agency_form.html', data, context)
         elif action=='edit' and agency_frm.is_valid():
-            pass
+            agency_id = request.POST.get('id')
+            agency = Agency.objects.get(id=agency_id)
+            agency.name = agency_frm.cleaned_data['name']
+            agency.email = agency_frm.cleaned_data['email']
+            agency.sector = agency_frm.cleaned_data['sector']
+            agency.save()
+            data['s_msg'] = 'Agency/Office was succesfully Updated.'
+            return render_to_response('./admin/agency_form.html', data, context)
         else:
             data['frm_errors'] = agency_frm.errors
             data['form'] = agency_frm
             return render_to_response('./admin/agency_form.html', data, context)
     else:
-        return render_to_response('./admin/agency_form.html', data, context)
+        data['action'] = request.GET.get('action', 'add')
+        if data['action']=='edit':
+            try:
+                agency_id = request.GET.get('a_id')
+                agency = Agency.objects.get(id=agency_id)
+                data['form'] = AgencyForm({'name'  : agency.name,
+                                           'email' : agency.email,
+                                           'sector': agency.sector
+                                       })
+                data['agency_id'] = agency.id
+                return render_to_response('./admin/agency_form.html', data, context)
+            except Agency.DoesNotExist:
+                return render_to_response('./admin/agency_form.html', data, context)
+        else:
+            return render_to_response('./admin/agency_form.html', data, context)
 
 @login_required(login_url='/admin/')
 def agencyMainPage(request):
