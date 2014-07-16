@@ -4,7 +4,7 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from .forms import (UserForm, LoginForm, AgencyForm, MonthForm)
+from .forms import (UserForm, LoginForm, AgencyForm, MonthForm, ChangePassForm)
 from rbmo.models import (UserGroup,
                          Groups,
                          Agency,
@@ -690,3 +690,34 @@ def agenciesIncReqList(request):
             'total'        : count-1
     }
     return render_to_response('./admin/agencies_with_inc_reqs_list.html', data, context)
+
+
+@login_required(login_url='/admin/')
+def changePass(request):
+    context = RequestContext(request)
+    data = {'system_name'  : SYSTEM_NAME,
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'form'         : ChangePassForm()
+           }
+    if request.method=="POST":
+        
+        current_pass = request.POST.get('current_password')
+        new_pass = request.POST.get('new_password')
+        confirm_pass = request.POST.get('confirm_password')
+        user = User.objects.get(id=request.user.id)
+        if user.check_password(current_pass) and new_pass==confirm_pass:
+            #change password
+            user.set_password(new_pass)
+            user.save()
+            data['s_msg'] = 'Password succesfully changed'
+            return render_to_response('./admin/change_pass.html', data, context)
+        elif not user.check_password(current_pass):
+            #current password does not match
+            data['e_msg'] = 'Current Password does not match'
+            return render_to_response('./admin/change_pass.html', data, context)
+        else:
+            #new_pass and confirm_pass does not match error
+            data['e_msg'] = 'New and Confirm Password mismatch'
+            return render_to_response('./admin/change_pass.html', data, context)
+    else:
+        return render_to_response('./admin/change_pass.html', data, context)

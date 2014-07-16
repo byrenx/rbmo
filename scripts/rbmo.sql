@@ -1,38 +1,42 @@
 /*group inserts*/
 insert into permissions(action, target) VALUES
-('add', 'agency'), -- 1
-('edit', 'agency'), -- 2
-('delete', 'agency'), -- 3
-('view', 'agency information'), -- 4
-('view', 'agency submitted documents'), -- 5
-('add', 'agency submitted documents'), -- 6
-('delete', 'agency submitted documents'),-- 7
-('add', 'agency approved budget'), -- 8
-('edit', 'agency approved budget'), -- 9
-('delete', 'agency approved budget'), -- 10
-('view', 'agency approved budget'), -- 11
-('add', 'fund request'), -- 12
-('edit', 'fund request'), -- 13
-('delete', 'fund request'), -- 14
-('view', 'running balances'), -- 15
-('print', 'running balances'), -- 16
-('view', 'status of allotment releases'), -- 17
-('print', 'status of allotment releases'), -- 18
-('view', 'total releases'), -- 19
-('print', 'total releases'), -- 20
-('view', 'monthly reports'), -- 21
-('print', 'monthly reports'), -- 22
-('view', 'quarterly report'), -- 23
-('print', 'quarterly report'), -- 24
-('view', 'transaction history'), -- 25
-('delete', 'transaction history'), -- 26
-('view', 'analysis report'), -- 27
-('print', 'analysis report'), -- 28
-('print', 'fund utilization'), -- 29
-('view', 'fund utilization'), -- 30
-('add', 'user'), -- 31
-('edit', 'user'), -- 32
-('view', 'user'); -- 33
+('add', 'agency'),
+('edit', 'agency'),
+('delete', 'agency'), 
+('view', 'agency information'), 
+('view', 'agency submitted documents'), 
+('add', 'agency submitted documents'), 
+('delete', 'agency submitted documents'), 
+('add', 'agency approved budget'), 
+('edit', 'agency approved budget'),
+('delete', 'agency approved budget'), 
+('view', 'agency approved budget'), 
+('add', 'fund request'), 
+('edit', 'fund request'),
+('delete', 'fund request'), 
+('view', 'running balances'), 
+('print', 'running balances'), 
+('view', 'status of allotment releases'),
+('print', 'status of allotment releases'),
+('view', 'total releases'), 
+('print', 'total releases'),
+('view', 'monthly reports'), 
+('print', 'monthly reports'),
+('view', 'quarterly report'),
+('print', 'quarterly report'),
+('view', 'transaction history'),
+('delete', 'transaction history'),
+('view', 'analysis report'), 
+('print', 'analysis report'), 
+('print', 'fund utilization'),
+('view', 'fund utilization'), 
+('add', 'user'), 
+('edit', 'user'), 
+('view', 'user'); 
+
+
+/* additional permissions */
+
 
 
 

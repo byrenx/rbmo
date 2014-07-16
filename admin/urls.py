@@ -27,4 +27,5 @@ urlpatterns = patterns('',
     url(r'^submit_cos$', submitCOS),
     url(r'^agencies_with_compreqs$', agenciesCompReqList),
     url(r'^agencies_with_increqs$', agenciesIncReqList),
+    url(r'^change_password$', changePass),
 )

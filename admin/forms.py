@@ -94,3 +94,24 @@ class MonthForm(forms.Form):
                                   'class' : 'form-control'
                               })
     )
+
+
+class ChangePassForm(forms.Form):
+    current_password = forms.CharField(widget=forms.PasswordInput(
+        attrs = {'class' : 'form-control',
+                 'required' : 'True'
+             }
+    ))
+
+    new_password = forms.CharField(widget=forms.PasswordInput(
+        attrs = {'class' : 'form-control',
+                 'required' : 'True'
+             }
+    ))
+
+    confirm_password = forms.CharField(widget=forms.PasswordInput(
+        attrs = {'class'    : 'form-control',
+                 'required' : 'True'
+             }
+    ))
+
