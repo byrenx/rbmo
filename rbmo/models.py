@@ -169,10 +169,18 @@ class WFPData(models.Model):
 class PerformanceTarget(models.Model):
     wfp_activity = models.ForeignKey(WFPData)
     indicator = models.CharField(max_length=45)
-    q1 = models.IntegerField()
-    q2 = models.IntegerField()
-    q3 = models.IntegerField()
-    q4 = models.IntegerField()
+    jan = models.IntegerField()
+    feb = models.IntegerField()
+    mar = models.IntegerField()
+    apr = models.IntegerField()
+    may = models.IntegerField()
+    jun = models.IntegerField()
+    jul = models.IntegerField()
+    aug = models.IntegerField()
+    sept = models.IntegerField()
+    oct = models.IntegerField()
+    nov = models.IntegerField()
+    dec = models.IntegerField()
 
     class Meta:
         db_table = 'performancetarget'
@@ -229,18 +237,7 @@ class MPFROAccomplishment(models.Model):
     class Meta:
         db_table = 'mpfro_acc'
 
-        
-class WFPSubmission(models.Model):
-    date_submitted = models.DateTimeField()
-    year = models.IntegerField()
-    agency = models.ForeignKey(Agency)
     
-    def __unicode__(self):
-        return self.year
-
-    class Meta:
-        db_table = 'wfp_submission'
-
 class FundBalances(models.Model):
     year = models.IntegerField()
     agency = models.ForeignKey(Agency)

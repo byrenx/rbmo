@@ -17,7 +17,7 @@
 
 {% block right-content %}
 <div class="col-sm-9">
-  <h4>Work and Financial Plan Form</h4>
+  <h3>Work and Financial Plan Form</h3>
   {% include "msg_pane.html" %}
   <form action="/agency/wfp/wfp_form" role="form" method="POST" class="form-horizontal">{% csrf_token %}
     <div class="form-group">
@@ -55,58 +55,109 @@
     <hr/>
     <h4>Physical Target</h4>
     <div class="form-group">
-      <label class="col-sm-3">Performance Indicator</label>
-      <div class="col-sm-9">
+      <div class="col-sm-12">
+	<label>Performance Indicator</label>
 	<input type="text" class="form-control" name="pi" id="pi">
       </div>
     </div>
-
+    <!----monhtly physical performance target--->
     <div class="form-group">
-      <label class="col-sm-3">Quarterly Target</label>
       <div class="col-sm-2">
-	<label>Q1</label>
-	<input type="number" id="q1" name="q1" class="form-control" value="0">
+	<label>January</label>
+	<input type="number" id="pt_jan" name="pt_jan" class="form-control" value="0">
       </div>
 
       <div class="col-sm-2">
-	<label>Q2</label>
-	<input type="number" id="q2" name="q2" class="form-control" value="0">
+	<label>February</label>
+	<input type="number" id="pt_feb" name="pt_feb" class="form-control" value="0">
       </div>
 
       <div class="col-sm-2">
-	<label>Q3</label>
-	<input type="number" id="q3" name="q3" class="form-control" value="0">
+	<label>March</label>
+	<input type="number" id="pt_mar" name="pt_mar" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>April</label>
+	<input type="number" id="pt_apr" name="pt_apr" class="form-control" value="0">
       </div>      
 
       <div class="col-sm-2">
-	<label>Q4</label>
-	<input type="number" id="q4" name="q4" class="form-control" value="0">
+	<label>May</label>
+	<input type="number" id="pt_may" name="pt_may" class="form-control" value="0">
       </div>
-      
-      <div class="col-sm-3">
+
+      <div class="col-sm-2">
+	<label>June</label>
+	<input type="number" id="pt_jun" name="pt_jun" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>July</label>
+	<input type="number" id="pt_jul" name="pt_jul" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>August</label>
+	<input type="number" id="pt_aug" name="pt_aug" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>September</label>
+	<input type="number" id="pt_sept" name="pt_sept" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>October</label>
+	<input type="number" id="pt_oct" name="pt_oct" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>November</label>
+	<input type="number" id="pt_nov" name="pt_nov" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	<label>December</label>
+	<input type="number" id="pt_dec" name="pt_dec" class="form-control" value="0">
+      </div>
+
+      <div class="col-sm-2">
+	</br>
 	<a href="javascript:addPhysicalTarget()" class="btn btn-default">
 	  <span  class="glyphicon glyphicon-plus-sign"></span>
 	  Add
 	</a>
       </div>
     </div>
-    <input type="hidden" id="pi_count" name="pi_count" value="0">
-
-    <table id="pi-table" class="table" style="display: none;" >
-      <thead>
-	<tr>
-	  <th></th>
-	  <th>Performance Indicator</th>
-	  <th>1st Quarter</th>
-	  <th>2nd Quarter</th>
-	  <th>3rd Quarter</th>
-	  <th>4th Quarter</th>
-	</tr>
-      </thead>
-      <tbody id="pi-table-content">
-      </tbody>
-    </table>
-    <hr/>
+    <div class="col-sm-12">
+      <input type="hidden" id="pi_count" name="pi_count" value="0">
+      <table id="pi-table" class="table table-condensed table-striped">
+	<thead>
+	  <tr>
+	    <th></th>
+	    <th>Performance Indicator</th>
+	    <th>Jan</th>
+	    <th>Feb</th>
+	    <th>Mar</th>
+	    <th>Apr</th>
+	    <th>May</th>
+	    <th>June</th>
+	    <th>Jul</th>
+	    <th>Aug</th>
+	    <th>Sept</th>
+	    <th>Oct</th>
+	    <th>Nov</th>
+	    <th>Dec</th>
+	  </tr>
+	</thead>
+	<tbody id="pi-table-content">
+	</tbody>
+      </table>
+    </div>
+    <div class="col-sm-12">
+      <hr/>
+    </div>
     <h4>Financial Target</h4>
     <div class="form-group">
       <div class="col-sm-3">

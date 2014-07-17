@@ -8,7 +8,6 @@ from .forms import (UserForm, LoginForm, AgencyForm, MonthForm, ChangePassForm)
 from rbmo.models import (UserGroup,
                          Groups,
                          Agency,
-                         WFPSubmission,
                          MPFRO, 
                          MPFRSubmission,
                          QuarterlyReq,
@@ -116,7 +115,7 @@ def addEditUser(request):
             'form' : UserForm(),
             'action': request.POST.get('action', 'add')
     }
-    if not has_permission(request.user.id, 'add', 'user'):
+    if not has_permission(request.user.id, 'record', 'user'):
         return HttpResponseRedirect('/admin/')
         
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
@@ -179,7 +178,7 @@ def agencies(request):
     }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
 
-    if has_permission(request.user.id, 'add', 'agency'):
+    if has_permission(request.user.id, 'record', 'agency'):
         data['has_add'] = 'true'
 
     if request.method=='POST':
@@ -196,8 +195,8 @@ def addEditAgency(request):
             'mode': request.GET.get('action', 'add'),
             'system_name': SYSTEM_NAME
     }
-    if not has_permission(request.user.id, 'add', 'agency'):
-        return HttpResponseRedirect('/admin')
+    if not has_permission(request.user.id, 'record', 'agency'):
+        return HttpResponseRedirect('/admin/agencies')
 
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
 
@@ -278,7 +277,6 @@ def manageAgencyDocs(request):
         #year
         data['monthly'] = getAgencyMonthlyReq(data['year'], agency)
         data['quarterly'] = QuarterlyReq.objects.all()
-        data['wfp_submit'] =  getWfpSubmission(data['year'], agency)       
         data['q1_req_s'] = getSumittedQReq(data['year'], agency, 1) #1st quarter submitted requirements
         data['q2_req_s'] = getSumittedQReq(data['year'], agency, 2) #2nd quarter submitted requirements
         data['q3_req_s'] = getSumittedQReq(data['year'], agency, 3) #3rd quarter submitted requirements
@@ -296,13 +294,6 @@ def getSumittedQReq(year, agency, quarter):
         quarter_submitted.append(qrs.requirement.id)
     return quarter_submitted
 
-
-def getWfpSubmission(year, agency):
-    try:
-        wfp_submit = WFPSubmission.objects.get(year=year, agency=agency)
-        return wfp_submit
-    except WFPSubmission.DoesNotExist:
-        return None    
 
 @login_required(login_url='/admin/')
 def submitMPFR(request):
@@ -346,21 +337,6 @@ def submitMPFR(request):
             monthlyReq.dec = datetime.now()
         monthlyReq.save()
     return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
-
-@login_required(login_url='/admin/')
-def submitWFPReq(request):
-    if request.method == 'POST':
-        year = request.POST.get('year')
-        agency_id = request.POST.get('agency_id')
-        wfp_submit = request.POST.get('wfp_submit', '0')
-        if wfp_submit == '1':
-            #submit
-            wfp = WFPSubmission(date_submitted=datetime.now(),
-                                year = year,
-                                agency = Agency.objects.get(id=agency_id)
-            )
-            wfp.save()
-            return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency_id))
 
 def getAgencyMonthlyReq(year, agency):
     try:

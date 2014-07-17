@@ -2,32 +2,45 @@ var pi_lists = new List();
 
 function getWFPData(wfp_id){
     $.get('/agency/wfp/wfpdetail', {'wfp_id':wfp_id}, function(data){
-	$("#wfp_detail").html(data)
+	$("#wfp_detail").html(data);
     });
 }
 
 function addPhysicalTarget(){
     var count = new Number($('#pi_count').val());
     var pi = $('#pi').val();
-    var q1 = $('#q1').val();
-    var q2 = $('#q2').val();
-    var q3 = $('#q3').val();
-    var q4 = $('#q4').val();
+    var jan = $('#pt_jan').val();
+    var feb = $('#pt_feb').val();
+    var mar = $('#pt_mar').val();
+    var apr = $('#pt_apr').val();
+    var may = $('#pt_may').val();
+    var jun = $('#pt_jun').val();
+    var jul = $('#pt_jul').val();
+    var aug = $('#pt_aug').val();
+    var sept = $('#pt_sept').val();
+    var oct = $('#pt_oct').val();
+    var nov = $('#pt_nov').val();
+    var dec = $('#pt_dec').val();
 
-    if(count==0 && pi!=''){
-	$('#pi-table').css('display', 'block');
-    }
     if(pi!=''){
 	if (pi_lists.found(pi)==false){
 	
 	    pi_lists.add(pi);
 	    $('#pi-table-content').append("<tr id='"+count+"'><td><a href='javascript:removePIRow(\"" + count + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
-					  + "<input type='hidden' name='pis[]' value='" + pi +";"+ q1 +";"+ q2 +";"+ q3 +";"+ q4 +"'/>"
+					  + "<input type='hidden' name='pis[]' value='" + pi + ";" + jan +";"+ feb +";"+ mar +";"+ apr +";"+ may +";"+ jun + ";" + jul + ";" + aug + ";" + sept + ";" + oct + ";" + nov + ";" + dec + "'/>"
 					  + "<td>" + pi 
-					  + "</td><td>" + q1 
-					  + "</td><td>" + q2 
-					  + "</td><td>" + q3 
-					  + "</td><td>" + q4 +"</tr>");
+					  + "</td><td>" + jan 
+					  + "</td><td>" + feb 
+					  + "</td><td>" + mar 
+					  + "</td><td>" + apr 
+					  + "</td><td>" + may 
+					  + "</td><td>" + jun 
+					  + "</td><td>" + jul 
+					  + "</td><td>" + aug 
+					  + "</td><td>" + sept 
+					  + "</td><td>" + oct 
+					  + "</td><td>" + nov 
+					  + "</td><td>" + dec +"</td></tr>");
 	    $('#pi_count').val(count+1);
 	}else{
 	    alert("'"+pi+"' already exist");
@@ -38,9 +51,6 @@ function addPhysicalTarget(){
 function removePIRow(row_id, pi){
     $('#'+row_id).remove();
     var count = new Number($('#pi_count').val());    
-    if ((count-1)==0){
-	$('#pi-table').css('display', 'none');
-    }
     $('#pi_count').val((count-1));
     pi_lists.del(pi);
 }

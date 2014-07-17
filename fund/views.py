@@ -7,7 +7,6 @@ from django.conf.urls.static import static
 from .forms import *
 from rbmo.models import (Agency, 
 WFPData,
-WFPSubmission,
 MPFRSubmission,
 QuarterlyReq,
 QuarterReqSubmission,

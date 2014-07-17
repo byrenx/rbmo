@@ -4,7 +4,7 @@ from django.db import transaction, connection
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from rbmo.models import Agency, WFPData, WFPSubmission, PerformanceTarget, CoRequest
+from rbmo.models import Agency, WFPData, PerformanceTarget, CoRequest
 from django.contrib.auth.models import User
 from .forms import WFPForm, CORequestForm
 from django.contrib.auth import authenticate, login
@@ -86,11 +86,22 @@ def viewWFP(request):
 def getWFPData(request):
     data = {}
     context = RequestContext(request)
-    wfp_id = request.GET.get('wfp_id')
-    wfp = WFPData.objects.get(id=wfp_id)
+    wfp_id  = request.GET.get('wfp_id')
+    q_targets = []
+    wfp     = WFPData.objects.get(id=wfp_id)
     perf_targets = PerformanceTarget.objects.filter(wfp_activity=wfp.id)
+    
+    for target in perf_targets:
+        q_targets.append({'indicator': target.indicator,
+                          'q1'       : target.jan+target.feb+target.mar,
+                          'q2'       : target.apr+target.may+target.jun,
+                          'q3'       : target.jul+target.aug+target.sept,
+                          'q4'       : target.oct+target.nov+target.dec,
+                      })
+
     data['wfp'] = wfp
-    data['perf_targets'] = perf_targets
+    data['perf_targets'] = q_targets
+
     return render_to_response('./wfp/wfp_prog_detail.html', data, context)
 
 
@@ -126,10 +137,18 @@ def saveWFPData(request, wfp_form, year, agency_id):
         pi_info = pi.split(';')
         perf_target = PerformanceTarget(wfp_activity=wfp,
                                         indicator=pi_info[0],
-                                        q1=pi_info[1],
-                                        q2=pi_info[2],
-                                        q3=pi_info[3],
-                                        q4=pi_info[4]
+                                        jan=pi_info[1],
+                                        feb=pi_info[2],
+                                        mar=pi_info[3],
+                                        apr=pi_info[4],
+                                        may=pi_info[5],
+                                        jun=pi_info[6],
+                                        jul=pi_info[7],
+                                        aug=pi_info[8],
+                                        sept=pi_info[9],
+                                        oct=pi_info[10],
+                                        nov=pi_info[11],
+                                        dec=pi_info[12]
         )
         perf_target.save()
         

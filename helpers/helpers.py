@@ -12,29 +12,30 @@ def has_permission(user_id, action, target):
 
 def get_allowed_tabs(user_id):
     tabs=[]
-    if has_permission(user_id, 'view', 'user'):
+    if has_permission(user_id, 'record', 'user'):
         tabs.append({'tag': 'Users', 'link': '/admin/users'})
-    if has_permission(user_id, 'view', 'agency information'):
+    if has_permission(user_id, 'view', 'agency'):
         tabs.append({'tag': 'Agency/Office', 'link': '/admin/agencies'})
     if has_permission(user_id, 'view', 'transaction history'):
         tabs.append({'tag': 'Transaction History', 'link': ''})
     reports = []
-    if has_permission(user_id, 'view', 'status of allotment releases'):
+    if has_permission(user_id, 'print', 'total releases'):
         reports.append({'tag': 'Allotment Releases(PS, MOOE, CO)', 'link': '/admin/allot_releases'})
         reports.append({'tag': 'Total Monthly Release', 'link': '/admin/total_monthly_release'})
-        reports.append({'tag': 'Running Balances', 'link': '/agency/fund/running_balances'})
         reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
-    if has_permission(user_id, 'view', "monthly reports"):
-        reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/admin/agencies_with_compreqs'})
-        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/admin/agencies_with_increqs'})
+    if has_permission(user_id, 'print', "running balances"):
+        reports.append({'tag': 'Running Balances', 'link': '/agency/fund/running_balances'})
+        
     if has_permission(user_id, 'view', "analysis report"):
         pass
-    if has_permission(user_id, 'view', "fund utilization"):
+    if has_permission(user_id, 'print', "fund distribution"):
         reports.append({'tag': 'Local Fund Distribution', 'link': '/admin/fund_distrib'})
-    if has_permission(user_id, 'view', "quarterly report"):
+    if has_permission(user_id, 'view', "quarterly reports"):
        pass
-    if has_permission(user_id, 'view', 'agencies with complete papers'):
-        reports.append({'tag': 'List of Agencies with Complete Documents', 'link': ''})
+    if has_permission(user_id, 'print', 'agencies with complete requirements'):
+        reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/admin/agencies_with_compreqs'})
+    if has_permission(user_id, 'print', 'agencies with incomplete requirements'):
+        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/admin/agencies_with_increqs'})
     tabs.append({'tag':'Reports', 'menus':reports})
     return tabs
             
