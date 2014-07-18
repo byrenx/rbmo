@@ -171,3 +171,41 @@ function updateActivity(){
     });
 }
 
+function delPerfTarget(id, wfp_id){
+    $.get('/agency/wfp/delete_perf_target', {'id': id}, function(rs){
+	rs = new String(rs).trim();
+	if (rs=='Deleted'){
+	    getWFPData(wfp_id);
+	}
+    });
+}
+
+
+/***
+    physical performance target 
+**/
+function addPerfTarget(){
+    data = {'id_wfp' : $('#id_wfp').val(),
+	    'pi' : $('#pi').val(),
+	    'jan' : $('#jan').val(),
+	    'feb' : $('#feb').val(),
+	    'mar' : $('#mar').val(),
+	    'apr' : $('#apr').val(),
+	    'may' : $('#may').val(),
+	    'jun' : $('#jun').val(),
+	    'jul' : $('#jul').val(),
+	    'aug' : $('#aug').val(),
+	    'sept' : $('#sept').val(),
+	    'oct' : $('#oct').val(),
+	    'nov' : $('#nov').val(),
+	    'dec' : $('#dec').val()
+	   }
+    $.get('/agency/wfp/add_performance_target', 
+	  data,
+	  function(rs){
+	      $('#pi_close_modal').click();
+	      getWFPData(data.id_wfp);
+	  }
+	 );
+}
+

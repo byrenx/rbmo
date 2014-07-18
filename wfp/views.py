@@ -92,7 +92,8 @@ def getWFPData(request):
     perf_targets = PerformanceTarget.objects.filter(wfp_activity=wfp.id)
     
     for target in perf_targets:
-        q_targets.append({'indicator': target.indicator,
+        q_targets.append({'id'       : target.id,
+                          'indicator': target.indicator,
                           'q1'       : target.jan+target.feb+target.mar,
                           'q2'       : target.apr+target.may+target.jun,
                           'q3'       : target.jul+target.aug+target.sept,
@@ -301,4 +302,39 @@ def updateActivity(request):
         return HttpResponse(activity);
     except WFPData.DoesNotExist:
         return HttpResponse('Error')
+        
+
+def delPerfTarget(request):
+    try:
+        pi_id = request.GET.get('id')
+        perf_target = PerformanceTarget.objects.get(id=pi_id).delete()
+        return HttpResponse('Deleted')
+    except:
+        return HttpResponse('Error')
+
+def addPerfTarget(request):
+    try:
+        wfp_id = request.GET.get('id_wfp')
+        wfp = WFPData.objects.get(id=wfp_id)
+        perf_target = PerformanceTarget(wfp_activity  = wfp,
+                                        indicator = request.GET.get('pi'),
+                                        jan = request.GET.get('jan', 0),
+                                        feb = request.GET.get('feb', 0),
+                                        mar = request.GET.get('mar', 0),
+                                        apr = request.GET.get('apr', 0),
+                                        may = request.GET.get('may', 0),
+                                        jun = request.GET.get('jun', 0),
+                                        jul = request.GET.get('jul', 0),
+                                        aug = request.GET.get('aug', 0),
+                                        sept = request.GET.get('sept', 0),
+                                        oct = request.GET.get('oct', 0),
+                                        nov = request.GET.get('nov', 0),
+                                        dec = request.GET.get('dec', 0)
+                                    )
+        perf_target.save()
+        return HttpResponse('Added')
+    except WFPData.DoesNotExist:
+        return HttpResponse('Error')
+        
+        
         

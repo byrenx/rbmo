@@ -1,0 +1,78 @@
+<!-- Modal -->
+<div class="modal" id="piModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Physical Performace Target</h4>
+      </div>
+      <form action="javascript:addPerfTarget()" class="form-horizontal">
+	<div class="modal-body">
+	  <input type="hidden" id="id_wfp" name="id_wfp">
+	  <div class="form-group">
+	    <div class="col-sm-12">
+	      <input type="text" id="pi" name="pi" class="form-control" placeholder="Performance Indicator" required="True">
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <label class="col-sm-12">Monthly Physical Target</label>
+	    <div class="col-sm-3">
+	      <input type="number" id="jan" name="jan" class="form-control" placeholder="January" required="True">
+	    </div>
+	    <div class="col-sm-3">
+	      <input type="number" id="feb" name="feb" class="form-control" placeholder="February" required="True">
+	    </div>
+	    <div class="col-sm-3">
+	      <input type="number" id="mar" name="mar" class="form-control" placeholder="March" required="True">
+	    </div>
+	  
+	    <div class="col-sm-3">
+	      <input type="number" id="apr" name="apr" class="form-control" placeholder="April" required="True">
+	    </div>
+	  </div>
+	  
+	  <div class="form-group">
+	    <div class="col-sm-3">
+	      <input type="number" id="may" name="may" class="form-control" placeholder="May" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="jun" name="jun" class="form-control" placeholder="June" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="jul" name="jul" class="form-control" placeholder="July" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="aug" name="aug" class="form-control" placeholder="August" required="True">
+	    </div>
+	  </div>
+
+	  <div class="form-group">
+	    <div class="col-sm-3">
+	      <input type="number" id="sept" name="sept" class="form-control" placeholder="September" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="oct" name="oct" class="form-control" placeholder="October" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="nov" name="nov" class="form-control" placeholder="November" required="True">
+	    </div>
+
+	    <div class="col-sm-3">
+	      <input type="number" id="dec" name="dec" class="form-control" placeholder="December" required="True">
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" id="pi_close_modal" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save changes</button>
+	</div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

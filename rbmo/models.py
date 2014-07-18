@@ -215,6 +215,7 @@ class FundRelease(models.Model):
         db_table = 'fund_release'
 """
 
+#monthly performance and financial report of operation
 class MPFRO(models.Model):
     agency = models.ForeignKey(Agency)
     year = models.IntegerField()

@@ -3,7 +3,12 @@
   <table class="table table-border table-condensed">
     <thead>
       <tr>
-	<th colspan="6">Physical Performance Target</th>
+	<th colspan="6">Physical Performance Target&nbsp;
+	  <a href="" onclick="$('#id_wfp').val({{wfp.id}})" data-toggle="modal" data-target="#piModal">
+	    <span class="glyphicon glyphicon-plus-sign"></span>
+	    Add
+	  </a>
+	</th>
       </tr>
       <tr>
 	<th colspan="2">Performance Indicator</th>
@@ -20,7 +25,7 @@
 	  <a title="Edit">
 	    <span class="glyphicon glyphicon-edit"></span>
 	  </a>&nbsp;
-	  <a title="Delete">
+	  <a href="javascript:delPerfTarget({{target.id}}, {{wfp.id}});" title="Delete">
 	    <span class="glyphicon glyphicon-remove text-danger"></span>
 	  </a>
 	</td>
@@ -150,3 +155,5 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+{%include "./wfp/performance_target_form.html"%}
