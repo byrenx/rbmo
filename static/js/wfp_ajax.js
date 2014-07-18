@@ -203,8 +203,11 @@ function addPerfTarget(){
     $.get('/agency/wfp/add_performance_target', 
 	  data,
 	  function(rs){
-	      $('#pi_close_modal').click();
-	      getWFPData(data.id_wfp);
+	      rs = new String(rs).trim();
+	      if (rs=='Added'){
+		  $('#pi_close_modal').click();
+		  getWFPData(data.id_wfp);
+	      }
 	  }
 	 );
 }

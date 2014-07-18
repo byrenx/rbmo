@@ -734,3 +734,58 @@ def changePass(request):
             return render_to_response('./admin/change_pass.html', data, context)
     else:
         return render_to_response('./admin/change_pass.html', data, context)
+
+
+@login_required(login_url='/admin/')
+@transaction.atomic
+def approvedBudget(request):
+    cursor = connection.cursor()
+    context = RequestContext(request)
+    agencies_app_budget = []
+    total_ps    = 0
+    total_mooe  = 0
+    total_co    = 0
+    grand_total = 0
+    count = 1
+
+    query = '''select agency.*, 
+    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='PS') as ps,
+    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='MOOE') as mooe,
+    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='CO') as co
+    from agency'''
+    year = datetime.today().year
+    if request.method=='POST':
+        year  = reques.POST.get('year')
+    
+    cursor.execute(query, [year, year, year])
+    agencies_budget = dictfetchall(cursor)
+    
+    for agency in agencies_budget:
+        agencies_app_budget.append({
+            'count' : count,
+            'id'    : agency['id'],
+            'name'  : agency['name'],
+            'ps'    : numify(agency['ps']),
+            'mooe'  : numify(agency['mooe']),
+            'co'    : numify(agency['co']),
+            'total' : numify(agency['ps']) + numify(agency['mooe']) + numify(agency['co'])
+        })
+        total_ps   += numify(agency['ps']) 
+        total_mooe += numify(agency['mooe']) 
+        total_co   += numify(agency['co']) 
+        grand_total+= total_ps + total_mooe + total_co 
+        
+    total_budget = {'total_ps'   : total_ps,
+                    'total_mooe' : total_mooe,
+                    'total_co'   : total_co,
+                    'grand_total': grand_total
+                }
+    data ={'year' : year,
+           'agencies_app_budget' : agencies_app_budget,
+           'system_name'     : SYSTEM_NAME,
+           'allowed_tabs'    : get_allowed_tabs(request.user.id),
+           'total_budget'    : total_budget
+    }
+    return render_to_response('./admin/approved_budget.html', data, context)
+    
+        

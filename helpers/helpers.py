@@ -25,6 +25,7 @@ def get_allowed_tabs(user_id):
         reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
     if has_permission(user_id, 'print', "running balances"):
         reports.append({'tag': 'Running Balances', 'link': '/agency/fund/running_balances'})
+        reports.append({'tag': 'Approved Budget', 'link': '/admin/approved_budget'})
         
     if has_permission(user_id, 'view', "analysis report"):
         pass

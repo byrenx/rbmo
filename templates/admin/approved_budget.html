@@ -1,0 +1,72 @@
+{% extends "./admin/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="col-sm-12">
+    <form class="form-inline" ction="/admin/total_monthly_release" method="POST">
+      {% csrf_token %}
+      <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
+	<span class="glyphicon glyphicon-print"></span>
+	Print
+      </a>
+      &nbsp;|&nbsp;
+      <select name="year" class="form-control">
+	{%for year in years%}
+	  <option value="{{year.year}}">{{year.year}}</option>
+	{%endfor%}
+      </select>
+      <button class="btn btn-default">
+	<span class="glyphicon glyphicon-search"></span>
+      </button>
+    </form>
+  </div>
+  </br> </br>
+  <div class="col-sm-12" id="allot_print">
+    
+    {% if agencies_app_budget %}
+    <table border="1" class="table-normal">
+      {%load humanize%}
+      <thead>
+	<tr>
+	  <th class="center" rowspan="4" colspan="2">AGENCY/OFFICE</th>
+	  <th class="center" colspan="4">RLA APPROVED BUDGET MMA ACT NO.306</th>
+	</tr>
+	<tr>
+	  <th class="center" colspan="4">FY {{year}}</th>
+	</tr>
+	<tr>
+	  <th class="decimal">PS</th>
+	  <th class="decimal">MOOE</th>
+	  <th class="decimal">CO</th>
+	  <th class="decimal">Total</th>
+	</tr>
+      </thead>
+      {% for agency in agencies_app_budget%}
+      <tr>
+	<td>{{agency.count}}</td>
+	<td>{{agency.name}}</td>
+	<td class="decimal">{{agency.ps|intcomma}}</td>
+	<td class="decimal">{{agency.mooe|intcomma}}</td>
+	<td class="decimal">{{agency.co|intcomma}}</td>
+	<td class="decimal">{{agency.total|intcomma}}</td>
+      </tr>
+	{% endfor %}
+      <tr>
+	<th colspan="2">Grand Total</th>
+	<th class="decimal">{{total_budget.total_ps|intcomma}}</th>
+	<th class="decimal">{{total_budget.total_mooe|intcomma}}</th>
+	<th class="decimal">{{total_budget.total_co|intcomma}}</th>
+	<th class="decimal">{{total_budget.grand_total|intcomma}}</th>
+      </tr>
+    </table>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+{%block scripts%}
+{%endblock%}
+
