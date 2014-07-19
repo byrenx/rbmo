@@ -1,43 +1,34 @@
 /*group inserts*/
 insert into permissions(action, target) VALUES
-('add', 'agency'),
-('edit', 'agency'),
-('delete', 'agency'), 
-('view', 'agency information'), 
-('view', 'agency submitted documents'), 
-('add', 'agency submitted documents'), 
-('delete', 'agency submitted documents'), 
-('add', 'agency approved budget'), 
-('edit', 'agency approved budget'),
-('delete', 'agency approved budget'), 
-('view', 'agency approved budget'), 
-('add', 'fund request'), 
-('edit', 'fund request'),
-('delete', 'fund request'), 
-('view', 'running balances'), 
-('print', 'running balances'), 
-('view', 'status of allotment releases'),
-('print', 'status of allotment releases'),
-('view', 'total releases'), 
-('print', 'total releases'),
-('view', 'monthly reports'), 
-('print', 'monthly reports'),
-('view', 'quarterly report'),
-('print', 'quarterly report'),
-('view', 'transaction history'),
-('delete', 'transaction history'),
-('view', 'analysis report'), 
-('print', 'analysis report'), 
-('print', 'fund utilization'),
-('view', 'fund utilization'), 
-('add', 'user'), 
-('edit', 'user'), 
-('view', 'user'); 
 
+/*agency access permissions*/       
+('record', 'agency'), /*1 : Admin*/
+('view', 'agency'), /*2 : RO, Beam, Admin*/
+('record', 'agency submitted requirements'),  /*3 : RO, Beam, Admin*/
+('view', 'agency submitted requirements'), /*4 :RO, Beam, Admin*/
+('process', 'monthly cash allocation'), /*5 : Beam*/
+('record', 'monthly report'), /*6 : Beam*/
+('view', 'allotment releases'), /*7 : Beam*/
+('record', 'allotment releases'), /* 8: Beam */
+('view', 'request received'), /*9 : RO, Beam*/
+('record', 'request received'), /*10 : RO*/
+('record', 'wfp'), /*11: Beam*/
+('print', 'comprehensive performance report'), /* 12: Beam*/
 
-/* additional permissions */
+/** General reports : BPAC/BEAM**/
+('print', 'running balances'), /*13*/
+('print', 'total releases'), /*14*/
+('print', 'monthly reports'), /*15*/
+('print', 'quarterly report'), /*16*/
+('print', 'analysis report'), /*17*/
+('print', 'fund distribution'), /*18*/
+('print', 'agencies with complete requirements'), /*19*/
+('print', 'agencies with incomplete requirements'), /*20*/
+('print', 'transaction history'),
 
-
+/*user permissions*/
+('record', 'user'), /*21*/
+('view', 'user'); /*22*/
 
 
 insert into groups(name) VALUES
@@ -49,53 +40,43 @@ insert into groups(name) VALUES
 
 insert into group_perm(group_id, permission_id) VALUES
 /*recording officer*/
+(1, 2),
+(1, 3),
 (1, 4),
-(1, 5),
 (1, 6),
-(1, 11),
-(1, 7),
-(1, 15),
-(1, 16),
-(1, 17),
-(1, 18),
+(1, 9),
+(1, 10),
 (1, 19),
 (1, 20),
-(1, 21),
-(1, 22),
-(1, 23),
-(1, 24),
-(1, 27),
-(1, 28),
 /*BEAM*/
+(2, 1),
+(2, 2),
+(2, 3),
 (2, 4),
 (2, 5),
+(2, 6),
+(2, 7),
 (2, 8),
 (2, 9),
 (2, 10),
 (2, 11),
 (2, 12),
-(1, 13),
-(1, 14),
-(1, 15),
-(1, 16),
-(1, 17),
-(1, 18),
-(1, 19),
-(1, 20),
-(1, 21),
-(1, 22),
-(1, 23),
-(1, 24),
-(1, 27),
-(1, 28),
+(2, 13),
+(2, 14),
+(2, 15),
+(2, 16),
+(2, 17),
+(2, 18),
+(2, 19),
+(2, 20),
 /*BPAC*/
-(3, 4),
-(3, 5),
-(3, 11),
-(3, 27),
-(3, 28),
-(3, 29),
-(3, 30),
+(3, 18),
+(3, 7),
+(3, 13),
+(3, 14),
+(3, 15),
+(3, 16),
+(3, 17),
 /*administrative director*/
 (4, 1),
 (4, 2),
@@ -118,19 +99,7 @@ insert into group_perm(group_id, permission_id) VALUES
 (4, 19),
 (4, 20),
 (4, 21),
-(4, 22),
-(4, 23),
-(4, 24),
-(4, 25),
-(4, 26),
-(4, 27),
-(4, 28),
-(4, 29),
-(4, 30),
-(4, 31),
-(4, 32),
-(4, 33);
-
+(4, 22);
 
 insert into sector(name) values
 ('Environmental Conservation & Mgt & Human Settlement'),

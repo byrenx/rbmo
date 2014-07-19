@@ -118,6 +118,7 @@ values
 ('Statement of Allotment, Obligation and balances'),
 ('Status of Funds'),
 ('Reports of Detailed Disbursement'),
+('Notice of Fund Transfer'),
 ('Narrative Accomplishment Reports');
 
 

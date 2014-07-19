@@ -78,6 +78,23 @@ DATABASES = {
 }
 '''
 
+#pythonanywhere settings
+'''
+DATABASES = {
+    'default': {
+        
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'byrenx$rbmo',                      
+        # The following settings are not used with sqlite3:
+        'USER': 'byrenx',
+
+        'PASSWORD': 'byREnX++0789',
+        'HOST': 'mysql.server',                      
+        'PORT': '',                   
+    }
+}
+'''
+
 
 #postgre sql settings
 DATABASES = {
