@@ -169,18 +169,30 @@ class WFPData(models.Model):
 class PerformanceTarget(models.Model):
     wfp_activity = models.ForeignKey(WFPData)
     indicator = models.CharField(max_length=45)
-    jan = models.IntegerField()
-    feb = models.IntegerField()
-    mar = models.IntegerField()
-    apr = models.IntegerField()
-    may = models.IntegerField()
-    jun = models.IntegerField()
-    jul = models.IntegerField()
-    aug = models.IntegerField()
-    sept = models.IntegerField()
-    oct = models.IntegerField()
-    nov = models.IntegerField()
-    dec = models.IntegerField()
+    jan = models.IntegerField(default=0)
+    jan_acc = models.IntegerField(default=0)
+    feb = models.IntegerField(default=0)
+    feb_acc = models.IntegerField(default=0)
+    mar = models.IntegerField(default=0)
+    mar_acc = models.IntegerField(default=0)
+    apr = models.IntegerField(default=0)
+    apr_acc = models.IntegerField(default=0)
+    may = models.IntegerField(default=0)
+    may_acc = models.IntegerField(default=0)
+    jun = models.IntegerField(default=0)
+    jun_acc = models.IntegerField(default=0)
+    jul = models.IntegerField(default=0)
+    jul_acc = models.IntegerField(default=0)
+    aug = models.IntegerField(default=0)
+    aug_acc = models.IntegerField(default=0)
+    sept = models.IntegerField(default=0)
+    sept_acc = models.IntegerField(default=0)
+    oct = models.IntegerField(default=0)
+    oct_acc = models.IntegerField(default=0)
+    nov = models.IntegerField(default=0)
+    nov_acc = models.IntegerField(default=0)
+    dec = models.IntegerField(default=0)
+    dec_acc = models.IntegerField(default=0)
 
     class Meta:
         db_table = 'performancetarget'
@@ -198,22 +210,6 @@ class AllotmentReleases(models.Model):
     class Meta:
         db_table = 'allotmentreleases'
 
-"""
-class FundRelease(models.Model):
-    ada = models.IntegerField()
-    agency = models.ForeignKey(Agency)
-    year = models.IntegerField()
-    month = models.IntegerField()
-    date_released = models.IntegerField
-    allocation = models.CharField(max_length=4)
-    amount = models.DecimalField(max_digits=15, decimal_places=2)
-
-    def unicode(self):
-        return unicode(self.ada)
-        
-    class Meta:
-        db_table = 'fund_release'
-"""
 
 #monthly performance and financial report of operation
 class MPFRO(models.Model):
@@ -221,22 +217,12 @@ class MPFRO(models.Model):
     year = models.IntegerField()
     month = models.IntegerField(choices=MONTHS)
     activity = models.OneToOneField(WFPData)
-    allot_receive = models.DecimalField(max_digits=15, decimal_places=2)
+    allot_received = models.DecimalField(max_digits=15, decimal_places=2)
     incurred = models.DecimalField(max_digits=15, decimal_places=2)
     remaining = models.DecimalField(max_digits=15, decimal_places=2)
     remarks = models.CharField(max_length=200)
     class Meta:
         db_table = 'mpfro'
-
-class MPFROAccomplishment(models.Model):
-    mpfro = models.ForeignKey(MPFRO)
-    p_target = models.OneToOneField(PerformanceTarget)
-    target = models.IntegerField()
-    accomplished = models.IntegerField()
-    variance = models.IntegerField()
-    
-    class Meta:
-        db_table = 'mpfro_acc'
 
     
 class FundBalances(models.Model):

@@ -52,7 +52,8 @@ def viewWFP(request):
     data = {'system_name'  : SYSTEM_NAME,
             'agency_id'    : request.GET.get('agency_id'),
             'current_year' : time.strftime('%Y'),
-            'agency_tab'   : 'wfp'
+            'agency_tab'   : 'wfp',
+            'years'        : WFPData.objects.distinct('year')
     }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
     

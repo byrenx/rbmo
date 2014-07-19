@@ -397,6 +397,7 @@ def mpfro(request):
              'agency_id'   : request.GET.get('agency_id'),
              'year'        : request.GET.get('year', time.strftime('%Y')),
              'month'       : request.GET.get('month', time.strftime('%M')),
+             'allowed_tabs': get_allowed_tabs(request.user.id)
     }
     try:
         agency = Agency.objects.get(id=data['agency_id'])
@@ -410,16 +411,19 @@ def mpfro(request):
 def mpfro_form(request):
     context = RequestContext(request)
     data = {'system_name': SYSTEM_NAME,
-            'agency_id'  : request.GET.get('agency_id')
-            
+            'agency_id'  : request.GET.get('agency_id'),
+            'allowed_tabs': get_allowed_tabs(request.user.id)
         }
     if request.method=='POST':
         return HttpResponse('sas')
     else:
         try:
+            year = datetime.today().year
             agency = Agency.objects.get(id=data['agency_id'])
+            activities = WFPData.objects.filter(agency=agency, year=year)
             data['agency'] = agency
-            data['year'] = time.strftime('%Y')
+            data['year'] = year
+            data['activities'] = activities
             return render_to_response('./admin/mpfro_form.html', data, context)
         except Agency.DoesNotExist:
             return HttpResponse('none')
@@ -755,7 +759,7 @@ def approvedBudget(request):
     from agency'''
     year = datetime.today().year
     if request.method=='POST':
-        year  = reques.POST.get('year')
+        year  = request.POST.get('year')
     
     cursor.execute(query, [year, year, year])
     agencies_budget = dictfetchall(cursor)
@@ -780,11 +784,13 @@ def approvedBudget(request):
                     'total_co'   : total_co,
                     'grand_total': grand_total
                 }
+
     data ={'year' : year,
            'agencies_app_budget' : agencies_app_budget,
            'system_name'     : SYSTEM_NAME,
            'allowed_tabs'    : get_allowed_tabs(request.user.id),
-           'total_budget'    : total_budget
+           'total_budget'    : total_budget,
+           'years'           : WFPData.objects.distinct('year')
     }
     return render_to_response('./admin/approved_budget.html', data, context)
     
