@@ -78,11 +78,11 @@
 	      onmouseover="$(this).addClass('info')" 
 	      onmouseout="$(this).removeClass()" style="cursor: pointer">
 	    <td>
-	      <a href="">
+	      <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{mooe.id}})">
 		[Edit]
 	      </a>&nbsp;
 	    </td>
-	    <td >{{mooe.activity}}</td>
+	    <td id="td{{mooe.id}}">{{mooe.activity}}</td>
 	  </tr>
 	  {% endfor %}
     {% endif %}
@@ -90,17 +90,17 @@
     {%if cos%}
 	  <tr><th colspan="2">CO</th></tr>
 	{% for co in cos %}
-	<tr>
+	<tr onclick="getWFPData({{co.id}})" 
+	    onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	  <td>
-	    <a href="">
+	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{co.id}})">
 		<span class="glyphicon glyphicon-edit"></span>
 	      </a>&nbsp;
 	      <a href="">
 		<span class="glyphicon glyphicon-remove text-danger"></span>
 	      </a>&nbsp;
 	  </td>
-	  <td onclick="getWFPData({{co.id}})" 
-	    onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">{{co.activity}}</td>
+	  <td id="td{{co.id}}">{{co.activity}}</td>
 	</tr>
 	{% endfor %}
     {% endif %}
