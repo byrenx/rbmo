@@ -415,7 +415,10 @@ def mpfro_form(request):
             'allowed_tabs': get_allowed_tabs(request.user.id)
         }
     if request.method=='POST':
-        return HttpResponse('sas')
+        year_month = request.POST.get('year_month')
+        activity = request.POST.get('activity')
+        pass
+        
     else:
         try:
             year = datetime.today().year

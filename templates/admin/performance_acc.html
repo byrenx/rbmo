@@ -1,0 +1,29 @@
+<h3>Physical Target</h3>
+<table class="table table-condensed">
+  <tr>
+    <th>
+      Performance Indicator
+    </th>
+
+    <th>
+      Target
+    </th>
+
+    <th>
+      Accomplished
+    </th>
+
+  </tr>
+  {% if perf_targets %}
+  {% for target in perf_targets %}
+  <tr>
+    <td>{{target.indicator}}</td>
+    <td>{{target.target}}</td>
+    <td width="20px">
+      <input type="number" id="td{{target.id}}" name="acc_target" class="form-control" >
+    </td>
+  </tr>
+  {% endfor %}
+  {% endif %}
+</table>
+

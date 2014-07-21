@@ -338,4 +338,78 @@ def addPerfTarget(request):
         return HttpResponse('Error')
         
         
-        
+def getPerformanceAcc(request):
+    context = RequestContext(request)
+    data = {}
+    activity = WFPData.objects.get(id=request.GET.get('activity'))
+    month = request.GET.get('month',datetime.today().month)
+    try:
+        perf_targets = []
+        targets = PerformanceTarget.objects.filter(wfp_activity=activity)
+        for target in targets:
+            month = int(month)
+            if month==1:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.jan
+                                    })
+            elif month==2:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.feb
+                })
+            elif month==3:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.mar
+                })
+            elif month==4:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.apr
+                                 })
+            elif month==5:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.may
+                                 })
+            elif month==6:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.jun
+                                 })
+            elif month==7:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.jul
+                                 })
+            elif month==8:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.aug
+                                 })
+            elif month==9:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.sept
+                                 })
+            elif month==10:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.oct
+                                 })
+            elif month==11:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.nov
+                                 })
+            else:
+                perf_targets.append({'id'       : target.id,
+                                     'indicator': target.indicator,
+                                     'target'   : target.nov
+                                 })
+        data['perf_targets'] = perf_targets
+        return render_to_response('./admin/performance_acc.html', data, context)
+    except PerformanceTarget.DoesNotExist:
+        return render_to_response('./admin/performance_acc.html', data, context)
+
