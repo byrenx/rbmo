@@ -49,6 +49,7 @@ def wfpForm(request):
 @transaction.atomic
 def viewWFP(request):
     context = RequestContext(request)
+    cursor = connection.cursor()
     data = {'system_name'  : SYSTEM_NAME,
             'agency_id'    : request.GET.get('agency_id'),
             'current_year' : time.strftime('%Y'),
@@ -64,24 +65,36 @@ def viewWFP(request):
         year = time.strftime('%Y')
         agency = Agency.objects.get(id=request.GET.get('agency_id'))
 
-    query = '''
-    select * from wfp_data
-    where allocation=%s and agency_id=%s and year=%s
-    '''
-
+    data['pss'] = getProgActs('PS', agency, year)
+    data['mooes'] = getProgActs('MOOE', agency, year)
+    data['cos'] = getProgActs('CO', agency, year)
     data['year'] = year
     data['agency'] = agency
-    """
-    try:
-        data['wfp_submit'] = WFPSubmission.objects.get(year=year, agency=agency)
-    except WFPSubmission.DoesNotExist:
-        pass
-    """
-    data['pss'] = WFPData.objects.raw(query, ['PS', agency.id, year])
-    data['mooes'] = WFPData.objects.raw(query, ['MOOE', agency.id, year])
-    data['cos'] = WFPData.objects.raw(query, ['CO', agency.id, year])
+
     return render_to_response('./wfp/agency_wfp_info.html', data, context)
     
+
+def getProgActs(allocation, agency, year):
+    cursor = connection.cursor()
+    query = '''
+    select distinct(program) from wfp_data
+    where allocation=%s and agency_id=%s and year=%s
+    '''
+    cursor.execute(query, [allocation, agency.id, year])
+    prog_acts = []
+    maj_prog = cursor.fetchall()
+    for prog in maj_prog:
+        acts = []
+        activities = WFPData.objects.filter(agency=agency, allocation=allocation , year=year, program=prog[0])
+        for act in activities:
+            acts.append({'id' : act.id,
+                         'activity' : act.activity
+                     })
+        prog_acts.append({'prog' : prog[0],
+                    'acts' : acts
+                })
+    return prog_acts
+
 
 @transaction.atomic
 def getWFPData(request):
@@ -114,6 +127,7 @@ helper functions
 def saveWFPData(request, wfp_form, year, agency_id):
     wfp = WFPData(
         year = year,
+        program = wfp_form.cleaned_data['program'],
         activity = wfp_form.cleaned_data['activity'],
         allocation = request.POST.get('allocation'),
         agency = Agency.objects.get(id=agency_id),

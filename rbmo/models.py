@@ -9,6 +9,10 @@ ALLOCATION = (('PS', 'Personnel Services'),
               ('MOOE', 'Maintenance and Operating Services'),
               ('CO', 'Capital Outlay'))
 
+PROG = (('GASS', 'General Administration and Support Services'),
+        ('SO', 'Support to Operations'),
+        ('O', 'Operations'))
+
 class Permissions(models.Model):
     action = models.CharField(max_length=10)
     target = models.CharField(max_length=45)
@@ -139,9 +143,10 @@ class BudgetProposal(models.Model):
 
 class WFPData(models.Model):
     year = models.IntegerField()
+    program = models.CharField(max_length = 100)
     activity = models.CharField(max_length = 200)
     agency = models.ForeignKey(Agency)
-    allocation = models.CharField(max_length='4', choices=ALLOCATION)
+    allocation = models.CharField(max_length=4, choices=ALLOCATION)
     jan = models.DecimalField(max_digits = 12, decimal_places = 2)
     feb = models.DecimalField(max_digits = 12, decimal_places = 2)
     mar = models.DecimalField(max_digits = 12, decimal_places = 2)

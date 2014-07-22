@@ -2,6 +2,15 @@ from django import forms
 from rbmo.models  import WFPData, CoRequest
 
 class WFPForm(forms.ModelForm):
+    PROG = (('General Administration and Support Services', 'General Administration and Support Services'),
+            ('Support to Operations', 'Support to Operations'),
+            ('Operations', 'Operations'),
+    )
+    program = forms.ChoiceField(choices=PROG,
+                                widget = forms.Select(attrs={
+                                    'class': 'form-control'
+                                })
+    )
     activity = forms.CharField(widget=forms.TextInput(attrs={
         'class' : 'form-control',
         'required' : 'True'
@@ -70,7 +79,7 @@ class WFPForm(forms.ModelForm):
 
     class Meta:
         model = WFPData
-        fields = ['activity', 'jan', 'feb', 'mar', 'apr', 'may', 'jun',
+        fields = ['program','activity', 'jan', 'feb', 'mar', 'apr', 'may', 'jun',
                   'jul', 'aug', 'sept', 'oct', 'nov', 'dec']
 
 

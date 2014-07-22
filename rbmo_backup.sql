@@ -907,6 +907,7 @@ DROP TABLE IF EXISTS `wfp_data`;
 CREATE TABLE `wfp_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `year` int(11) NOT NULL,
+  `program` varchar(10) NOT NULL,
   `activity` varchar(200) NOT NULL,
   `agency_id` int(11) NOT NULL,
   `allocation` varchar(4) NOT NULL,
