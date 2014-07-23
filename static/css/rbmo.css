@@ -47,3 +47,16 @@ tr.header-g{
 .table-normal th.center{
    text-align: center;
 }
+
+input.int{
+    width: 100px;
+}
+
+div.input-group{
+    background-color: rgb(203,203,203);
+}
+
+.header{
+    background-color: rgba(203,203,203, 0.5);
+    padding: 10px;
+}

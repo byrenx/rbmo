@@ -18,6 +18,7 @@
 {% block right-content %}
 <div class="col-sm-9">
   <h3>Work and Financial Plan Form</h3>
+  <hr/>
   {% include "msg_pane.html" %}
   <form action="/agency/wfp/wfp_form" role="form" method="POST" class="form-horizontal">{% csrf_token %}
     <div class="form-group">
@@ -25,26 +26,25 @@
       <label class="col-sm-3">Year</label>
       <div class="col-sm-9">
 	<input type="hidden" name="year" value="{{current_year}}">
-	<span style="font-size:20px">
-	{{current_year}}
-	</span>
+	  <span style="font-size:20px">
+	    {{current_year}}
+	  </span>
       </div>
     </div>
-
+    
     <div class="form-group">
-      <label class="col-sm-3">Major Program</label>
-      <div class="col-sm-9">
-	{{form.program}}
-      </div>
+	<label class="col-sm-3">Major Program</label>
+	<div class="col-sm-9">
+	  {{form.program}}
+	</div>
     </div>
-
+    
     <div class="form-group">
       <label class="col-sm-3">Activity</label>
       <div class="col-sm-9">
-	{{form.activity}}
+	    {{form.activity}}
       </div>
     </div>
-
     <div class="form-group">
       <label class="col-sm-3">Allocation Type</label>
       <div class="col-sm-9">
@@ -55,149 +55,150 @@
 	</select>
       </div>
     </div>
-
-
+    
     <hr/>
-    <h3>Performance Target</h3>
-    <hr/>
-    <h4>Physical Target</h4>
     <div class="form-group">
+      <h4 class="header">Physical Target</h4>
       <div class="col-sm-12">
 	<input type="text" class="form-control" name="pi" id="pi" placeholder="Performance Indicator">
       </div>
-    </div>
-    <!----monhtly physical performance target--->
-    <div class="form-group">
-      <div class="col-sm-2">
-	<input type="number" id="pt_jan" name="pt_jan" class="form-control" placeholder="January">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_feb" name="pt_feb" class="form-control" placeholder="February">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_mar" name="pt_mar" class="form-control" placeholder="March">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_apr" name="pt_apr" class="form-control" placeholder="April">
-      </div>      
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_may" name="pt_may" class="form-control" placeholder="May">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_jun" name="pt_jun" class="form-control" placeholder="June">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="col-sm-2">
-	<input type="number" id="pt_jul" name="pt_jul" class="form-control" placeholder="July">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_aug" name="pt_aug" class="form-control" placeholder="August">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_sept" name="pt_sept" class="form-control" placeholder="september">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_oct" name="pt_oct" class="form-control" placeholder="October">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_nov" name="pt_nov" class="form-control" placeholder="November">
-      </div>
-
-      <div class="col-sm-2">
-	<input type="number" id="pt_dec" name="pt_dec" class="form-control" placeholder="December">
-      </div>
-    </div>
-
-    <div class="form-group">
-      <div class="col-sm-2">
-	</br>
-	<a href="javascript:addPhysicalTarget()" class="btn btn-default">
-	  <span  class="glyphicon glyphicon-plus-sign"></span>
-	  Add
+      </br></br></br>
+      <!----monhtly physical performance target--->
+      <div class="col-sm-12">
+	<input type="number" id="pt_jan" class="int" name="pt_jan" placeholder="January">
+	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
 	</a>
+	
+	<input type="number" id="pt_feb" class="int" name="pt_feb" placeholder="February">
+	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      
+	
+	<input type="number" id="pt_mar" class="int" name="pt_mar" placeholder="March">
+      	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      
+      
+	<input type="number" id="pt_apr" class="int" name="pt_apr" placeholder="April">
+      	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      
+	
+	<input type="number" id="pt_may" class="int" name="pt_may" placeholder="May">
+  	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>    
+	
+	<input type="number" id="pt_jun" class="int" name="pt_jun" placeholder="June">
+      	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>
+        </br></br>
+	<input type="number" id="pt_jul" class="int" name="pt_jul" placeholder="July">
+	<a href="">
+	<span class="glyphicon glyphicon-step-forward">
+	</a>
+	
+	<input type="number" id="pt_aug" class="int" name="pt_aug" placeholder="August">
+	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      	
+	
+	<input type="number" id="pt_sept" class="int" name="pt_sept" placeholder="september">
+	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>            
+	
+	<input type="number" id="pt_oct" class="int" name="pt_oct" placeholder="October">
+	<a href="">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      
+	
+	<input type="number" id="pt_nov" class="int" name="pt_nov" placeholder="November">
+      <a href="">
+	<span class="glyphicon glyphicon-step-forward">
+      </a>      
+      
+      <input type="number" id="pt_dec" class="int" name="pt_dec" placeholder="December">
+      </div>
+
+      <div class="col-sm-12">
+         </br>
+	 <a href="javascript:addPhysicalTarget()" class="btn btn-default">
+	   <span  class="glyphicon glyphicon-plus-sign"></span>
+	   Add
+	 </a>
+         </br>
+	 <input type="hidden" id="pi_count" name="pi_count" value="0">
+	 <table id="pi-table" class="table table-condensed table-striped">
+	   <thead>
+	     <tr>
+	       <th></th>
+	       <th>Performance Indicator</th>
+	       <th>Jan</th>
+	       <th>Feb</th>
+	       <th>Mar</th>
+	       <th>Apr</th>
+	       <th>May</th>
+	       <th>June</th>
+	       <th>Jul</th>
+	       <th>Aug</th>
+	       <th>Sept</th>
+	       <th>Oct</th>
+	       <th>Nov</th>
+	       <th>Dec</th>
+	     </tr>
+	   </thead>
+	   <tbody id="pi-table-content">
+	   </tbody>
+	 </table>
       </div>
     </div>
-    <div class="col-sm-12">
-      <input type="hidden" id="pi_count" name="pi_count" value="0">
-      <table id="pi-table" class="table table-condensed table-striped">
-	<thead>
-	  <tr>
-	    <th></th>
-	    <th>Performance Indicator</th>
-	    <th>Jan</th>
-	    <th>Feb</th>
-	    <th>Mar</th>
-	    <th>Apr</th>
-	    <th>May</th>
-	    <th>June</th>
-	    <th>Jul</th>
-	    <th>Aug</th>
-	    <th>Sept</th>
-	    <th>Oct</th>
-	    <th>Nov</th>
-	    <th>Dec</th>
-	  </tr>
-	</thead>
-	<tbody id="pi-table-content">
-	</tbody>
-      </table>
-    </div>
-    <div class="col-sm-12">
-      <hr/>
-    </div>
-    <h4>Financial Target</h4>
+
     <div class="form-group">
-      <div class="col-sm-3">
-	<label>January</label>
-	{{form.jan}}
-      </div>
-      <div class="col-sm-3">
-	<label>February</label>
-	{{form.feb}}
-      </div>
-      <div class="col-sm-3">
-	<label>March</label>
+      <h4 class="header">Financial Target</h4>
+
+	<div class="col-sm-3">
+	  <label>January</label>
+	  {{form.jan}}
+	</div>
+	<div class="col-sm-3">
+	  <label>February</label>
+	  {{form.feb}}
+	</div>
+	<div class="col-sm-3">
+	  <label>March</label>
 	{{form.mar}}
+	</div>
+	<div class="col-sm-3">
+	  <label>April</label>
+	  {{form.apr}}
+	</div>
+	<div class="col-sm-3">
+	  <label>May</label>
+	  {{form.may}}
       </div>
-      <div class="col-sm-3">
-	<label>April</label>
-	{{form.apr}}
+	<div class="col-sm-3">
+	  <label>June</label>
+	  {{form.jun}}
+	</div>
+	<div class="col-sm-3">
+	  <label>July</label>
+	  {{form.jul}}
+	</div>
+	<div class="col-sm-3">
+	  <label>August</label>
+	  {{form.aug}}
       </div>
-      <div class="col-sm-3">
-	<label>May</label>
-	{{form.may}}
-      </div>
-      <div class="col-sm-3">
-	<label>June</label>
-	{{form.jun}}
-      </div>
-      <div class="col-sm-3">
-	<label>July</label>
-	{{form.jul}}
-      </div>
-      <div class="col-sm-3">
-	<label>August</label>
-	{{form.aug}}
-      </div>
-      <div class="col-sm-3">
-	<label>September</label>
-	{{form.sept}}
-      </div>
-      <div class="col-sm-3">
-	<label>October</label>
-	{{form.oct}}
-      </div>
+	<div class="col-sm-3">
+	  <label>September</label>
+	  {{form.sept}}
+	</div>
+	<div class="col-sm-3">
+	  <label>October</label>
+	  {{form.oct}}
+	</div>
       <div class="col-sm-3">
 	<label>November</label>
 	{{form.nov}}
@@ -206,14 +207,15 @@
 	<label>December</label>
 	{{form.dec}}
       </div>
+      </br></br>
     </div>
     <div class="form-group">
       <div class="col-sm-12">
-	<button class="btn btn-success" style="width:100%">Save</button>
+	<button class="btn btn-primary" style="width:100%">Save</button>
       </div>
     </div>
   </form>
-</div>
+  </div>
 {% endblock %}
 {%block scripts%}
 <script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
