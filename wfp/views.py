@@ -54,7 +54,7 @@ def viewWFP(request):
             'agency_id'    : request.GET.get('agency_id'),
             'current_year' : time.strftime('%Y'),
             'agency_tab'   : 'wfp',
-            'years'        : WFPData.objects.distinct('year')
+            'years'        : getYears(request.GET.get('agency_id'))
     }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
     
@@ -72,7 +72,12 @@ def viewWFP(request):
     data['agency'] = agency
 
     return render_to_response('./wfp/agency_wfp_info.html', data, context)
-    
+
+def getYears(agency_id):
+    cursor = connection.cursor()
+    query = '''select distinct(year) from wfp_data where agency_id=%s'''
+    cursor.execute(query, [agency_id])
+    return dictfetchall(cursor)
 
 def getProgActs(allocation, agency, year):
     cursor = connection.cursor()
