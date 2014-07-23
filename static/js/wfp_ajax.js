@@ -9,18 +9,18 @@ function getWFPData(wfp_id){
 function addPhysicalTarget(){
     var count = new Number($('#pi_count').val());
     var pi = $('#pi').val();
-    var jan = $('#pt_jan').val();
-    var feb = $('#pt_feb').val();
-    var mar = $('#pt_mar').val();
-    var apr = $('#pt_apr').val();
-    var may = $('#pt_may').val();
-    var jun = $('#pt_jun').val();
-    var jul = $('#pt_jul').val();
-    var aug = $('#pt_aug').val();
-    var sept = $('#pt_sept').val();
-    var oct = $('#pt_oct').val();
-    var nov = $('#pt_nov').val();
-    var dec = $('#pt_dec').val();
+    var jan = ($('#pt1').val()==""? 0: $('#pt1').val());
+    var feb = ($('#pt2').val()==""? 0: $('#pt2').val());
+    var mar = ($('#pt3').val()==""? 0: $('#pt3').val());
+    var apr = ($('#pt4').val()==""? 0: $('#pt4').val());
+    var may = ($('#pt5').val()==""? 0: $('#pt5').val());
+    var jun = ($('#pt6').val()==""? 0: $('#pt6').val());
+    var jul = ($('#pt7').val()==""? 0: $('#pt7').val());
+    var aug = ($('#pt8').val()==""? 0: $('#pt8').val());
+    var sept = ($('#pt9').val()==""? 0: $('#pt9').val());
+    var oct = ($('#pt10').val()==""? 0: $('#pt10').val());
+    var nov = ($('#pt11').val()==""? 0: $('#pt11').val());
+    var dec = ($('#pt12').val()==""? 0: $('#pt12').val());
 
     if(pi!=''){
 	if (pi_lists.found(pi)==false){
@@ -187,18 +187,18 @@ function delPerfTarget(id, wfp_id){
 function addPerfTarget(){
     data = {'id_wfp' : $('#id_wfp').val(),
 	    'pi' : $('#pi').val(),
-	    'jan' : $('#jan').val(),
-	    'feb' : $('#feb').val(),
-	    'mar' : $('#mar').val(),
-	    'apr' : $('#apr').val(),
-	    'may' : $('#may').val(),
-	    'jun' : $('#jun').val(),
-	    'jul' : $('#jul').val(),
-	    'aug' : $('#aug').val(),
-	    'sept' : $('#sept').val(),
-	    'oct' : $('#oct').val(),
-	    'nov' : $('#nov').val(),
-	    'dec' : $('#dec').val()
+	    'jan' : ($('#jan').val()==""? 0: $('#jan').val()),
+	    'feb' : ($('#feb').val()==""? 0: $('#feb').val()),
+	    'mar' : ($('#mar').val()==""? 0: $('#mar').val()),
+	    'apr' : ($('#apr').val()==""? 0: $('#apr').val()),
+	    'may' : ($('#may').val()==""? 0: $('#may').val()),
+	    'jun' : ($('#jun').val()==""? 0: $('#jun').val()),
+	    'jul' : ($('#jul').val()==""? 0: $('#jul').val()),
+	    'aug' : ($('#aug').val()==""? 0: $('#aug').val()),
+	    'sept' : ($('#sept').val()==""? 0: $('#sept').val()),
+	    'oct' : ($('#oct').val()==""? 0: $('#oct').val()),
+	    'nov' : ($('#nov').val()==""? 0: $('#nov').val()),
+	    'dec' : ($('#dec').val()==""? 0: $('#dec').val())
 	   }
     $.get('/agency/wfp/add_performance_target', 
 	  data,
@@ -228,3 +228,22 @@ function getPerformanceTarget(){
 }
 
 
+function fillPhsTarget(month){
+    month = new Number(month);
+    var cur_val = $('#pt'+month).val();
+    for(var i = month+1; i<=12; i++){
+	$('#pt'+i).val(cur_val);
+    }
+}
+
+function fillFinTarget(month){
+    var months = ['id_jan','id_feb','id_mar','id_apr','id_may',
+		  'id_jun','id_jul','id_aug','id_sept','id_oct',
+		  'id_nov','id_dec'
+		 ]
+    month = new Number(month)-1;
+    var cur_val = $('#'+months[month]).val();
+    for(var i = month+1; i<=12; i++){
+	$('#'+months[i]).val(cur_val);
+    }
+}

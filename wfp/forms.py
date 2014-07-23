@@ -12,67 +12,55 @@ class WFPForm(forms.ModelForm):
                                 })
     )
     activity = forms.CharField(widget=forms.TextInput(attrs={
-        'class' : 'form-control',
-        'required' : 'True'
+        'required' : 'True',
+        'class'    : 'form-control'
     }))
 
     jan = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     feb = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     mar = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     apr = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     may = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     jun = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     jul = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     aug = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     sept = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     oct = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     nov = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 
     dec = forms.DecimalField(widget=forms.NumberInput(attrs={
-        'class' : 'form-control',
         'value' : '0'
     }))
 

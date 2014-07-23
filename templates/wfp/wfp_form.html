@@ -62,68 +62,93 @@
       <div class="col-sm-12">
 	<input type="text" class="form-control" name="pi" id="pi" placeholder="Performance Indicator">
       </div>
-      </br></br></br>
+      </br></br>
       <!----monhtly physical performance target--->
-      <div class="col-sm-12">
-	<input type="number" id="pt_jan" class="int" name="pt_jan" placeholder="January">
-	<a href="">
+      <div class="col-sm-3">
+	<label>January</label>
+	<input type="number" id="pt1" name="pt_jan" value="0">
+	<a href="javascript:fillPhsTarget(1)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>
-	
-	<input type="number" id="pt_feb" class="int" name="pt_feb" placeholder="February">
-	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>February</label>
+	<input type="number" id="pt2" name="pt_feb" value="0">
+	<a href="javascript:fillPhsTarget(2)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>      
+      </div>
 	
-	<input type="number" id="pt_mar" class="int" name="pt_mar" placeholder="March">
-      	<a href="">
+      <div class="col-sm-3">
+	<label>March</label>
+	<input type="number" id="pt3" name="pt_mar" value="0">
+      	<a href="javascript:fillPhsTarget(3)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>      
+      </div>
       
-	<input type="number" id="pt_apr" class="int" name="pt_apr" placeholder="April">
-      	<a href="">
+      <div class="col-sm-3">
+	<label>April</label>
+	<input type="number" id="pt4" name="pt_apr" value="0">
+      	<a href="javascript:fillPhsTarget(4)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>      
-	
-	<input type="number" id="pt_may" class="int" name="pt_may" placeholder="May">
-  	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>May</label>
+	<input type="number" id="pt5" name="pt_may" value="0">
+  	<a href="javascript:fillPhsTarget(5)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>    
-	
-	<input type="number" id="pt_jun" class="int" name="pt_jun" placeholder="June">
-      	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>June</label>
+	<input type="number" id="pt6" name="pt_jun" value="0">
+      	<a href="javascript:fillPhsTarget(6)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>
-        </br></br>
-	<input type="number" id="pt_jul" class="int" name="pt_jul" placeholder="July">
-	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>July</label>
+	<input type="number" id="pt7" name="pt_jul" value="0">
+	<a href="javascript:fillPhsTarget(7)">
 	<span class="glyphicon glyphicon-step-forward">
 	</a>
-	
-	<input type="number" id="pt_aug" class="int" name="pt_aug" placeholder="August">
-	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>August</label>
+	<input type="number" id="pt8" name="pt_aug" value="0">
+	<a href="javascript:fillPhsTarget(8)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>      	
-	
-	<input type="number" id="pt_sept" class="int" name="pt_sept" placeholder="september">
-	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>September</label>
+	<input type="number" id="pt9" name="pt_sept" value="0">
+	<a href="javascript:fillPhsTarget(9)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>            
-	
-	<input type="number" id="pt_oct" class="int" name="pt_oct" placeholder="October">
-	<a href="">
+      </div>
+      <div class="col-sm-3">
+	<label>October</label>
+	<input type="number" id="pt10" name="pt_oct" value="0">
+	<a href="javascript:fillPhsTarget(10)">
 	  <span class="glyphicon glyphicon-step-forward">
 	</a>      
-	
-	<input type="number" id="pt_nov" class="int" name="pt_nov" placeholder="November">
-      <a href="">
-	<span class="glyphicon glyphicon-step-forward">
-      </a>      
-      
-      <input type="number" id="pt_dec" class="int" name="pt_dec" placeholder="December">
       </div>
-
-      <div class="col-sm-12">
+      <div class="col-sm-3">
+	<label>November</label>
+	<input type="number" id="pt11" name="pt_nov" value="0">
+	<a href="11">
+	  <span class="glyphicon glyphicon-step-forward">
+	</a>      
+      </div>
+      <div class="col-sm-3">
+	<label>December</label>
+	<input type="number" id="pt12" name="pt_dec" value="0">
+      </div>
+	
+	<div class="col-sm-12">
          </br>
 	 <a href="javascript:addPhysicalTarget()" class="btn btn-default">
 	   <span  class="glyphicon glyphicon-plus-sign"></span>
@@ -162,50 +187,86 @@
 	<div class="col-sm-3">
 	  <label>January</label>
 	  {{form.jan}}
+	  <a href="javascript:fillFinTarget(1)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>      
 	</div>
 	<div class="col-sm-3">
 	  <label>February</label>
 	  {{form.feb}}
+	  <a href="javascript:fillFinTarget(2)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>March</label>
-	{{form.mar}}
+         	{{form.mar}}
+	  <a href="javascript:fillFinTarget(3)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>April</label>
 	  {{form.apr}}
+	  <a href="javascript:fillPhsTarget(4)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>May</label>
 	  {{form.may}}
-      </div>
+	  <a href="javascript:fillPhsTarget(5)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
+	</div>
 	<div class="col-sm-3">
 	  <label>June</label>
 	  {{form.jun}}
+	  <a href="javascript:fillPhsTarget(6)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>July</label>
 	  {{form.jul}}
+	  <a href="javascript:fillPhsTarget(7)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>August</label>
 	  {{form.aug}}
+	  <a href="javascript:fillPhsTarget(8)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
       </div>
 	<div class="col-sm-3">
 	  <label>September</label>
 	  {{form.sept}}
+	  <a href="javascript:fillPhsTarget(9)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
 	<div class="col-sm-3">
 	  <label>October</label>
 	  {{form.oct}}
+	  <a href="javascript:fillPhsTarget(10)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
 	</div>
       <div class="col-sm-3">
 	<label>November</label>
 	{{form.nov}}
+	<a href="javascript:fillPhsTarget(11)">
+	    <span class="glyphicon glyphicon-step-forward">
+	  </a>
       </div>
       <div class="col-sm-3">
 	<label>December</label>
 	{{form.dec}}
+	<a href="javascript:fillPhsTarget(12)">
+	    <span class="glyphicon glyphicon-step-forward">
+	</a>
       </div>
       </br></br>
     </div>
