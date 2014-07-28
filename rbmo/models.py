@@ -100,8 +100,7 @@ class Notification(models.Model):
 
 class COSSubmission(models.Model):
     agency = models.ForeignKey(Agency)
-    date_submitted = models.DateTimeField()
-    
+    date_submitted = models.DateTimeField()    
     
     class Meta:
         db_table = 'cos_submission'
@@ -207,6 +206,7 @@ class AllotmentReleases(models.Model):
     date_release = models.DateField()
     month = models.IntegerField(choices=MONTHS)
     amount_release = models.DecimalField(max_digits=15, decimal_places=2)
+    user = models.ForeignKey(User)
 
     class Meta:
         db_table = 'allotmentreleases'
@@ -237,24 +237,15 @@ class FundBalances(models.Model):
         db_table = 'fund_balances'
 
 
-class MPFRSubmission(models.Model):
+class MonthlyReqSubmitted(models.Model):
     year = models.IntegerField()
-    agency = models.ForeignKey(Agency)
-    jan = models.DateField(null=True)
-    feb = models.DateField(null=True)
-    mar = models.DateField(null=True)
-    apr = models.DateField(null=True)
-    may = models.DateField(null=True)
-    jun = models.DateField(null=True)
-    jul = models.DateField(null=True)
-    aug = models.DateField(null=True)
-    sept = models.DateField(null=True)
-    oct = models.DateField(null=True)
-    nov = models.DateField(null=True)
-    dec = models.DateField(null=True)
-
+    agency = models.ForeignKsy(Agency)
+    date_submitted = models.DateTimeField()
+    month = models.IntegerField()
+    user = models.ForeignKey(User)
+    
     class Meta:
-        db_table = 'mpfr_submission'
+        db_table = 'monthly_req_submitted'
 
 
 class QuarterlyReq(models.Model):
@@ -269,9 +260,10 @@ class QuarterReqSubmission(models.Model):
     year = models.IntegerField()
     quarter = models.IntegerField()
     date_submitted = models.DateField()
+    user = models.ForeignKey(User)
 
     class Meta:
-        db_table = 'quarter_req_submit'
+        db_table = 'quarter_req_submitted'
     
 
 class CoRequest(models.Model):
@@ -280,6 +272,7 @@ class CoRequest(models.Model):
     subject = models.CharField(max_length=100)
     action = models.CharField(max_length=100)
     status = models.CharField(max_length=150)
+    user = models.ForeignKey(User)
 
     class Meta:
         db_table = 'co_request'
