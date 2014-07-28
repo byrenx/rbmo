@@ -7,6 +7,10 @@ MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'),
           (10, 'October'), (11, 'November'), (12, 'December'))
 
 
+MONTHS2 = (('jan', 'January'), ('feb', 'February'), ('mar', 'March'), ('apr', 'April'), 
+          ('may', 'May'), ('jun', 'June'), ('jul', 'July'), ('aug', 'August'), ('sept', 'September'),
+          ('oct', 'October'), ('nov', 'November'), ('dec', 'December'))
+
 class UserForm(forms.ModelForm):
     email = forms.EmailField(max_length=100,
                                widget = forms.TextInput(attrs={

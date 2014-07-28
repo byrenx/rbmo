@@ -18,6 +18,9 @@ def get_allowed_tabs(user_id):
         tabs.append({'tag': 'Agency/Office', 'link': '/admin/agencies'})
     if has_permission(user_id, 'view', 'transaction history'):
         tabs.append({'tag': 'Transaction History', 'link': ''})
+    if has_permission(user_id, 'process', 'monthly cash allocation'):
+        tabs.append({'tag': 'SMCA', 'link': '/admin/smca'})
+
     reports = []
     if has_permission(user_id, 'print', 'total releases'):
         reports.append({'tag': 'Allotment Releases(PS, MOOE, CO)', 'link': '/admin/allot_releases'})
@@ -63,3 +66,20 @@ def dictfetchall(cursor):
         for row in cursor.fetchall()
     ]
 
+
+def quarterofMonth(month):
+    '''
+    month -> int
+    postcondition:
+    return on what quarter the month belongs
+    '''
+    if month>=1 and month<=3:
+        return 4
+    elif month>=4 and month<=6:
+        return 1
+    elif month>=7 and month<=9:
+        return 2
+    elif month>=10 and month<=12:
+        return 3
+    else:
+        return -1

@@ -798,4 +798,34 @@ def approvedBudget(request):
     return render_to_response('./admin/approved_budget.html', data, context)
     
 
-        
+def smca(request):#schedule of monthly cash allocation
+    context = RequestContext(request)
+    cursor = connection.cursor()
+    data = {'system_name' : SYSTEM_NAME,
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'month_select': MonthForm({'month' : datetime.today().month}),
+            'cur_date'    : datetime.today(),
+            'year'        : datetime.today().year,
+            'month'       : datetime.today().month
+    }
+
+    if request.method=='POST':
+        data['month'] = request.POST.get('month')
+        data['year']  = request.POST.get('year')
+
+    quarter = quarterofMonth(data['month'])
+    if quarter == 4:
+        data['year'] -= 1
+    print quarter
+    
+    query = "select agency.* , (select sum("+ months[data['month']-2] +") \
+    from wfp_data where year=%s and agency_id=agency.id) as amount from agency, mpfr_submission\
+    where \
+    (select count(*) from quarterly_req)=(select count(*) from quarter_req_submit where year=%s and quarter=%s and agency_id=agency.id) \
+    and mpfr_submission.agency_id=agency.id group by agency.id"
+
+    cursor.execute(query, [data['year'], data['year'], quarter])
+    data['agencies'] = dictfetchall(cursor)
+    
+    return render_to_response('./admin/smca.html', data, context)
+
