@@ -118,4 +118,4 @@ class ChangePassForm(forms.Form):
                  'required' : 'True'
              }
     ))
-
+    

@@ -20,7 +20,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import *
-from fund.views import isMRS, is_allQRS, lqm
+from fund.views import isMRS, is_allQRS, lqm, getReleaseAmount
+from fund.forms import MCASearchForm
 from datetime import datetime, date
 from decimal import *
 import time
@@ -792,7 +793,7 @@ def smca(request):#schedule of monthly cash allocation
     cursor = connection.cursor()
     data = {'system_name' : SYSTEM_NAME,
             'allowed_tabs': get_allowed_tabs(request.user.id),
-            'month_select': MonthForm({'month' : datetime.today().month}),
+            'search_form' : MCASearchForm({'month' : datetime.today().month}),
             'cur_date'    : datetime.today(),
             'year'        : datetime.today().year,
             'month'       : datetime.today().month,
@@ -805,7 +806,7 @@ def smca(request):#schedule of monthly cash allocation
 
     if request.method=='POST':
         data['month'] = int(request.POST.get('month'))
-        data['year']  = request.POST.get('year')
+        data['year']  = int(request.POST.get('year'))
         data['allocation'] = request.POST.get('allocation')
 
     quarter = quarterofMonth(data['month'])
@@ -821,11 +822,15 @@ def smca(request):#schedule of monthly cash allocation
         where \
         (select count(*) from quarterly_req)=(select count(*) from quarter_req_submitted where year=%s and quarter=%s and agency_id=agency.id) \
         and monthly_req_submitted.agency_id=agency.id and month=%s group by agency.id"
-        cursor.execute(query, data['allocation'],[data['year'], data['year'], quarter, month])
+        cursor.execute(query, [data['year'], data['allocation'], data['year'], quarter, data['month']])
         data['agencies'] = dictfetchall(cursor)
     else:
-        pass
+        query = "select agency.* , (select sum("+ months[data['month']-2] +") \
+        from wfp_data where year=%s and agency_id=agency.id and allocation=%s) as amount from agency"
+        cursor.execute(query, [data['year'], data['allocation']])
+        data['agencies'] = dictfetchall(cursor)
         
-
     return render_to_response('./admin/smca.html', data, context)
+
+
 
