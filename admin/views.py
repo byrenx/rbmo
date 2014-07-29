@@ -276,6 +276,7 @@ def manageAgencyDocs(request):
         data['agency'] = agency
         #year
         data['monthly'] = getAgencyMonthlyReq(data['year'], agency)
+        print data['monthly']
         data['quarterly'] = QuarterlyReq.objects.all()
         data['q1_req_s'] = getSumittedQReq(data['year'], agency, 1) #1st quarter submitted requirements
         data['q2_req_s'] = getSumittedQReq(data['year'], agency, 2) #2nd quarter submitted requirements
@@ -300,64 +301,35 @@ def submitMPFR(request):
     agency_id = request.POST.get('agency_id')
     year = request.POST.get('year')
     agency = Agency.objects.get(id=agency_id)
-    #monthly physical and financial report
-
-    try:
-        monthlyReq = MPFRSubmission.objects.get(year=year, agency=agency)
-    except MPFRSubmission.DoesNotExist:
-        monthlyReq = MPFRSubmission(year = year,
-                                    agency = agency
-        )
-        
     months = request.POST.getlist('month[]')
+    
     for month in months:
-        if month == '1':
-            monthlyReq.jan = datetime.now()
-        elif month == '2':
-            monthlyReq.feb = datetime.now()
-        elif month == '3':
-            monthlyReq.mar = datetime.now()
-        elif month == '4':
-            monthlyReq.apr = datetime.now()
-        elif month == '5':
-            monthlyReq.may = datetime.now()
-        elif month == '6':
-            monthlyReq.jun = datetime.now()
-        elif month == '7':
-            monthlyReq.jul = datetime.now()
-        elif month == '8':
-            monthlyReq.aug = datetime.now()
-        elif month == '9':
-            monthlyReq.sept = datetime.now()
-        elif month == '10':
-            monthlyReq.oct = datetime.now()
-        elif month == '11':
-            monthlyReq.nov = datetime.now()
-        else:
-            monthlyReq.dec = datetime.now()
-        monthlyReq.save()
+        monthly_req_submit = MonthlyReqSubmitted(year=year,
+                                                 agency = agency,
+                                                 date_submitted = datetime.today(),
+                                                 month = month,
+                                                 user = request.user
+        )
+        monthly_req_submit.save()
     return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
 
 def getAgencyMonthlyReq(year, agency):
     try:
-        submitted = MonthlyReqSubmitted.objects.get(year=year, agency=agency).order_by('+month')
-        req_submitted = []
+        submitted = MonthlyReqSubmitted.objects.filter(year=year, agency=agency).order_by('month')
+        req_submitted = {}
         for i in range(1, 13):
             found = 0
             for submit in submitted:
                 if i==submit.month:
-                    req_submitted.append({
-                        'month'  : i,
-                        'status' : 'ok',
-                        'date_submitted' : submit.date_submitted,
-                        'receiver' : submit.user.first_name + ' ' + submit.user.last_name
-                    })
+                    req_submitted[i] = {'status' : 'ok',
+                                        'date_submitted' : submit.date_submitted,
+                                        'receiver' : submit.user.first_name + ' ' + submit.user.last_name}                        
                     found=1
                     break
             if found==0:
-                req_submitted.append({'status': 'none'})
+                req_submitted[i] = {'status': 'none'}
             
-        return req_submiited
+        return req_submitted
     except MonthlyReqSubmitted.DoesNotExist:
         return None
 
@@ -460,7 +432,8 @@ def submitQuarterReq(request):
                                               agency = agency,
                                               requirement = QuarterlyReq.objects.get(id=int(quarter[1])),
                                               quarter = int(quarter[0]),
-                                              date_submitted = datetime.now()
+                                              date_submitted = datetime.now(),
+                                              user = request.user
                                           )
         quarter_submit.save()
 
@@ -822,12 +795,14 @@ def smca(request):#schedule of monthly cash allocation
             'month_select': MonthForm({'month' : datetime.today().month}),
             'cur_date'    : datetime.today(),
             'year'        : datetime.today().year,
-            'month'       : datetime.today().month
+            'month'       : datetime.today().month,
+            'allocation'  : 'PS'
     }
 
     if request.method=='POST':
         data['month'] = request.POST.get('month')
         data['year']  = request.POST.get('year')
+        data['allocation'] = request.POST.get('allocation')
 
     quarter = quarterofMonth(data['month'])
     if quarter == 4:
@@ -835,10 +810,10 @@ def smca(request):#schedule of monthly cash allocation
     print quarter
     
     query = "select agency.* , (select sum("+ months[data['month']-2] +") \
-    from wfp_data where year=%s and agency_id=agency.id) as amount from agency, mpfr_submission\
+    from wfp_data where year=%s and agency_id=agency.id) as amount from agency, monthly_req_submitted\
     where \
-    (select count(*) from quarterly_req)=(select count(*) from quarter_req_submit where year=%s and quarter=%s and agency_id=agency.id) \
-    and mpfr_submission.agency_id=agency.id group by agency.id"
+    (select count(*) from quarterly_req)=(select count(*) from quarter_req_submitted where year=%s and quarter=%s and agency_id=agency.id) \
+    and monthly_req_submitted.agency_id=agency.id group by agency.id"
 
     cursor.execute(query, [data['year'], data['year'], quarter])
     data['agencies'] = dictfetchall(cursor)

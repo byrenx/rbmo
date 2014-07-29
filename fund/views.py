@@ -323,7 +323,7 @@ def lqm(year, month, agency): #querying for lacking quarterly requirements
     query = '''
     select * from quarterly_req 
     where id not in 
-    (select requirement_id from quarter_req_submit where year=%s and quarter=%s and agency_id=%s)
+    (select requirement_id from quarter_req_submitted where year=%s and quarter=%s and agency_id=%s)
     '''
     if month<=3:
         cursor.execute(query, [year-1, 4, agency.id])
@@ -343,43 +343,12 @@ def lqm(year, month, agency): #querying for lacking quarterly requirements
 
 def isMRS(year, month, agency):#is requisite month report was submitted
     try:
-        if month == 1:
-            mpfr_subs = MPFRSubmission.objects.get(year=year-1, agency=agency)
-            return mpfr_subs.dec is not None
-        elif month == 2:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.jan is not None
-        elif month == 3:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.feb is not None
-        elif month == 4:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.mar is not None
-        elif month == 5:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.apr is not None
-        elif month == 6:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.may is not None
-        elif month == 7:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.jun is not None
-        elif month == 8:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.jul is not None
-        elif month == 9:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.aug is not None
-        elif month == 10:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.sept is not None
-        elif month == 11:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.oct is not None
-        elif month == 12:
-            mpfr_subs = MPFRSubmission.objects.get(year=year, agency=agency)
-            return mpfr_subs.nov is not None
-    except MPFRSubmission.DoesNotExist:
+        if month==1:
+            monthly_req_submit = MonthlyReqSubmitted.objects.get(year=year-1, month=12, agency=agency)
+        else:
+            monthly_req_submit = MonthlyReqSubmitted.objects.get(year=year, month=month-1, agency=agency)
+        return True
+    except MonthlyReqSubmitted.DoesNotExist:
         return False
 
 

@@ -31,11 +31,12 @@
 
     {%if agencies%}
     <center>
-      <h4>Schedule of Mpnthly Cash Allocation</h4>
+      <h4>Schedule of Monthly Cash Allocation</h4>
       <h5>For the month {{month_str}}-{{year}}</h5>
       <h5>As of {{cur_date}}</h5>
     </center>
       <table class="table-normal">
+	{% load humanize %}
 	<thead>
 	  <caption><b>Total: {{total}} agencie(s)</b></caption>
 	  <tr>
@@ -50,6 +51,7 @@
         <tr>
 	  <td width="30px" align="center"></td>
 	  <td>{{agency.name}}</td>
+	  <td>{{agency.amount|intcomma}}</td>
 	</tr>
         {% endfor %}
       </table>
