@@ -796,11 +796,15 @@ def smca(request):#schedule of monthly cash allocation
             'cur_date'    : datetime.today(),
             'year'        : datetime.today().year,
             'month'       : datetime.today().month,
-            'allocation'  : 'PS'
+            'allocation'  : 'PS',
     }
+    years = []
+    for i in range(2013, datetime.today().year+1):
+        years.append(i)
+    data['years'] = years
 
     if request.method=='POST':
-        data['month'] = request.POST.get('month')
+        data['month'] = int(request.POST.get('month'))
         data['year']  = request.POST.get('year')
         data['allocation'] = request.POST.get('allocation')
 
@@ -809,14 +813,19 @@ def smca(request):#schedule of monthly cash allocation
         data['year'] -= 1
     print quarter
     
-    query = "select agency.* , (select sum("+ months[data['month']-2] +") \
-    from wfp_data where year=%s and agency_id=agency.id) as amount from agency, monthly_req_submitted\
-    where \
-    (select count(*) from quarterly_req)=(select count(*) from quarter_req_submitted where year=%s and quarter=%s and agency_id=agency.id) \
-    and monthly_req_submitted.agency_id=agency.id group by agency.id"
+    if data['allocation']=='PS':
+        pass
+    elif data['allocation'] == 'MOOE':
+        query = "select agency.* , (select sum("+ months[data['month']-2] +") \
+        from wfp_data where year=%s and agency_id=agency.id and allocation=%s) as amount from agency, monthly_req_submitted\
+        where \
+        (select count(*) from quarterly_req)=(select count(*) from quarter_req_submitted where year=%s and quarter=%s and agency_id=agency.id) \
+        and monthly_req_submitted.agency_id=agency.id and month=%s group by agency.id"
+        cursor.execute(query, data['allocation'],[data['year'], data['year'], quarter, month])
+        data['agencies'] = dictfetchall(cursor)
+    else:
+        pass
+        
 
-    cursor.execute(query, [data['year'], data['year'], quarter])
-    data['agencies'] = dictfetchall(cursor)
-    
     return render_to_response('./admin/smca.html', data, context)
 

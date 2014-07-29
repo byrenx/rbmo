@@ -7,7 +7,7 @@
 {% block content %}
 <div class="container">
   <div class="col-sm-7 col-sm-offset-2">
-    <form action="#" class="form-inline" method="POST">{%csrf_token%}
+    <form action="/admin/smca" class="form-inline" method="POST">{%csrf_token%}
       <div class="form-group">
 	<select name="allocation" class="form-control">
 	  <option value="PS">PS</option>
@@ -18,6 +18,14 @@
       <div class="form-group">
 	{{month_select.month}}
       </div>
+      <div class="form-group">
+	<select name="year" class="form-control">
+	  {% for year in years %}
+	  <option values="{{year}}">{{year}}</option>
+	  {% endfor %}
+	</select>
+      </div>
+
       <div class="form-group">
 	<button type="submit" class="btn btn-default">
 	  <span class="glyphicon glyphicon-search"></span>
