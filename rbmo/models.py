@@ -239,7 +239,7 @@ class FundBalances(models.Model):
 
 class MonthlyReqSubmitted(models.Model):
     year = models.IntegerField()
-    agency = models.ForeignKsy(Agency)
+    agency = models.ForeignKey(Agency)
     date_submitted = models.DateTimeField()
     month = models.IntegerField()
     user = models.ForeignKey(User)

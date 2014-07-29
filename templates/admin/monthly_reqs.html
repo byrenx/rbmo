@@ -13,11 +13,11 @@
 	  <tr>
 	    <th>January</th>
 	    <td>
-	      {%if monthly.jan %} 
+	      {%if monthly.status == "ok" %} 
 	      <a href="" id="jan" onmouseover="removeMonthlyReqMode('jan','')" onmouseout="" title="Submitted : {{monthly.jan}}">
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      </a>
-	      &nbsp;{{monthly.jan}}
+	      &nbsp;{{monthly.date_submitted}}
 	      {%else%}
 	      <input type="checkbox" name="month[]" value="1"/>
 	      {%endif%}

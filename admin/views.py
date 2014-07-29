@@ -9,7 +9,7 @@ from rbmo.models import (UserGroup,
                          Groups,
                          Agency,
                          MPFRO, 
-                         MPFRSubmission,
+                         MonthlyReqSubmitted,
                          QuarterlyReq,
                          QuarterReqSubmission,
                          AllotmentReleases,
@@ -340,9 +340,25 @@ def submitMPFR(request):
 
 def getAgencyMonthlyReq(year, agency):
     try:
-        mpfr = MPFRSubmission.objects.get(year=year, agency=agency)
-        return mpfr
-    except MPFRSubmission.DoesNotExist:
+        submitted = MonthlyReqSubmitted.objects.get(year=year, agency=agency).order_by('+month')
+        req_submitted = []
+        for i in range(1, 13):
+            found = 0
+            for submit in submitted:
+                if i==submit.month:
+                    req_submitted.append({
+                        'month'  : i,
+                        'status' : 'ok',
+                        'date_submitted' : submit.date_submitted,
+                        'receiver' : submit.user.first_name + ' ' + submit.user.last_name
+                    })
+                    found=1
+                    break
+            if found==0:
+                req_submitted.append({'status': 'none'})
+            
+        return req_submiited
+    except MonthlyReqSubmitted.DoesNotExist:
         return None
 
 @transaction.atomic
