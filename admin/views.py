@@ -34,6 +34,11 @@ SYSTEM_NAME = 'RBMO Management System'
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
           'jul', 'aug', 'sept', 'oct', 'nov', 'dec' ]
 
+month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
+                  5: 'may_acc', 6: 'jun_acc', 7: 'jul_acc', 8: 'aug_acc',
+                  9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
+}
+
 
 @login_required(login_url='/admin/')
 def submitCOS(request):#submit Contract of Service
@@ -382,18 +387,64 @@ def reqsStats(year):
     return stats_list
 
 
-def mpfro(request):
+
+@login_required(login_url='/admin/')
+@transaction.atomic
+def mpfroReports(request):
     context = RequestContext(request)
+    cursor = connection.cursor()
     data  = {'system_name' : SYSTEM_NAME,
+             'allowed_tabs': get_allowed_tabs(request.user.id),
              'agency_id'   : request.GET.get('agency_id'),
-             'year'        : request.GET.get('year', time.strftime('%Y')),
-             'month'       : request.GET.get('month', time.strftime('%M')),
-             'allowed_tabs': get_allowed_tabs(request.user.id)
+             'year'        : datetime.today().year,
+             'month'       : datetime.today().month,
+             'month_form'  : MonthForm({'month': datetime.today().month})
     }
     try:
-        agency = Agency.objects.get(id=data['agency_id'])
+
+        if request.method=='POST':
+            data['year'] = request.POST.get('year')
+            data['month'] = request.POST.get('month')
+            data['agency_id'] = request.POST.get('agency_id')
+
+        agency = Agency.objects.get(id=data['agency_id'])        
+        perf_accs_query = "select "+months[int(data['month'])]+" as budget, "
+        perf_accs_query+= "wfp_data.activity, "
+        perf_accs_query+= "performance_report.* "
+        perf_accs_query+= "from performance_report inner join wfp_data on "
+        perf_accs_query+= "wfp_data.id = performance_report.activity_id "
+        perf_accs_query+= "and wfp_data.agency_id = %s "
+        perf_accs_query+= "and performance_report.year=%s "
+        perf_accs_query+= "and performance_report.month=%s"
+
+        cursor.execute(perf_accs_query, [agency.id, data['year'], data['month']])
+        perf_accs = dictfetchall(cursor)
+        monthly_acts_reports = []
+        for acc in perf_accs:
+            query = "select indicator, "+months[int(data['month'])-1]+" as target, "+month_acc_dict[int(data['month'])]+" as acc from performancetarget where wfp_activity_id=%s"
+            cursor.execute(query, [acc['activity_id']])
+            indicators_accs = []
+            for indicator in dictfetchall(cursor):
+                indicators_accs.append({'indicator': indicator['indicator'],
+                                       'target'   : indicator['target'],
+                                       'acc'      : indicator['acc'],
+                                       'variance' : indicator['target']-indicator['acc']
+                                   }
+                                  )
+            monthly_acts_reports.append({'id'       : acc['id'],
+                                         'activity' : acc['activity'],
+                                         'received' : acc['received'],
+                                         'incurred' : acc['incurred'],
+                                         'remaining': numify(acc['received'])-numify(acc['incurred']),
+                                         'remarks'  : acc['remarks'],
+                                         'indicator_count' : (len(indicators_accs) + 1),
+                                         'indicators_accs' : indicators_accs
+                                     })
         data['agency'] = agency
-        mpfro = MPFRO.objects.filter(agency=agency, year=data['year'], month=data['month'])
+        yrs_query = "select distinct(year) from performance_report"
+        cursor.execute(yrs_query)
+        data['years'] = dictfetchall(cursor)
+        data['monthly_acts_reports'] = monthly_acts_reports
         return render_to_response('./admin/monthly_reps.html', data, context)
     except Agency.DoesNotExist:
         pass
@@ -423,15 +474,6 @@ def mpfro_form(request):
         except Agency.DoesNotExist:
             return HttpResponse('none')
 
-'''
-def getPerfTargets(request):
-    activity_id = request.GET.get('activity_id')
-    year = request.GET.get('year', datetime.today().year)
-    month = request.GET.get('month', datetime.today().month)
-    targets = PerformanceTarget.objects.filter(activity.id=activity_id)
-    data['targets'] = targets
-    return render_to_response('./admin/performance_acc.html', data, context)
-'''
 
 @login_required(login_url='/admin/')
 @transaction.atomic
@@ -493,21 +535,6 @@ def allot_releases(request):
     data['today'] = date.today()
     return render_to_response('./admin/allotment_releases_report.html', data, context)
 
-# def yearly_fund_home(request):
-#     data = {
-#             'system_name'  : SYSTEM_NAME,
-#             'allowed_tabs' : get_allowed_tabs(request.user.id)}
-
-#     year = datetime.year
-#     i = 2005
-#     year_list = []
-#     while i <= year:
-#         year_list.append(i)
-#         i = i + 1
-#     for x in year_list:
-#         print x, 'Month'
-#     data['year_choices'] = year_list
-#     return render(request,'./admin/yearly_fund.html', data)
 
 def yearly_fund(request):
     data = {
@@ -579,7 +606,7 @@ def fundDistribution(request):
              'allowed_tabs' : get_allowed_tabs(request.user.id)
     }
 
-    year  = time.strftime('%Y') 
+    year  = datetime.today().year 
     wfp = WFPData.objects.filter(year=year).aggregate(Sum('total')) 
     total = numify(wfp['total__sum'])
     query = '''
@@ -888,11 +915,6 @@ def smca(request):#schedule of monthly cash allocation
 
 @transaction.atomic
 def savePerformanceReport(request):
-    month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
-                      5: 'may_acc', 6: 'jun_acc', 7: 'jul_acc', 8: 'aug_acc',
-                      9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
-                      }
-
     cursor = connection.cursor()
     month = int(request.POST.get('month'))
     year = int(request.POST.get('year', datetime.today().year))
@@ -917,4 +939,4 @@ def savePerformanceReport(request):
         acc_target_query+= "where id=%s"
         cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
         
-    return HttpResponse('Ok')
+    return HttpResponse('Ok') 

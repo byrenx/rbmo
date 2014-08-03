@@ -1,51 +1,49 @@
-<table border="1" cell-padding="2" style="font-size:12px;">
+<table class="table-normal">
+  {%load humanize%}
   <thead>
     <tr>
       <th>Programs</th>
-      <th>Performance Indicator</th>
-      <th>Physical Target</th>
-      <th>Accomplished</th>
-      <th>variance</th>
-      <th>Allotment Received</th>
-      <th>Obligation Incurred</th>
-      <th>Unobligated Allotment</th>
+      <th>Indicators</th>
+      <th>Target</th>
+      <th>Acc.</th>
+      <th>Var</th>
+      <th class="center">Received</th>
+      <th class="center">Incurred</th>
+      <th class="center">UA</th>
       <th>Remarks</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>General Services</td>
-      <td>No. of Reports submitted</td>
-      <td>2</td>
-      <td>2</td>
-      <td>0</td>
-      <td>183,100</td>
-      <td>183,100</td>
-      <td>0</td>
-      <td>Well Done!</td>
-    </tr>
-    <tr>
-      <td>General Services</td>
-      <td>No. of Reports submitted</td>
-      <td>2</td>
-      <td>2</td>
-      <td>0</td>
-      <td>183,100</td>
-      <td>183,100</td>
-      <td>0</td>
-      <td>Well Done!</td>
-    </tr>
-    <tr>
-      <td>General Services</td>
-      <td>No. of Reports submitted</td>
-      <td>2</td>
-      <td>2</td>
-      <td>0</td>
-      <td>183,100</td>
-      <td>183,100</td>
-      <td>0</td>
-      <td>Citizen charter was already developed last quarter!</td>
-    </tr>
+    {%for acc in monthly_acts_reports%}
+       <tr>
+	 <td rowspan="{{acc.indicator_count}}">
+	   {{acc.activity}}
+	 </td>
+	 <td></td>
+	 <td></td>
+	 <td></td>
+	 <td></td>
+	 <td class="decimal">
+	   {{acc.received|intcomma}}
+	 </td>
+	 <td class="decimal">
+	   {{acc.incurred|intcomma}}
+	 </td>
+	 <td class="decimal">{{acc.remaining}}</td>
+	 <td rowspan="{{acc.indicator_count}}">{{acc.remarks}}</td>
+       </tr>
+       {%for indicator in acc.indicators_accs%}
+          <tr>
+	    <td>{{indicator.indicator}}</td>
+	    <td>{{indicator.target}}</td>
+	    <td>{{indicator.acc}}</td>
+	    <td>{{indicator.variance}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+       {%endfor%}
+    {%endfor%}
 
   </tbody>
 </table>

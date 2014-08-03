@@ -154,6 +154,7 @@ class WFPData(models.Model):
     oct = models.DecimalField(max_digits = 12, decimal_places = 2)
     nov = models.DecimalField(max_digits = 12, decimal_places = 2)
     dec = models.DecimalField(max_digits = 12, decimal_places = 2)
+    total = models.DecimalField(max_digits = 12, decimal_places = 2)
 
     def __unicode__(self):
         return self.activity

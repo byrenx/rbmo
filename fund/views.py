@@ -38,10 +38,10 @@ def allotmentReleases(request):
     
     try:
         agency                  = Agency.objects.get(id=request.GET.get('agency_id'))
-        wfp_data_PS             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='PS').aggregate(total_sum = Sum('total'))
-        wfp_data_MOOE           = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='MOOE').aggregate(total_sum = Sum('total'))
-        wfp_data_CO             = WFPData.objects.filter(agency=request.GET.get('agency_id'), year=year, allocation='CO').aggregate(total_sum = Sum('total'))
-        allotment_releases      = AllotmentReleases.objects.filter(agency=request.GET.get('agency_id')).order_by('year', 'month')
+        wfp_data_PS             = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(total_sum = Sum('total'))
+        wfp_data_MOOE           = WFPData.objects.filter(agency=agency, year=year, allocation='MOOE').aggregate(total_sum = Sum('total'))
+        wfp_data_CO             = WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(total_sum = Sum('total'))
+        allotment_releases      = AllotmentReleases.objects.filter(agency=agency).order_by('year', 'month')
         remaining_balance       = numify(wfp_data_PS['total_sum']) + numify(wfp_data_MOOE['total_sum']) + numify(wfp_data_CO['total_sum'])
         total_remaining_balance = remaining_balance
         
