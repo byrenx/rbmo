@@ -154,7 +154,6 @@ class WFPData(models.Model):
     oct = models.DecimalField(max_digits = 12, decimal_places = 2)
     nov = models.DecimalField(max_digits = 12, decimal_places = 2)
     dec = models.DecimalField(max_digits = 12, decimal_places = 2)
-    total = models.DecimalField(max_digits = 15, decimal_places = 2)
 
     def __unicode__(self):
         return self.activity
@@ -196,6 +195,17 @@ class PerformanceTarget(models.Model):
 
     class Meta:
         db_table = 'performancetarget'
+
+class PerformanceReport(models.Model):
+    activity = models.OneToOneField(WFPData)
+    month = models.IntegerField()
+    year = models.IntegerField()
+    received = models.DecimalField(max_digits=12, decimal_places=2)
+    incurred = models.DecimalField(max_digits=12, decimal_places=2)
+    remarks = models.CharField(max_length=200)
+
+    class Meta:
+        db_table = 'performance_report'
         
     
 class AllotmentReleases(models.Model):

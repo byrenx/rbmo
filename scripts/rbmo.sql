@@ -138,6 +138,19 @@ FROM auth_user
        permissions.id=group_perm.permission_id;
 
 
+create table performance_report(
+        id serial,
+	activity integer not null unique,
+	month integer not null,
+	received numeric(12, 2) not null default(0.0),
+	incurred numeric(12, 2) not null default(0.0),
+	remarks character varying(200) not null default '',
+	primary key(id),
+	foreign key(activity) references wfp_data(id)
+	on delete cascade on update cascade
+	
+);
+/*
 create view total_approved_budget
 as
 select allocation_id, agency_id, year, sum(jan) as jan, sum(feb) as feb,
@@ -201,3 +214,4 @@ BEGIN
   END IF;
 
 END$$
+*/

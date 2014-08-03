@@ -13,8 +13,7 @@ ALLOCATION = (('PS', 'Personal Services'),
              )  
 
 
-class MCASearchForm(forms.Form):
-    
+class MCASearchForm(forms.Form):    
     month = forms.ChoiceField(choices=MONTHS,
                               widget=forms.Select(attrs={
                                   'class': 'form-control'

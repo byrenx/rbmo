@@ -28,4 +28,5 @@ urlpatterns = patterns('',
     url(r'^change_password$', changePass),
     url(r'^approved_budget$', approvedBudget),
     url(r'^smca$', smca),
+    url(r'^add_performance_report', savePerformanceReport),
 )

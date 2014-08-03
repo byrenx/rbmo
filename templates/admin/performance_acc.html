@@ -1,5 +1,5 @@
 <h3>Physical Target</h3>
-<table class="table table-condensed">
+<table class="table table-condensed table-striped">
   <tr>
     <th>
       Performance Indicator
@@ -12,16 +12,21 @@
     <th>
       Accomplished
     </th>
+    <th>
+      Variance
+    </th>
 
   </tr>
   {% if perf_targets %}
   {% for target in perf_targets %}
   <tr>
+    <input type="hidden" name="pt_ids[]" value="{{target.id}}">
     <td>{{target.indicator}}</td>
     <td>{{target.target}}</td>
-    <td width="20px">
-      <input type="number" id="" name="acc_target">
+    <td width="20px" style="text-align: right">
+      <input type="text" name="{{target.id}}" style="width:60px;" required="True">
     </td>
+    <td></td>
   </tr>
   {% endfor %}
   {% endif %}

@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.db import transaction, connection
 from django.db.models import Sum, Avg
@@ -14,7 +15,8 @@ from rbmo.models import (UserGroup,
                          QuarterReqSubmission,
                          AllotmentReleases,
                          WFPData,
-                         COSSubmission
+                         COSSubmission,
+                         PerformanceReport
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -399,9 +401,10 @@ def mpfro(request):
 
 def mpfro_form(request):
     context = RequestContext(request)
-    data = {'system_name': SYSTEM_NAME,
-            'agency_id'  : request.GET.get('agency_id'),
-            'allowed_tabs': get_allowed_tabs(request.user.id)
+    data = {'system_name' : SYSTEM_NAME,
+            'agency_id'   : request.GET.get('agency_id'),
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'month_form'  : MonthForm({'month': datetime.today().month})
         }
     if request.method=='POST':
         year_month = request.POST.get('year_month')
@@ -420,6 +423,15 @@ def mpfro_form(request):
         except Agency.DoesNotExist:
             return HttpResponse('none')
 
+'''
+def getPerfTargets(request):
+    activity_id = request.GET.get('activity_id')
+    year = request.GET.get('year', datetime.today().year)
+    month = request.GET.get('month', datetime.today().month)
+    targets = PerformanceTarget.objects.filter(activity.id=activity_id)
+    data['targets'] = targets
+    return render_to_response('./admin/performance_acc.html', data, context)
+'''
 
 @login_required(login_url='/admin/')
 @transaction.atomic
@@ -802,35 +814,107 @@ def smca(request):#schedule of monthly cash allocation
     years = []
     for i in range(2013, datetime.today().year+1):
         years.append(i)
-    data['years'] = years
+    data['years'] = years 
 
     if request.method=='POST':
         data['month'] = int(request.POST.get('month'))
         data['year']  = int(request.POST.get('year'))
         data['allocation'] = request.POST.get('allocation')
+        data['search_form'] = MCASearchForm({'month'      : data['month'],
+                                             'allocation' : data['allocation']
+                                         })
 
     quarter = quarterofMonth(data['month'])
     if quarter == 4:
         data['year'] -= 1
-    print quarter
     
     if data['allocation']=='PS':
-        pass
+        query = "select agency.* , (select sum("+ months[data['month']-2] +") "
+        query+= "from wfp_data where year=%s and agency_id=agency.id "
+        query+= "and allocation='PS') as amount, "
+        query+= "(select sum(amount_release) from allotmentreleases where "
+        query+= "agency_id=agency.id and allocation='PS' "
+        query+= "and month=%s and year=%s) as total_release from agency"
+        cursor.execute(query, [data['month'], data['year'], data['year']])
+        agencies = dictfetchall(cursor)
+
     elif data['allocation'] == 'MOOE':
-        query = "select agency.* , (select sum("+ months[data['month']-2] +") \
-        from wfp_data where year=%s and agency_id=agency.id and allocation=%s) as amount from agency, monthly_req_submitted\
-        where \
-        (select count(*) from quarterly_req)=(select count(*) from quarter_req_submitted where year=%s and quarter=%s and agency_id=agency.id) \
-        and monthly_req_submitted.agency_id=agency.id and month=%s group by agency.id"
-        cursor.execute(query, [data['year'], data['allocation'], data['year'], quarter, data['month']])
-        data['agencies'] = dictfetchall(cursor)
+        query = "select agency.* , "
+        query+= "(select sum("+ months[data['month']-2] +") "
+        query+= "from wfp_data where "
+        query+= "year=%s and agency_id=agency.id and allocation='MOOE') "
+        query+= "as amount , "
+        query+= "(select sum(amount_release) from allotmentreleases where "
+        query+= "agency_id=agency.id and allocation='MOOE' "
+        query+= "and month=%s and year=%s) as total_release "
+        query+= "from agency, monthly_req_submitted where "
+        query+= "(select count(*) from quarterly_req)= "
+        query+= "(select count(*) from quarter_req_submitted "
+        query+= "where year=%s and quarter=%s and agency_id=agency.id) "
+        query+= "and monthly_req_submitted.agency_id=agency.id "
+        query+= "and month=%s group by agency.id"
+        cursor.execute(query, [data['year'],
+                               data['month'],
+                               data['year'],
+                               data['year'],
+                               quarter,
+                               data['month']]
+        )
+        agencies = dictfetchall(cursor)
     else:
-        query = "select agency.* , (select sum("+ months[data['month']-2] +") \
-        from wfp_data where year=%s and agency_id=agency.id and allocation=%s) as amount from agency"
-        cursor.execute(query, [data['year'], data['allocation']])
-        data['agencies'] = dictfetchall(cursor)
-        
+        query = "select agency.* , (select sum("+ months[data['month']-2] +") "
+        query+= "from wfp_data where year=%s and agency_id=agency.id "
+        query+= "and allocation='CO') as amount, "
+        query+= "(select sum(amount_release) from allotmentreleases where "
+        query+= "agency_id=agency.id and allocation='co' "
+        query+= "and month=%s and year=%s) as total_release from agency"
+        cursor.execute(query, [data['month'], data['year'], data['year']])
+        agencies = dictfetchall(cursor)
+    
+    agencies_allocation = []
+    count = 1
+    for agency in agencies:
+        agencies_allocation.append({
+            'no'     : count,
+            'agency' : agency['name'],
+            'amount' : numify(agency['amount']) - numify(agency['total_release'])
+        })
+        count+=1
+
+    data['agencies']  = agencies_allocation
+    data['str_month'] = stringify_month(data['month'])
     return render_to_response('./admin/smca.html', data, context)
 
 
+@transaction.atomic
+def savePerformanceReport(request):
+    month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
+                      5: 'may_acc', 6: 'jun_acc', 7: 'jul_acc', 8: 'aug_acc',
+                      9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
+                      }
 
+    cursor = connection.cursor()
+    month = int(request.POST.get('month'))
+    year = int(request.POST.get('year', datetime.today().year))
+    activity = WFPData.objects.get(id=request.POST.get('activity'))
+    received = request.POST.get('received')
+    incurred = request.POST.get('incurred')
+    remarks = request.POST.get('remarks')
+    accomplished_target = request.POST.getlist('pt_ids[]')
+
+    #update activity
+    perf_rep = PerformanceReport(activity = activity,
+                                 year = year,
+                                 month = month,
+                                 received = received,
+                                 incurred = incurred,
+                                 remarks = remarks
+    )
+    perf_rep.save()
+    for acc_t in accomplished_target:
+        acc_target_query = "update performancetarget set "
+        acc_target_query+= month_acc_dict[month] + " = %s "
+        acc_target_query+= "where id=%s"
+        cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+        
+    return HttpResponse('Ok')

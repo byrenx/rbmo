@@ -16,8 +16,8 @@
       </div>
       <div class="form-group">
 	<select name="year" class="form-control">
-	  {% for year in years %}
-	  <option values="{{year}}">{{year}}</option>
+	  {% for yr in years %}
+	  <option values="{{yr}}" {%if yr == year %} selected {%endif%}>{{yr}}</option>
 	  {% endfor %}
 	</select>
       </div>
@@ -36,7 +36,7 @@
     {%if agencies%}
     <center>
       <h4>Schedule of Monthly Cash Allocation</h4>
-      <h5>For the month {{month_str}}-{{year}}</h5>
+      <h5>For the month {{str_month}}-{{year}}</h5>
       <h5>As of {{cur_date}}</h5>
     </center>
       <table class="table-normal">
@@ -45,7 +45,7 @@
 	  <caption><b>Total: {{total}} agencie(s)</b></caption>
 	  <tr>
 	    <th colspan="2" rowspan="2" class="center">Agencies</th>
-	    <th class="center">{{month}} {{year}}</th>
+	    <th class="center">{{str_month}} {{year}}</th>
 	  </tr>
 	  <tr>
 	    <th class="center">{{allocation}}</th>
@@ -53,8 +53,8 @@
 	</thead>
         {% for agency in agencies %}
         <tr>
-	  <td width="30px" align="center"></td>
-	  <td>{{agency.name}}</td>
+	  <td width="30px" align="center">{{agency.no}}</td>
+	  <td>{{agency.agency}}</td>
 	  <td class="decimal">{{agency.amount|intcomma}}</td>
 	</tr>
         {% endfor %}

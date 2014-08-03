@@ -215,12 +215,9 @@ function addPerfTarget(){
 
 
 function getPerformanceTarget(){
-    var year_month = $('#year_month').val().split('-');
-    var year = year_month[0];
-    var month = year_month[1];
     var data = {'activity' : $('#activity').val(),
-		'year'     : year,
-		'month'    : month
+		'year'     : $('#year').val(),
+		'month'    : $('#month').val()
 	       }
     $.get('/agency/wfp/get_performance_acc', data, function(rs){
        $('#performance').html(rs);	
@@ -247,3 +244,5 @@ function fillFinTarget(month){
 	$('#'+months[i]).val(cur_val);
     }
 }
+
+
