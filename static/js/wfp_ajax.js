@@ -23,28 +23,23 @@ function addPhysicalTarget(){
     var dec = ($('#pt12').val()==""? 0: $('#pt12').val());
 
     if(pi!=''){
-	if (pi_lists.found(pi)==false){
-	
-	    pi_lists.add(pi);
-	    $('#pi-table-content').append("<tr id='"+count+"'><td><a href='javascript:removePIRow(\"" + count + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
-					  + "<input type='hidden' name='pis[]' value='" + pi + ";" + jan +";"+ feb +";"+ mar +";"+ apr +";"+ may +";"+ jun + ";" + jul + ";" + aug + ";" + sept + ";" + oct + ";" + nov + ";" + dec + "'/>"
-					  + "<td>" + pi 
-					  + "</td><td>" + jan 
+	pi_lists.add(pi);
+	$('#pi-table-content').append("<tr id='"+count+"'><td><a href='javascript:removePIRow(\"" + count + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
+				      + "<input type='hidden' name='pis[]' value='" + pi + ";" + jan +";"+ feb +";"+ mar +";"+ apr +";"+ may +";"+ jun + ";" + jul + ";" + aug + ";" + sept + ";" + oct + ";" + nov + ";" + dec + "'/>"
+				      + "<td>" + pi 
+				      + "</td><td>" + jan 
 					  + "</td><td>" + feb 
-					  + "</td><td>" + mar 
-					  + "</td><td>" + apr 
-					  + "</td><td>" + may 
-					  + "</td><td>" + jun 
-					  + "</td><td>" + jul 
-					  + "</td><td>" + aug 
-					  + "</td><td>" + sept 
-					  + "</td><td>" + oct 
+				      + "</td><td>" + mar 
+				      + "</td><td>" + apr 
+				      + "</td><td>" + may 
+				      + "</td><td>" + jun 
+				      + "</td><td>" + jul 
+				      + "</td><td>" + aug 
+				      + "</td><td>" + sept 
+				      + "</td><td>" + oct 
 					  + "</td><td>" + nov 
-					  + "</td><td>" + dec +"</td></tr>");
-	    $('#pi_count').val(count+1);
-	}else{
-	    alert("'"+pi+"' already exist");
-	}
+				      + "</td><td>" + dec +"</td></tr>");
+	$('#pi_count').val(count+1);
     }
 }
 

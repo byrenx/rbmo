@@ -445,18 +445,23 @@ def mpfroReports(request):
         cursor.execute(yrs_query)
         data['years'] = dictfetchall(cursor)
         data['monthly_acts_reports'] = monthly_acts_reports
+        data['str_month'] = stringify_month(int(data['month']))
         return render_to_response('./admin/monthly_reps.html', data, context)
     except Agency.DoesNotExist:
         pass
 
 
 def mpfro_form(request):
+    cursor = connection.cursor()
     context = RequestContext(request)
     data = {'system_name' : SYSTEM_NAME,
             'agency_id'   : request.GET.get('agency_id'),
             'allowed_tabs': get_allowed_tabs(request.user.id),
-            'month_form'  : MonthForm({'month': datetime.today().month})
+            'month_form'  : MonthForm({'month': datetime.today().month}),
+            
         }
+    this_year = datetime.today().year
+    data['years'] = [this_year, (this_year-1)]
     if request.method=='POST':
         year_month = request.POST.get('year_month')
         activity = request.POST.get('activity')
@@ -466,7 +471,9 @@ def mpfro_form(request):
         try:
             year = datetime.today().year
             agency = Agency.objects.get(id=data['agency_id'])
-            activities = WFPData.objects.filter(agency=agency, year=year)
+            acts_query = "select id, activity from wfp_data where agency_id=%s and year=%s and wfp_data.id not in (select activity_id from performance_report where performance_report.year=%s and performance_report.month=%s)"
+            cursor.execute(acts_query, [agency.id, year, year, datetime.today().month])
+            activities = dictfetchall(cursor)
             data['agency'] = agency
             data['year'] = year
             data['activities'] = activities

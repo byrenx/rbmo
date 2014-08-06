@@ -47,14 +47,14 @@
   </div>
   <hr/>
   <div class="col-sm-6">
-    <!---PS--->
-    {% if pss|length_is:"0" %}
-    Currently NO PS Allocation
-    {% else %}
     <table class="table table-border table-condensed">
       <thead>
       </thead>
       <tbody>
+    <!---PS--->
+    {% if pss|length_is:"0" %}
+    Currently NO PS Allocation
+    {% else %}
 	<tr><th colspan="2" style="text-align:center" class="alert alert-warning">Personnel Services</th></tr>
 	{% for ps in pss %}
 	<tr>
