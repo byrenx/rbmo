@@ -51,7 +51,17 @@
 	    <td>{{indicator.indicator}}</td>
 	    <td>{{indicator.target}}</td>
 	    <td>{{indicator.acc}}</td>
-	    <td>{{indicator.variance}}</td>
+	    <td>
+	      {%if indicator.variance < 0%}
+		<span class="glyphicon glyphicon-arrow-down text-danger"></span>
+		{{indicator.variance}}
+	      {%elif indicator.variance > 0%}
+		<span class="glyphicon glyphicon-arrow-up text-success"></span>
+		{{indicator.variance}}
+	      {%else%}
+		{{indicator.variance}}
+	      {%endif%}			
+	    </td>
 	    <td></td>
 	    <td></td>
 	    <td></td>

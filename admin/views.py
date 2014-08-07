@@ -434,7 +434,7 @@ def mpfroReports(request):
                 indicators_accs.append({'indicator': indicator['indicator'],
                                        'target'   : indicator['target'],
                                        'acc'      : indicator['acc'],
-                                       'variance' : indicator['target']-indicator['acc']
+                                       'variance' : indicator['acc']-indicator['target']
                                    }
                                   )
             monthly_acts_reports.append({'id'       : acc['id'],
