@@ -28,7 +28,7 @@ function addPhysicalTarget(){
 				      + "<input type='hidden' name='pis[]' value='" + pi + ";" + jan +";"+ feb +";"+ mar +";"+ apr +";"+ may +";"+ jun + ";" + jul + ";" + aug + ";" + sept + ";" + oct + ";" + nov + ";" + dec + "'/>"
 				      + "<td>" + pi 
 				      + "</td><td>" + jan 
-					  + "</td><td>" + feb 
+				      + "</td><td>" + feb 
 				      + "</td><td>" + mar 
 				      + "</td><td>" + apr 
 				      + "</td><td>" + may 
@@ -37,7 +37,7 @@ function addPhysicalTarget(){
 				      + "</td><td>" + aug 
 				      + "</td><td>" + sept 
 				      + "</td><td>" + oct 
-					  + "</td><td>" + nov 
+				      + "</td><td>" + nov 
 				      + "</td><td>" + dec +"</td></tr>");
 	$('#pi_count').val(count+1);
     }

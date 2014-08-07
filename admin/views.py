@@ -16,7 +16,8 @@ from rbmo.models import (UserGroup,
                          AllotmentReleases,
                          WFPData,
                          COSSubmission,
-                         PerformanceReport
+                         PerformanceReport,
+                         PerformanceTarget
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -37,6 +38,11 @@ months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
 month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
                   5: 'may_acc', 6: 'jun_acc', 7: 'jul_acc', 8: 'aug_acc',
                   9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
+}
+
+wfp_month_lookup = {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr',
+                  5: 'may', 6: 'jun', 7: 'jul', 8: 'aug',
+                  9: 'sept', 10: 'oct', 11: 'nov', 12: 'dec'
 }
 
 
@@ -457,29 +463,37 @@ def mpfro_form(request):
     data = {'system_name' : SYSTEM_NAME,
             'agency_id'   : request.GET.get('agency_id'),
             'allowed_tabs': get_allowed_tabs(request.user.id),
-            'month_form'  : MonthForm({'month': datetime.today().month}),
-            
-        }
+        } 
+    
     this_year = datetime.today().year
     data['years'] = [this_year, (this_year-1)]
-    if request.method=='POST':
-        year_month = request.POST.get('year_month')
-        activity = request.POST.get('activity')
-        pass
+    try:
+        action = request.GET.get('action', 'add')
+        agency = Agency.objects.get(id=data['agency_id'])
+        data['action'] = action
+        data['agency'] = agency
         
-    else:
-        try:
+        if action == 'add':
             year = datetime.today().year
-            agency = Agency.objects.get(id=data['agency_id'])
             acts_query = "select id, activity from wfp_data where agency_id=%s and year=%s and wfp_data.id not in (select activity_id from performance_report where performance_report.year=%s and performance_report.month=%s)"
             cursor.execute(acts_query, [agency.id, year, year, datetime.today().month])
             activities = dictfetchall(cursor)
-            data['agency'] = agency
             data['year'] = year
             data['activities'] = activities
+            data['month_form'] = MonthForm({'month': datetime.today().month}),
             return render_to_response('./admin/mpfro_form.html', data, context)
-        except Agency.DoesNotExist:
-            return HttpResponse('none')
+        else: #edit
+            mpfro_id = request.GET.get('mpfro_id')
+            activity_info = PerformanceReport.objects.get(id = mpfro_id)
+            accs_query = "select id, indicator, "+wfp_month_lookup[activity_info.month]+" as target," + month_acc_dict[activity_info.month] + " as accomplished from performancetarget where wfp_activity_id = %s"
+            cursor.execute(accs_query, [activity_info.activity.id])
+            performance_accs = dictfetchall(cursor)
+            data['activity_info'] = activity_info
+            data['performance_accs'] = performance_accs
+            data['str_month'] = stringify_month(activity_info.month)
+            return render_to_response('./admin/mpfro_form.html', data, context)
+    except Agency.DoesNotExist and PerformanceReport.DoesNotExist:
+        return HttpResponse('Page Not Found Error!')
 
 
 @login_required(login_url='/admin/')
@@ -923,27 +937,52 @@ def smca(request):#schedule of monthly cash allocation
 @transaction.atomic
 def savePerformanceReport(request):
     cursor = connection.cursor()
-    month = int(request.POST.get('month'))
-    year = int(request.POST.get('year', datetime.today().year))
-    activity = WFPData.objects.get(id=request.POST.get('activity'))
-    received = request.POST.get('received')
-    incurred = request.POST.get('incurred')
-    remarks = request.POST.get('remarks')
-    accomplished_target = request.POST.getlist('pt_ids[]')
-
-    #update activity
-    perf_rep = PerformanceReport(activity = activity,
-                                 year = year,
-                                 month = month,
-                                 received = received,
-                                 incurred = incurred,
-                                 remarks = remarks
-    )
-    perf_rep.save()
-    for acc_t in accomplished_target:
-        acc_target_query = "update performancetarget set "
-        acc_target_query+= month_acc_dict[month] + " = %s "
-        acc_target_query+= "where id=%s"
-        cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+    action = request.POST.get('action')
+    
+    if action == "add":
+        month = int(request.POST.get('month'))
+        year = int(request.POST.get('year', datetime.today().year))
+        activity = WFPData.objects.get(id=request.POST.get('activity'))
+        received = request.POST.get('received')
+        incurred = request.POST.get('incurred')
+        remarks = request.POST.get('remarks')
+        accomplished_target = request.POST.getlist('pt_ids[]')
         
-    return HttpResponse('Ok') 
+        #update activity
+        perf_rep = PerformanceReport(activity = activity,
+                                     year = year,
+                                     month = month,
+                                     received = received,
+                                     incurred = incurred,
+                                     remarks = remarks
+                                )
+        perf_rep.save()
+        for acc_t in accomplished_target:
+            acc_target_query = "update performancetarget set "
+            acc_target_query+= month_acc_dict[month] + " = %s "
+            acc_target_query+= "where id=%s"
+            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+        
+        return HttpResponse('Ok')
+
+    else:
+        mpfro_id = request.POST.get('mpfro_id')
+        month = int(request.POST.get('month'))
+        received = request.POST.get('received')
+        incurred = request.POST.get('incurred')
+        remarks = request.POST.get('remarks')
+        accomplished_target = request.POST.getlist('pt_ids[]')
+        
+        perf_rep = PerformanceReport.objects.get(id=mpfro_id)
+        perf_rep.received = received
+        perf_rep.incurred = incurred
+        perf_rep.remarks = remarks
+        perf_rep.save()
+
+        for acc_t in accomplished_target:
+            acc_target_query = "update performancetarget set "
+            acc_target_query+= month_acc_dict[month] + " = %s "
+            acc_target_query+= "where id=%s"
+            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+        
+        return HttpResponse('Ok')
