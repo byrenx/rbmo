@@ -20,6 +20,9 @@ def get_allowed_tabs(user_id):
         tabs.append({'tag': 'Transaction History', 'link': ''})
     if has_permission(user_id, 'process', 'monthly cash allocation'):
         tabs.append({'tag': 'SMCA', 'link': '/admin/smca'})
+    if has_permission(user_id, 'print', 'transaction history'):
+        tabs.append({'tag': 'Transaction Summary', 'link': '/transaction/summary'})
+ 
 
     reports = []
     if has_permission(user_id, 'print', 'total releases'):

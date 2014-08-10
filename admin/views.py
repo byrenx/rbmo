@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.db import transaction, connection
 from django.db.models import Sum, Avg
@@ -986,3 +985,4 @@ def savePerformanceReport(request):
             cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
         
         return HttpResponse('Ok')
+    

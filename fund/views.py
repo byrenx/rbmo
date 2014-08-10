@@ -430,6 +430,7 @@ def fundReleaseForm(request):
 @transaction.atomic
 def agenciesBudgetSummary(request):
     context = RequestContext(request)
+    cursor = connection.cursor()
     data = {'year'         : request.GET.get('year', time.strftime('%Y')),
             'system_name'  : SYSTEM_NAME,
             'allowed_tabs' :get_allowed_tabs(request.user.id)
@@ -465,6 +466,9 @@ def agenciesBudgetSummary(request):
         total_release += agency_balances['release']
         total_balance += agency_balances['balance']
 
+    years_query = "select distinct(year) as year from wfp_data"
+    cursor.execute(years_query)
+    data['years'] = dictfetchall(cursor)
     data['balances'] = balances
     data['total_sum'] = {'total_budget'  : total_budget,
                          'total_release' : total_release,
