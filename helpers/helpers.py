@@ -26,7 +26,7 @@ def get_allowed_tabs(user_id):
 
     reports = []
     if has_permission(user_id, 'print', 'total releases'):
-        reports.append({'tag': 'Allotment Releases(PS, MOOE, CO)', 'link': '/admin/allot_releases'})
+        reports.append({'tag': 'Total Fund Release', 'link': '/admin/allot_releases'})
         reports.append({'tag': 'Total Monthly Release', 'link': '/admin/total_monthly_release'})
         reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
     if has_permission(user_id, 'print', "running balances"):

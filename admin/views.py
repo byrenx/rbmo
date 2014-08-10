@@ -656,11 +656,13 @@ def totalMonthlyReleases(request):
     year = time.strftime('%Y')
     allocation = 'PS'
     cursor.execute("select distinct(year) from allotmentreleases")
-    data = {'system_name' : SYSTEM_NAME,
-            'year'        : year,
-            'allocation'  : allocation,
-            'years'       : dictfetchall(cursor),
-            'allowed_tabs' : get_allowed_tabs(request.user.id)
+    data = {'system_name'  : SYSTEM_NAME,
+            'year'         : year,
+            'allocation'   : allocation,
+            'years'        : dictfetchall(cursor),
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'today'        : datetime.today(),
+            'current_month': datetime.today().month
     }
 
     if request.method=='POST':
@@ -679,7 +681,7 @@ def totalMonthlyReleases(request):
         agency_release['no'] = count
         agency_release['name'] = agency.name
         temp_per_agency_total = 0
-        for i in range(1, 13):
+        for i in range(1, data['current_month']):
             total = AllotmentReleases.objects.filter(agency=agency, month=i, year=year, allocation=allocation).aggregate(Sum('amount_release'))
             agency_release[months[i-1]] = numify(total['amount_release__sum'])
             total_monthly_release[months[i-1]] += numify(total['amount_release__sum'])
@@ -809,6 +811,10 @@ def approvedBudget(request):
     (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='MOOE') as mooe,
     (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='CO') as co
     from agency'''
+
+    yrs_query = "select distinct(year) from wfp_data"
+    cursor.execute(yrs_query)
+    years = dictfetchall(cursor)
     year = datetime.today().year
     if request.method=='POST':
         year  = request.POST.get('year')
@@ -830,6 +836,7 @@ def approvedBudget(request):
         total_mooe += numify(agency['mooe']) 
         total_co   += numify(agency['co']) 
         grand_total+= total_ps + total_mooe + total_co 
+        count+=1
         
     total_budget = {'total_ps'   : total_ps,
                     'total_mooe' : total_mooe,
@@ -842,7 +849,7 @@ def approvedBudget(request):
            'system_name'     : SYSTEM_NAME,
            'allowed_tabs'    : get_allowed_tabs(request.user.id),
            'total_budget'    : total_budget,
-           'years'           : WFPData.objects.distinct('year')
+           'years'           : years
     }
     return render_to_response('./admin/approved_budget.html', data, context)
     

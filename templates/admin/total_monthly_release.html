@@ -6,9 +6,6 @@
 
 {% block content %}
 <div class="container">
-  <center>
-    <h3>Total Monthly {{allocation}} Releases for FY {{year}} </h3>
-  </center>
   <div class="col-sm-12">
     <form class="form-inline" ction="/admin/total_monthly_release" method="POST">
       {% csrf_token %}
@@ -38,11 +35,35 @@
 	<span class="glyphicon glyphicon-search"></span>
       </button>
     </form>
+    <hr/>
   </div>
   </br> </br>
   <div class="col-sm-12" id="allot_print">
-      
     {% if agency_monthly_releases %}
+    <div class="col-sm-12">
+      <div class="col-sm-2">
+	<img src="/static/images/rbmo.jpg" width="100px" height="100px">
+      </div>
+      <div class="col-sm-6 col-sm-offset-1">
+	<center>
+	  <p>
+	    Republic of the Philippines</br>
+	    <b>Autonomous Region in Muslim Mindanao</b></br>
+	    <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
+	    <i>Regional Budget Management Office</i></br>
+	    ARMM Compound Cotabato City
+	  </br></br>
+	  <b>TOTAL MONTHLY {{allocation}} RELEASES FOR FY {{year}}</b></br>
+	  As of {{today}}</br>
+	  <i>(In Pesos)</i>
+	  </p>
+	</center>
+
+      </div>
+      <div class="col-sm-2 col-sm-offset-1">
+	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
+      </div>
+
     <table border="1" class="table-normal">
       {%load humanize%}
       <thead>
@@ -99,6 +120,7 @@
 	<th class="decimal">{{grand_total|intcomma}}</th>
       </tr>
     </table>
+    </br></br>
     {% endif %}
     </div>
 </div>

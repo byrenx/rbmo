@@ -2,7 +2,6 @@
 
 {%block right-content%}
 <div class="col-sm-12">
-  <h3>Remaining Balances of All Agencies for Fiscal Year {{year}}</h3>
   <form class="form-inline">
     <a href="#" class="btn btn-default">
       <span class="glyphicon glyphicon-print"></span>&nbsp;Print
@@ -20,24 +19,38 @@
     </button>
   </form>
   <hr/>
+</div>
+<div class="col-sm-12">
+  <div class="col-sm-12">
+    <div class="col-sm-2">
+      <img src="/static/images/rbmo.jpg" width="100px" height="100px">
+      </div>
+    <div class="col-sm-6 col-sm-offset-1">
+      <center>
+	<p>
+	  Republic of the Philippines</br>
+	  <b>Autonomous Region in Muslim Mindanao</b></br>
+	  <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
+	  <i>Regional Budget Management Office</i></br>
+	  ARMM Compound Cotabato City
+	  </br></br>
+	  <b>BALANCES</b></br>
+	  As of {{today}}</br>
+	</p>
+	</center>
+      
+    </div>
+    <div class="col-sm-2 col-sm-offset-1">
+      <img src="/static/images/rbmo_logo.png" width="100px" height="100px">
+    </div>
+  </div>
+
   <table class="table-normal">
     <thead>
-      <tr>
-	<th rowspan="4" class="center" colspan="2">AGENCY/OFFICE</th>
-      </tr>
-      <tr>
-	<th class="center">APPROVED</th>
-	<th class="center">RELEASE</th>
-	<th class="center">BALANCES</th>
-      </tr>
-      <tr>
-	<th class="center" colspan="3">AS of {{today}}</th>
-      </tr>
-      <tr>
-	<th class="center">TOTAL</th>
-	<th class="center">TOTAL</th>
-	<th class="center">TOTAL</th>
-      </tr>
+      <th class="center" colspan="2">AGENCY/OFFICE</th>
+      <th class="center">APPROVED</th>
+      <th class="center">RELEASE</th>
+      <th class="center">BALANCES</th>
     </thead>
     <tbody>
       {% load humanize %}
@@ -58,5 +71,6 @@
       </tr>
     </tbody>
   </table>
+  </br></br>
 </div>
 {%endblock%}

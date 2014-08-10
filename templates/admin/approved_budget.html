@@ -23,27 +23,43 @@
 	<span class="glyphicon glyphicon-search"></span>
       </button>
     </form>
+    <hr/>
   </div>
-  </br> </br>
+  </br> </br></br>
   <div class="col-sm-12" id="allot_print">
     
     {% if agencies_app_budget %}
+    <div class="col-sm-12">
+      <div class="col-sm-2">
+	<img src="/static/images/rbmo.jpg" width="100px" height="100px">
+      </div>
+      <div class="col-sm-6 col-sm-offset-1">
+	<center>
+	  <p>
+	  Republic of the Philippines</br>
+	  <b>Autonomous Region in Muslim Mindanao</b></br>
+	  <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
+	  <i>Regional Budget Management Office</i></br>
+	  ARMM Compound Cotabato City
+	  </br></br>
+	  <b>RLA APPROVED BUDGET</b></br>
+	  CY {{year}}
+	  </p>
+	</center>
+      </div>
+      <div class="col-sm-2 col-sm-offset-1">
+	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
+      </div>
+    </div>
+
     <table border="1" class="table-normal">
       {%load humanize%}
       <thead>
-	<tr>
-	  <th class="center" rowspan="4" colspan="2">AGENCY/OFFICE</th>
-	  <th class="center" colspan="4">RLA APPROVED BUDGET MMA ACT NO.306</th>
-	</tr>
-	<tr>
-	  <th class="center" colspan="4">FY {{year}}</th>
-	</tr>
-	<tr>
+	  <th class="center" colspan="2">AGENCY/OFFICE</th>
 	  <th class="decimal">PS</th>
 	  <th class="decimal">MOOE</th>
 	  <th class="decimal">CO</th>
 	  <th class="decimal">Total</th>
-	</tr>
       </thead>
       {% for agency in agencies_app_budget%}
       <tr>
@@ -63,6 +79,7 @@
 	<th class="decimal">{{total_budget.grand_total|intcomma}}</th>
       </tr>
     </table>
+    </br></br>
     {% endif %}
     </div>
 </div>
