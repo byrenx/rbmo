@@ -23,7 +23,7 @@ function addPhysicalTarget(){
     var dec = ($('#pt12').val()==""? 0: $('#pt12').val());
 
     if(pi!=''){
-	pi_lists.add(pi);
+	//pi_lists.add(pi);
 	$('#pi-table-content').append("<tr id='"+count+"'><td><a href='javascript:removePIRow(\"" + count + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
 				      + "<input type='hidden' name='pis[]' value='" + pi + ";" + jan +";"+ feb +";"+ mar +";"+ apr +";"+ may +";"+ jun + ";" + jul + ";" + aug + ";" + sept + ";" + oct + ";" + nov + ";" + dec + "'/>"
 				      + "<td>" + pi 
@@ -47,7 +47,7 @@ function removePIRow(row_id, pi){
     $('#'+row_id).remove();
     var count = new Number($('#pi_count').val());    
     $('#pi_count').val((count-1));
-    pi_lists.del(pi);
+  //  pi_lists.del(pi);
 }
 
 
@@ -66,26 +66,24 @@ function addAccTarget(){
    var acc = $('#acc').val();
    var variance = acc-pt;
 
-   if (mpfro_list.found(pi)==false){
-
-       mpfro_list.add(pi);
-       $('#pi_acc').append("<tr id='"+count_mpfro+"'><td><a href='javascript:removePIAccRow(\"" + count_mpfro + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
-			   + "<input type='hidden' name='pis[]' value='" + pi +";"+ pt +";"+ acc +";"+ variance +";'/>"
-			   + "<td>" + pi 
-			   + "</td><td>" + pt 
-			   + "</td><td>" + acc
-			   + "</td><td>" + variance 
-			   + "</td></tr>");
-   }
+    mpfro_list.add(pi);
+    $('#pi_acc').append("<tr id='"+count_mpfro+"'><td><a href='javascript:removePIAccRow(\"" + count_mpfro + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
+			+ "<input type='hidden' name='pis[]' value='" + pi +";"+ pt +";"+ acc +";"+ variance +";'/>"
+			+ "<td>" + pi 
+			+ "</td><td>" + pt 
+			+ "</td><td>" + acc
+			+ "</td><td>" + variance 
+			+ "</td></tr>");
 }
 
 function removePIAccRow(row_id, pi){
     $('#'+row_id).remove();
-        
+/*        
     if ((count_mpfro-1)==0){
 	count_mpfro-=1;
     }
     mpfro_list.del(pi);
+*/
 }
 
 function setMonthlyTargetModal(id, month, amount){
