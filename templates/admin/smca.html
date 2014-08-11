@@ -6,7 +6,7 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-sm-7 col-sm-offset-2">
+  <div class="col-sm-8">
     <form action="/admin/smca" class="form-inline" method="POST">{%csrf_token%}
       <div class="form-group">
 	{{search_form.allocation}}
@@ -28,10 +28,22 @@
 	</button>
       </div>
     </form>
+  </div>
+  <div class="col-sm-4">
+    <a href="#" class="btn btn-primary">
+      <span class="glyphicon glyphicon-print"></span>
+      Transmittal Letter
+    </a>
+    <a href="javascript:$('#smca_print').printArea()" class="btn btn-primary">
+      <span class="glyphicon glyphicon-print"></span>
+      SMCA
+    </a>
+  </div>
+  <div class="col-sm-12">
     <hr/>
   </div>
   </br></br>
-  <div class="col-sm-7 col-sm-offset-2"> 
+  <div class="col-sm-10 col-sm-offset-1" id="smca_print"> 
 
     {%if agencies%}
     <center>
@@ -42,7 +54,6 @@
       <table class="table-normal">
 	{% load humanize %}
 	<thead>
-	  <caption><b>Total: {{total}} agencie(s)</b></caption>
 	  <tr>
 	    <th colspan="2" rowspan="2" class="center">Agencies</th>
 	    <th class="center">{{str_month}} {{year}}</th>
@@ -52,16 +63,20 @@
 	  </tr>
 	</thead>
         {% for agency in agencies %}
-        <tr>
-	  <td width="30px" align="center">{{agency.no}}</td>
-	  <td>{{agency.agency}}</td>
-	  <td class="decimal">{{agency.amount|intcomma}}</td>
-	</tr>
+    	   <tr>
+	      <td width="30px" align="center">{{agency.no}}</td>
+   	      <td>{{agency.agency}}</td>
+	      <td class="decimal">{{agency.amount|intcomma}}</td>
+  	   </tr>
         {% endfor %}
+	   <tr>
+	     <th colspan="2">TOTAL</th>
+	     <th class="decimal">{{total|intcomma}}</th>
+	   </tr>
       </table>
     {%else%}
       <div class="alert alert-info">
-	Currently no agencies have completed the requirements for this month
+	Currently no agencies qualify for this month's allocation
       </div>
       </div>
     {%endif%}

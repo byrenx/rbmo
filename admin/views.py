@@ -879,64 +879,76 @@ def smca(request):#schedule of monthly cash allocation
                                          })
 
     quarter = quarterofMonth(data['month'])
+    req_year = data['year']
     if quarter == 4:
-        data['year'] -= 1
+        req_year-=1
     
     if data['allocation']=='PS':
-        query = "select agency.* , (select sum("+ months[data['month']-2] +") "
+        query = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
         query+= "from wfp_data where year=%s and agency_id=agency.id "
         query+= "and allocation='PS') as amount, "
         query+= "(select sum(amount_release) from allotmentreleases where "
         query+= "agency_id=agency.id and allocation='PS' "
         query+= "and month=%s and year=%s) as total_release from agency"
-        cursor.execute(query, [data['month'], data['year'], data['year']])
+        cursor.execute(query, [data['year'], data['month'], data['year']])
         agencies = dictfetchall(cursor)
 
     elif data['allocation'] == 'MOOE':
+        month_req = data['month']-1
+        if month_req == 0:
+            month_req = 12
+        
         query = "select agency.* , "
-        query+= "(select sum("+ months[data['month']-2] +") "
+        query+= "(select sum("+ wfp_month_lookup[data['month']] +") "
         query+= "from wfp_data where "
         query+= "year=%s and agency_id=agency.id and allocation='MOOE') "
-        query+= "as amount , "
+        query+= "as amount , " #year
         query+= "(select sum(amount_release) from allotmentreleases where "
         query+= "agency_id=agency.id and allocation='MOOE' "
-        query+= "and month=%s and year=%s) as total_release "
+        query+= "and month=%s and year=%s) as total_release " #year
         query+= "from agency, monthly_req_submitted where "
         query+= "(select count(*) from quarterly_req)= "
         query+= "(select count(*) from quarter_req_submitted "
-        query+= "where year=%s and quarter=%s and agency_id=agency.id) "
+        query+= "where year=%s and quarter=%s and agency_id=agency.id) " #req_year
         query+= "and monthly_req_submitted.agency_id=agency.id "
-        query+= "and month=%s group by agency.id"
+        query+= "and month=%s and  year=%s group by agency.id" #req_year
         cursor.execute(query, [data['year'],
                                data['month'],
                                data['year'],
-                               data['year'],
+                               req_year,
                                quarter,
-                               data['month']]
+                               month_req,
+                               req_year
+                           ]
         )
         agencies = dictfetchall(cursor)
     else:
-        query = "select agency.* , (select sum("+ months[data['month']-2] +") "
+        query = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
         query+= "from wfp_data where year=%s and agency_id=agency.id "
         query+= "and allocation='CO') as amount, "
         query+= "(select sum(amount_release) from allotmentreleases where "
         query+= "agency_id=agency.id and allocation='co' "
         query+= "and month=%s and year=%s) as total_release from agency"
-        cursor.execute(query, [data['month'], data['year'], data['year']])
+        cursor.execute(query, [data['year'], data['month'], data['year']])
         agencies = dictfetchall(cursor)
     
     agencies_allocation = []
     count = 1
+    total = 0
     for agency in agencies:
-        agencies_allocation.append({
-            'no'     : count,
-            'agency' : agency['name'],
-            'amount' : numify(agency['amount']) - numify(agency['total_release'])
-        })
-        count+=1
+        balance = numify(agency['amount']) - numify(agency['total_release'])
+        if balance > 0:
+            agencies_allocation.append({
+                'no'     : count,
+                'agency' : agency['name'],
+                'amount' : balance
+            })
+            count+=1
+        total+=balance
 
     data['agencies']  = agencies_allocation
     data['str_month'] = stringify_month(data['month'])
+    data['total'] = total
     return render_to_response('./admin/smca.html', data, context)
 
 

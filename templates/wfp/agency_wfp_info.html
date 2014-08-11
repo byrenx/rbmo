@@ -63,11 +63,11 @@
 	  {% for act in ps.acts%}
 	<tr onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	  <td width="70px">
-	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{ps.id}})">
+	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}})">
 	      [Edit]
 	    </a>&nbsp;
 	  </td>
-	  <td id="td{{ps.id}}" onclick="getWFPData({{act.id}});">{{act.activity}}</td>
+	  <td id="td{{act.id}}" onclick="getWFPData({{act.id}});">{{act.activity}}</td>
 	</tr>
 	  {%endfor%}
 	{% endfor %}
@@ -97,7 +97,7 @@
 	   <tr>
 	     <td colspan="2" >{{co.prog}}</td>
 	   </tr>
-	   {% for act in cos.acts%}
+	   {% for act in co.acts%}
 	    <tr onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	      <td width="70px">
 		<a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}})">
