@@ -30,7 +30,7 @@
     </form>
   </div>
   <div class="col-sm-4">
-    <a href="#" class="btn btn-primary">
+    <a href="" data-toggle="modal" data-target="#transmittalModal" class="btn btn-primary">
       <span class="glyphicon glyphicon-print"></span>
       Transmittal Letter
     </a>
@@ -82,6 +82,8 @@
     {%endif%}
   </div>
 </div>
+
+{%include "./admin/transmittalletter_edit_form.html" %}
 {% endblock %}
 
 {%block scripts%}
