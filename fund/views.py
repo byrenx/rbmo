@@ -353,20 +353,30 @@ def isMRS(year, month, agency):#is requisite month report was submitted
 
 
 def is_allQRS(year, month, agency): # is all quarter requirement submitted    
+    cursor = connection.cursor()
     q_reqs = QuarterlyReq.objects.all().count() #count of all quarterly reqs
     q_req_subs = 0
+    qrs_query = '''select count(distinct(requirement_id)) as count
+    from quarter_req_submitted where quarter=%s and agency_id=%s
+    and year=%s
+    '''
+    
     if month<=3:
-        q_req_subs = QuarterReqSubmission.objects.filter(year=year-1,quarter=4, agency=agency).distinct('requirement').count() #count of distinct submitted quarter reqs
-        return (q_reqs-q_req_subs == 0)
+        cursor.execute(qrs_query, [year-1, 4, agency.id])
+        qrs_count = numify(cursor.fetchone()[0])
+        return (q_reqs-qrs_count == 0)
     elif month>3 and month<=6:
-        q_req_subs = QuarterReqSubmission.objects.filter(year=year,quarter=1, agency=agency ).distinct('requirement').count() #count of distinct submitted quarter reqs
-        return (q_reqs-q_req_subs == 0)
+        cursor.execute(qrs_query, [year, 1, agency.id])
+        qrs_count = numify(cursor.fetchone()[0])
+        return (q_reqs-qrs_count == 0)
     elif month>6 and month<=9:
-        q_req_subs = QuarterReqSubmission.objects.filter(year=year,quarter=2, agency=agency ).distinct('requirement').count() #count of distinct submitted quarter reqs
-        return (q_reqs-q_req_subs == 0)
+        cursor.execute(qrs_query, [year, 2, agency.id])
+        qrs_count = numify(cursor.fetchone()[0])
+        return (q_reqs-qrs_count == 0)
     elif month>9 and month<=12:
-        q_req_subs = QuarterReqSubmission.objects.filter(year=year-1,quarter=4, agency=agency ).distinct('requirement').count()#count of distinct submitted quarter reqs
-        return (q_reqs-q_req_subs == 0)
+        cursor.execute(qrs_query, [year, 3, agency.id])
+        qrs_count = numify(cursor.fetchone()[0])
+        return (q_reqs-qrs_count == 0)
 
 @login_required(login_url='/admin/')
 def fundReleaseForm(request):
