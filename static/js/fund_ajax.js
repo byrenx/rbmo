@@ -95,3 +95,14 @@ function getAllotmentBal(){
 	  }
 	 );
 }
+
+
+function printNOT(){//notice of transmittal
+    var agency = $('#agency').val();
+    var oic = $('#oic').val();
+    var content = $('#content').val();
+
+    $('#content_letter').html(content);
+    $('#oic_letter').html(oic);
+    $('#trans_note').printArea();
+}

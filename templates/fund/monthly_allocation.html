@@ -77,7 +77,7 @@
 	       <span class="glyphicon glyphicon-print"></span>
 	       &nbsp;Transmittal Letter
 	     </a>
-	     <a href="javascript:printTransNote()" class="btn btn-default">
+	     <a href="" data-toggle="modal" data-target="#noticeModal" class="btn btn-default">
 	       <span class="glyphicon glyphicon-print"></span>
 	       &nbsp;Notice of Transmittal
 	     </a>
@@ -94,6 +94,7 @@
   </div>
   {% endif %}
 </div>
+{%include "./fund/notice_editor.html"%}
 {% endblock %}
 
 {% block scripts %}

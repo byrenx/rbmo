@@ -104,7 +104,8 @@ def monthlyAlloc(request):
     context = RequestContext(request)
     data = {'system_name' : SYSTEM_NAME,
             'c_year'      : time.strftime('%Y'),
-            'allowed_tabs': get_allowed_tabs(request.user.id)
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'cur_date'    : time.strftime('%B %d, %Y')
     }
 
     unsubmitted_reqs = []

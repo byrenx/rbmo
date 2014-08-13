@@ -1,0 +1,47 @@
+<!-- Modal -->
+<div class="modal" id="noticeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Notice of Transmittal to Agency</h4>
+      </div>
+      <form action="javascript:printNOT()" class="form-horizontal" >
+	{%load humanize%}
+	<div class="modal-body">
+	  <div class="form-group">
+	    <label class="col-sm-2">To: </label>
+	    <div class="col-sm-10">
+	      <p class="form-control-static">{{agency.name}}</p>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <textarea class="widgEditor nothing" id="content" name="content"><p>This is to inform you that you monthly cash allocation for <b>{% if allocation == "PS"%}
+          Personnel Services
+       {% elif allocation == "MOOE"%}
+          Maintenance and Other Operating Expenses
+       {% elif allocation == "CO"%}
+          Capital Outlay
+       {% endif %}
+		</b> for the month of {{month_str}} has been transmitted to the <b>Office of the Regional Treasurer</b> on {{today}} in the amount of <b>Php {{amount|intcomma}} </b>. As such, necessarry follow-ups should be made to the office of the Regional Treasurer
+    </br>
+    Thank you.
+    </p></textarea>
+	  </div>
+	  <div class="form-group">
+	    <label class="col-sm-3">
+	      OIC, Executive Director
+	    </label>
+	    <div class="col-sm-9">
+	      <input type="text" id="oic" name="oic" class="form-control" placeholder="OIC, Executive Director" required>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" id="pi_close_modal" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Print</button>
+	</div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -1,30 +1,24 @@
 <div class="col-sm-12" style="display: none" id="trans_note">
   {%load humanize%}
-  <center><u><h3>NOTICE</h3></u></center>
-  </br></br></br>
-  <p>May 5, 2014
+  <div class="col-sm-12">
+    <center><u><h3>NOTICE</h3></u></center>
+  </div>
+  </br>
+  <div class="col-sm-12">
+    <p>{{cur_date}}</p>
+  </div>
+  </br>
+  <div class="col-sm-12">
+    <b>To: {{agency.name}}</b>
+  </div>
+  </br>
+  <div class="col-sm-12" id="content_letter">
+  </div>
   </br></br>
-  <b><u>To:&nbsp;{{agency.name}}</u></b>
-    </br></br>
-    This is to inform you that you monthly cash allocation for 
-    <b>{% if allocation == "PS"%}
-          Personnel Services
-       {% elif allocation == "MOOE"%}
-          Maintenance and Other Operating Expenses
-       {% elif allocation == "CO"%}
-          Capital Outlay
-       {% endif %}
-    </b> for the month of {{month_str}} has been transmitted to the <b>Office of the Regional Treasurer</b> on {{today}} in the amount of <b>Php {{amount|intcomma}} </b>. As such, necessarry follow-ups should be made to the office of the Regional Treasurer
-    </br>
-    Thank you.
-    </br>
-    </br>
-    <b>MAILYN e. MACUSANG</b></br>
-    <i>OIC, Executive Director</i>
-    </br></br>
-    Noted by:</br></br></br>
-    <b>ATTY. LAISA MASUHUD-ALAMIA</b></br>
-    <i>Executive Secretary</i>
-  </p>
-
+  <div class="col-sm-12">
+    <p>
+      <b><span id="oic_letter"></span></b></br>
+      OIC, Executive Director
+    </p>
+  </div>
 </div>
