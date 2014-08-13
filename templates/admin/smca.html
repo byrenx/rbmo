@@ -1,13 +1,10 @@
 {% extends "./admin/base.html" %}
 
-{% block css %}
-
-{% endblock %}
-
 {% block content %}
 <div class="container">
   <div class="col-sm-8">
-    <form action="/admin/smca" class="form-inline" method="POST">{%csrf_token%}
+    <form action="/admin/smca" class="form-inline" method="POST">
+      {%csrf_token%}
       <div class="form-group">
 	{{search_form.allocation}}
       </div>
@@ -82,11 +79,11 @@
     {%endif%}
   </div>
 </div>
-
+{%include "./admin/transmittal_letter.html" %}
 {%include "./admin/transmittalletter_edit_form.html" %}
 {% endblock %}
 
 {%block scripts%}
-
-{%endblock%}
+<script type="text/javascript" src="/static/js/admin.js"></script>
+{%endblock scripts%}
 

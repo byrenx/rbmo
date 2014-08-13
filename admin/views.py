@@ -860,7 +860,7 @@ def smca(request):#schedule of monthly cash allocation
     data = {'system_name' : SYSTEM_NAME,
             'allowed_tabs': get_allowed_tabs(request.user.id),
             'search_form' : MCASearchForm({'month' : datetime.today().month}),
-            'cur_date'    : datetime.today(),
+            'cur_date'    : time.strftime('%B %d, %Y'),
             'year'        : datetime.today().year,
             'month'       : datetime.today().month,
             'allocation'  : 'PS',
@@ -891,6 +891,7 @@ def smca(request):#schedule of monthly cash allocation
         query+= "agency_id=agency.id and allocation='PS' "
         query+= "and month=%s and year=%s) as total_release from agency"
         cursor.execute(query, [data['year'], data['month'], data['year']])
+        data['allocation_str'] = "Personnel Services"
         agencies = dictfetchall(cursor)
 
     elif data['allocation'] == 'MOOE':
@@ -921,6 +922,7 @@ def smca(request):#schedule of monthly cash allocation
                                req_year
                            ]
         )
+        data['allocation_str'] = "Maintenance and other Operating Expenses"
         agencies = dictfetchall(cursor)
     else:
         query = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
@@ -931,6 +933,7 @@ def smca(request):#schedule of monthly cash allocation
         query+= "and month=%s and year=%s) as total_release from agency"
         cursor.execute(query, [data['year'], data['month'], data['year']])
         agencies = dictfetchall(cursor)
+        data['allocation_str'] = "Capital Outlay"
     
     agencies_allocation = []
     count = 1

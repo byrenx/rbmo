@@ -6,59 +6,47 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title" id="myModalLabel">Transmittal Letter Details Form</h4>
       </div>
-      <form action="javascript:addPerfTarget()" class="form-horizontal">
+      <form action="javascript:$('#trans_let_id').printArea()" class="form-horizontal" onsubmit="javascript:setContentTLetter()">
 	<div class="modal-body">
 	  <div class="form-group">
-	    <div class="col-sm-5">
-	      Marh 20, 2014
+	    <label class="col-sm-2">To: </label>
+	    <div class="col-sm-10">
+	      <input type="text" id="reg_treasurer" name="reg_treasurer" class="form-control" placeholder="Regional Treasurer" required>
 	    </div>
-	    </br></br></br>
 	  </div>
 	  <div class="form-group">
-	    <div class="col-sm-12">
-	      <input type="text" name="name_to" class="form-control">
+	    <label class="col-sm-2">Attention:</label>
+	    <div class="col-sm-10">
+	      <input type="text" name="fiscal" id="fiscal" placeholder="Fiscal Examiner" class="form-control" required>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <textarea class="widgEditor nothing" id="content" name="content"><p>
+		SIR/MAAM:</br></br>
+	    </p>
 	      <p>
-		Regional Treasurer
-	        </br>
-		ORT ARMM
+		Assalamu Alaikom Waramatullahi Wabarakatuhu!</br>
+		Respectfully forwarding herewith the attached <b>Schedule of Monthly Cash Allocation</b> of {{allocation_str}} for the month of {{month_str}}, {{year}}.</br></br>
+		Submitted for your information and guidance.
+		</br></br>
+		Shukran and Wassalam.
+		</br></br></br>
+		Respectfully yours,
 	      </p>
-	    </div>
+	    </textarea>
 	  </div>
-	  </br></br>
 	  <div class="form-group">
-	    <div class="col-sm-3">
-	      ATTENTION : 
-	    </div>
+	    <label class="col-sm-3">
+	      OIC, Executive Director
+	    </label>
 	    <div class="col-sm-9">
-	      <input type="text" name="attention_name" class="form-control">
-	      <p>
-		Fiscal Examiner V
-	      </p>
-	    </div>
-	    </br>
-	  </div>
-	  <div class="form-group">
-	    <div class="col-sm-12">
-	      MAAM/SIR:
-	    </div>
-	    <div class="col-sm-12">
-	      <textarea name="trans_content" id="trans_content" class="form-control" rows="5"></textarea>
-	    </div>
-	  </div>
-	  </br></br>
-	  <div class="form-group">
-	    <div class="col-sm-12">
-	      <input type="text" name="oic" id="oic" class="form-control" placeholder="Executive Director">
-	      <p>
-		OIC, Executive Director
-	      </p>
+	      <input type="text" id="oic" name="oic" class="form-control" placeholder="OIC, Executive Director" required>
 	    </div>
 	  </div>
 	</div>
-	
 	<div class="modal-footer">
           <button type="button" id="pi_close_modal" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary">Print</button>
 	</div>
       </form>
     </div><!-- /.modal-content -->
