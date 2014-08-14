@@ -1,28 +1,23 @@
 <div class="col-sm-12" style="display: none" id="com_note">
-  <center><u><h3>NOTICE OF COMPLIANCE</h3></u></center>
-  </br></br></br>
-  <p>May 5, 2014
+  <div>
+    <center><u><h3>NOTICE OF COMPLIANCE</h3></u></center>
+  </div>
+  </br>
+  <div class="col-sm-12">
+    <p>May 5, 2014</p>
+  </div>
   </br></br>
-  <b><u>To:&nbsp;{{agency.name}}</u></b>
-    </br></br>
-    Please be informed that upon evaluation of your Agency/Office compliance to the memo 173, which reiterates the regular submission as regards by the Regional Governor, the following marked documents are yet to be received by this office
-    <ul>
-      {% for q_req in monthly_alloc_stat.quarter_reqs %}
-      <li>{{q_req.name}}</li>
-      {% endfor %}
-    </ul>
-    </br>
-    May we remind you of the submission of the above marked documents to facilitate the release of your office monthly cash allocation.</br>
-    If submission has already been made, please disregard this notice.</br>
-    Thank you for your usual cooperation.
-    </br>
-    </br>
-    <b>MAILYN e. MACUSANG</b></br>
-    <i>OIC, Executive Director</i>
-    </br></br>
-    Noted by:</br></br></br>
-    <b>ATTY. LAISA MASUHUD-ALAMIA</b></br>
-    <i>Executive Secretary</i>
-  </p>
-
+  <div class="col-sm-12">
+    <b><u>To:&nbsp;{{agency.name}}</u></b>
+  </div>
+  </br></br>
+  <div class="col-sm-12" id="compliance_content">
+  </div>
+  </br></br>
+  <div class="col-sm-12">
+    <p>
+      <b><span id="oic_letter"></span></b></br>
+      OIC, Executive Director
+    </p>
+  </div>
 </div>

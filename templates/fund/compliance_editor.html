@@ -1,0 +1,48 @@
+<!-- Modal -->
+<div class="modal" id="complianceModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Notice of Compliance</h4>
+      </div>
+      <form action="javascript:printNOC()" class="form-horizontal" >
+	{%load humanize%}
+	<div class="modal-body">
+	  <div class="form-group">
+	    <label class="col-sm-2">To: </label>
+	    <div class="col-sm-10">
+	      <p class="form-control-static">{{agency.name}}</p>
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <textarea class="widgEditor nothing" id="content" name="content"><p>Please be informed that upon evaluation of your Agency/Office compliance to the memo 173, which reiterates the regular submission as regards by the Regional Governor, the following marked documents are yet to be received by this office.
+    <ul>
+      {% for q_req in monthly_alloc_stat.quarter_reqs %}
+      <li>{{q_req.name}}</li>
+      {% endfor %}
+    </ul>
+    </br>
+    May we remind you of the submission of the above marked documents to facilitate the release of your office monthly cash allocation.</br>
+    If submission has already been made, please disregard this notice.</br>
+    Thank you for your usual cooperation.
+
+    </p></textarea>
+	  </div>
+	  <div class="form-group">
+	    <label class="col-sm-3">
+	      OIC, Executive Director
+	    </label>
+	    <div class="col-sm-9">
+	      <input type="text" id="oic" name="oic" class="form-control" placeholder="OIC, Executive Director" required>
+	    </div>
+	  </div>
+	</div>
+	<div class="modal-footer">
+          <button type="button" id="pi_close_modal" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Print</button>
+	</div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

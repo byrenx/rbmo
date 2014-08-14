@@ -106,3 +106,14 @@ function printNOT(){//notice of transmittal
     $('#oic_letter').html(oic);
     $('#trans_note').printArea();
 }
+
+
+function printNOC(){
+    var agency = $('#agency').val();
+    var oic = $('#oic').val();
+    var content = $('#content').val();
+
+    $('#compliance_content').html(content);
+    $('#oic_letter').html(oic);
+    $('#com_note').printArea();
+}

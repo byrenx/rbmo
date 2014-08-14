@@ -64,7 +64,7 @@
 	       {% endfor %}
 	    </ul>
 	    {% include "./fund/compliance_note.html" %}
-	    <a href="javascript:printNC()" class="btn btn-default">
+	    <a href="" data-toggle="modal" data-target="#complianceModal"class="btn btn-default">
 	    <span class="glyphicon glyphicon-print"></span>&nbsp;Notice of Compliance
 	    </a>
 	{% elif monthly_alloc_stat.stat == "PROCESSED"%}
@@ -94,7 +94,11 @@
   </div>
   {% endif %}
 </div>
-{%include "./fund/notice_editor.html"%}
+{% if monthly_alloc_stat.stat == "PENDING"%}
+   {%include "./fund/compliance_editor.html"%}
+{%elif monthly_alloc_stat.stat == "PROCESSED"%}
+   {%include "./fund/notice_editor.html"%}
+{%endif%}
 {% endblock %}
 
 {% block scripts %}
