@@ -471,6 +471,7 @@ def mpfro_form(request):
         agency = Agency.objects.get(id=data['agency_id'])
         data['action'] = action
         data['agency'] = agency
+        data['month_form'] = MonthForm({'month': datetime.today().month})
         
         if action == 'add':
             year = datetime.today().year
@@ -479,7 +480,6 @@ def mpfro_form(request):
             activities = dictfetchall(cursor)
             data['year'] = year
             data['activities'] = activities
-            data['month_form'] = MonthForm({'month': datetime.today().month}),
             return render_to_response('./admin/mpfro_form.html', data, context)
         else: #edit
             mpfro_id = request.GET.get('mpfro_id')
@@ -557,66 +557,57 @@ def allot_releases(request):
 
 
 def yearly_fund(request):
+    cursor = connection.cursor()
+    context = RequestContext(request)
     data = {
             'system_name'  : SYSTEM_NAME,
-            'allowed_tabs' : get_allowed_tabs(request.user.id)}
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'cur_year'     : datetime.today().year
+           }
     year = date.today().year 
-    i = 2010
     year_list = []
-    while year >= i :
-        year_list.append(year)
-        year = year - 1
-    data['year_choices'] = year_list
-    if request.method == 'GET':
-        allocate=request.GET.get('allocate')
-        year_choose = request.GET.get('year_choose')
-        cursor = connection.cursor()
-            
-        if allocate == 'all':
-            data['allocate_name'] = 'PS, MOOE, and CO'
-            ps_query = '''
-            SELECT sum(jan) as jan, sum(feb) as feb, sum(mar) as mar,
-                sum(apr) as apr, sum(may) as may, sum(jun) as jun, sum(jul) as jul,
-                sum(aug) as aug, sum(sept) as sept, sum(oct) as oct, sum(nov) as nov,
-                sum("dec") as "dec" FROM wfp_data
-            where year=%s;
-            '''
-            month=['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            result =[]
-            cursor.execute(ps_query,[year_choose])
-            ps_month = cursor.fetchone()
-            for i in range(1, 13):
-                release = AllotmentReleases.objects.filter(month=i, year=year_choose).aggregate(Sum('amount_release'))
-           
-                result.append({'month':month[i-1], 'amount':ps_month[i-1],'release':numify(release['amount_release__sum']),'balance':ps_month[i-1]-numify(release['amount_release__sum'])})
-            
-            data['result'] = result
-        elif allocate == 'CO' or allocate == 'MOOE' or allocate == 'PS':   
-            if allocate == 'CO':
-                data['allocate_name'] = 'CO'
-            elif allocate == 'MOOE':
-                data['allocate_name'] = 'MOOE'
-            elif allocate == 'PS':
-                data['allocate_name'] = 'PS'
-            ps_query = '''
-            SELECT sum(jan) as 'jan', sum(feb) as 'feb', sum(mar) as 'mar',
-                sum(apr) as 'apr', sum(may) as 'may', sum(jun) as 'jun', sum(jul) as 'jul',
-                sum(aug) as 'aug', sum(sept) as 'sept', sum(oct) as 'oct', sum(nov) as 'nov',
-                sum(`dec`) as 'dec' FROM wfp_data
-            where allocation = %s and year=%s;
-            '''
-            month=['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            result =[]
-            cursor.execute(ps_query,[allocate,year_choose])
-            ps_month = cursor.fetchone()
-            for i in range(1, 13):
-                release = AllotmentReleases.objects.filter(allocation=allocate, month=i, year=year_choose).aggregate(Sum('amount_release'))
-           
-                result.append({'month':month[i-1], 'amount':ps_month[i-1],'release':numify(release['amount_release__sum']),'balance':ps_month[i-1]-numify(release['amount_release__sum'])})
-            
-            data['result'] = result
+    
+    yrs_query = "select distinct(year) as year from wfp_data"
+    cursor.execute(yrs_query)
+    for yr in dictfetchall(cursor):
+        year_list.append(yr['year'])
 
-    return render(request,'./admin/yearly_fund.html', data)  
+    data['year_choices'] = year_list
+    if request.method=="POS":
+        pass
+    fund_query = '''select (select sum(total) from wfp_data
+                            where year=%s and allocation='PS') 
+                            as ps_amount,
+                            ((select sum(total) from wfp_data
+                              where year=%s and allocation='PS')/
+                              sum(total)*100) as ps_percentile,
+                            (select sum(total) from wfp_data
+                              where year=%s and allocation='MOOE') 
+                              as mooe_amount,
+                            ((select sum(total) from wfp_data
+                              where year=%s and allocation='MOOE')/
+                              sum(total)*100) as mooe_percentile,
+                            (select sum(total) from wfp_data
+                              where year=%s and allocation='CO') 
+                              as co_amount,
+                            ((select sum(total) from wfp_data
+                              where year=%s and allocation='CO')/
+                              sum(total)*100) as co_percentile,
+                            sum(total) as total_fund
+                     from wfp_data where year=%s
+                     '''
+    cursor.execute(fund_query, [year, year, year,year, year, year, year])
+    fund_rs = cursor.fetchone()
+    fund = {'ps_amount'     : fund_rs[0],
+            'ps_percentile' : fund_rs[1],
+            'mooe_amount'     : fund_rs[2],
+            'mooe_percentile' : fund_rs[3],
+            'co_amount'     : fund_rs[4],
+            'co_percentile' : fund_rs[5],
+            'total_fund'    : fund_rs[6]
+           }
+    data['fund'] = fund
+    return render_to_response('./admin/yearly_fund.html', data, context)  
 
 
 def fundDistribution(request):

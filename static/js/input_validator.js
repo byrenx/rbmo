@@ -5,10 +5,12 @@ function allNumbers(e){
    }else if(e.which){
       key = e.which;
    }
-                
+
   if (key == 8){//backspace
     return true;
   }else if(key==9){//tab
+    return true;
+  }else if(key==37 || key==39){//37 <-, 39 ->
     return true;
   }else if (key < 48 || key > 57){//alpha characters
     return false;
@@ -16,6 +18,7 @@ function allNumbers(e){
     return true;
   }
 }
+
 
 function Decimals(e){
   var key;
@@ -25,9 +28,12 @@ function Decimals(e){
       key = e.which;
    }
 
+
   if (key == 8 || key == 13){//backspace
     return true;
   }else if(key==9){//tab
+    return true;
+  }else if(key==37 || key==39){//37 <-, 39 ->
     return true;
   }else if(key==190){//decimal point
     return true;

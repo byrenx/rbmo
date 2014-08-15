@@ -5,70 +5,117 @@
 {% endblock %}
 
 {% block content %}
-<div style="width: 20%" > 
-      <form action="/admin/yearly_fund" class="form-inline" style="margin-bottom:24px">
-        <div class="input-group col-sm-1">
-            <select style="width: 100px; " class="btn btn-default dropdown-toggle" type="radio" id="year_choose" name="year_choose">
+<div class="container">
+  <div class="col-sm-12">
+    <form action="/admin/yearly_fund" class="form-inline" style="margin-bottom:24px">
+      <div class="form-group">
+        <select id="year_choose" name="year_choose" class="form-control">
               {% for year in year_choices %}
-                 <option value="{{year}}">{{year}}</option>
+              <option value="{{year}}">{{year}}</option>
               {% endfor %}
-            </select>
-            <select style="width: 100px; " class="btn btn-default dropdown-toggle" type="radio" id="allocate" name="allocate">
-                <option value="all">All</option>
-                <option value="PS">PS</option>
-                <option value="MOOE">MOOE</option>
-                <option value="CO">CO</option>
-            </select>
-          <div class="input-group-btn">
-            <button class="btn btn-primary btn-small">Generate Report</button>
-          </div>
+        </select>
+        <div class="form-group">
+          <button class="btn btn-primary btn-small">Generate Report</button>
         </div>
-      </form>
-
-</div>
-{%if result%}
-<div>
- <a href="javascript:$('#local_fund_print').printArea()" class="btn btn-default">
-    <span class="glyphicon glyphicon-print"></span>&nbsp;Print
-  </a> 
-  <table style="width: 70%" border="1" class="table">
-    <thead> 
-        <tr>
-        <th>Month</th>
-        <th>Total of {{allocate_name}}</th>
-        <th>Total Release</th>
-        <th>Balance</th>          
-        </tr>
-
-    </thead>
-
-    <tbody>
-        {% for x in result %}
-          <tr>
-            <td>{{x.month}}</td>
-            <td>{{x.amount}}</td>
-            <td>{{x.release}}</td>
-            <td>{{x.balance}}</td>
-          </tr>
-        {% endfor %}
-    </tbody>
-  </table>
-</div>
- <div id="local_fund_print" style="display:none">
-    {% include 'admin/local_fund_print.html' %}
+      </div>
+    </form>
+    <hr/>
   </div>
-{% else %}
-  <p>
-    ang gwapo ko pre
-    ang gwapo ko pre
-    ang gwapo ko pre
-    ang gwapo ko pre
-    ang gwapo ko pre
-    ang gwapo ko pre
-    ang gwapo ko pre
-  </p>
-{% endif %}
+  
+  <div class="col-sm-12">
+    <center><h3>Allocation of {{cur_year}} Fund</h3></center>
+    </br>
+    <div class="col-sm-5 panel panel-default">
+      <table class="table table-condensed">
+	{%load humanize%}
+	<thead>
+	  <th>Fund</th>
+	  <th>Allocation</th>
+	  <th>Percentage(%)</th>
+	</thead>
+	<tbody>
+	  <tr>
+	    <th>PS</th>
+	    <td id="ps_amount">{{fund.ps_amount|intcomma}}</td>
+	    <td id="ps_percentile">{{fund.ps_percentile}}</td>
+	  </tr>
+	  <tr>
+	    <th>MOOE</th>
+	    <td id="mooe_amount">{{fund.mooe_amount|intcomma}}</td>
+	    <td id="mooe_percentile">{{fund.mooe_percentile}}</td>
+	  </tr>
+	  <tr>
+	    <th>CO</th>
+	    <td id="co_amount">{{fund.co_amount|intcomma}}</td>
+	    <td id="co_percentile">{{fund.co_percentile}}</td>
+	  </tr>
+	  <tr>
+	    <th>Total</th>
+	    <td id="total_fund">{{fund.total_fund|intcomma}}</td>
+	    <td>100</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+
+    <div class="col-sm-7">
+      <form class="form-inline">
+	<div class="form-group">
+	  <select id="chart_type" name="chart_type" class="form-control" onchange="renderChart($(this).val())">
+	    <option value="bar">Bar</option>
+	    <option value="graph">Graph</option>
+	    <option value="pie">Pie</option>
+	  </select>
+	</div>
+	<div class="form-group">
+	  <button type="submit" class="btn btn-primary">View</button>
+	</div>
+      </form>
+      <div class="col-sm-12" id="fund_chart" style="width:100%; height:350px;">
+      </div>
+    </div>
+  </div>
+    
 {% endblock %}
+
 {%block scripts%}
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/jquery.jqplot.min.js"></script>
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.pieRenderer.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.1.0.8/jquery.jqplot.css" />
+<script language="javascript" type="text/javascript" src="/static/js/reportcharts.js"></script>
+
+<script type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.canvasTextRenderer.min.js"></script>
+<script type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.canvasAxisTickRenderer.min.js"></script>
+<script type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.barRenderer.min.js"></script>
+<script language="javascript" type="text/javascript">
+  $(document).ready(function(){
+     renderChart("bar");
+  });
+
+
+  function renderChart(chart_type){
+     $('#fund_chart').html('');
+     var ps_percentile = new Number($('#ps_percentile').html());
+     var mooe_percentile = new Number($('#mooe_percentile').html());
+     var co_percentile = new Number($('#co_percentile').html());
+
+     var data = [['PS', ps_percentile], 
+                 ['MOOE', mooe_percentile],
+                 ['CO', co_percentile]
+                ]
+
+    if (chart_type=="bar"){
+       loadBarChart('fund_chart', data);
+    }else if(chart_type=="graph"){
+     
+    }else{//pie
+       loadPieChart('fund_chart', data);
+    }
+  }
+
+</script>
+
 {%endblock%}
 

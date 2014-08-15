@@ -62,6 +62,7 @@ function printTransNote(){
     $('#trans_note').printArea();
 }
 
+
 $('#id_ada').keydown(function(){
     return allNumbers(event);
 });
@@ -69,6 +70,7 @@ $('#id_ada').keydown(function(){
 $('#id_amount').keydown(function(){
     return Decimals(event);
 });
+
 
 $(document).ready(function(){
     getAllotmentBal();

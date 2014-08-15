@@ -32,7 +32,7 @@ class AllotmentReleaseForm(forms.Form):
     MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'), 
           (5, 'May'), (6, 'June'), (7, 'July'), (8, 'August'), (9, 'September'),
           (10, 'October'), (11, 'November'), (12, 'December'))
-    ada = forms.IntegerField(widget=forms.NumberInput(attrs={
+    ada = forms.IntegerField(widget=forms.TextInput(attrs={
                             'class'    : 'form-control',
                             'required' : 'True'
     }))
@@ -42,7 +42,7 @@ class AllotmentReleaseForm(forms.Form):
                                   'class': 'form-control'
                               }
     ))
-    amount = forms.DecimalField(widget=forms.NumberInput(
+    amount = forms.DecimalField(widget=forms.TextInput(
         attrs={'class': 'form-control',
                'required': 'True'
         }

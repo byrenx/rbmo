@@ -4,9 +4,13 @@
     <form action="/admin/submit_cos" method="POST">{%csrf_token%}
       <div class="form-group">
 	<input type="hidden" name="agency_id" value="{{agency.id}}">
-	<input type="checkbox" name="cos_submit">&nbsp;
-	Check this box if you receive Contract of Service today, then
-	submit
+      </div>
+      <div class="checkbox">
+	<label>
+	  <input type="checkbox" name="cos_submit">&nbsp;
+	  Check this box if you receive Contract of Service today, then
+	  submit
+	</label>
       </div>
       <div class="form-group">
 	<button type="submit" class="btn btn-primary">

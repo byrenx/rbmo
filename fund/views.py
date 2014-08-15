@@ -381,7 +381,6 @@ def is_allQRS(year, month, agency): # is all quarter requirement submitted
 
 @login_required(login_url='/admin/')
 def fundReleaseForm(request):
-
     context = RequestContext(request)
 
     data = {'system_name' : SYSTEM_NAME,
@@ -405,7 +404,8 @@ def fundReleaseForm(request):
                 month = allot_release_form.cleaned_data['month'],
                 year = request.POST.get('year'),
                 date_release = datetime.today(),
-                amount_release = allot_release_form.cleaned_data['amount']
+                amount_release = allot_release_form.cleaned_data['amount'],
+                user = request.user
             )
             
             budget = gettotalAllocation(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
@@ -427,7 +427,7 @@ def fundReleaseForm(request):
             data['agency'] = allot_release.agency
             return render_to_response('./fund/fund_release_form.html', data, context)
         else:
-            data['errors'] = fund_release_form.errors
+            data['errors'] = allot_release_form.errors
             return render_to_response('./fund/fund_release_form.html', data, context)
             
     elif data['agency_id'] is None:
