@@ -2,46 +2,83 @@
 
 {% block content %}
 <content>
-<div class="container">
-<br><br><br>
-<ul class="nav nav-pills nav-stacked col-md-2">
-  <li><a href="/agency/home"> Notification </a></li>
-  <li class="active"><a href="/agency/requirements"> Requirement Status </a></li>
-  <li><a href="/agency/balance"> Balances </a></li>
-  <li><a href="/agency/approved"> Total Approved Budget</a></li>
-</ul>
-
-
-<div class="col-md-4">
-  
-  <form class="form-inline" action="#">{% csrf_token %}
-     <label class="control-label">2014</label>
-     <select class="form-control">
-	<option>January</option>
-	<option>February</option>
-	<option>March</option>
-	<option>April</option>
-	<option>May</option>
-	<option>June</option>
-	<option>July</option>
-	<option>August</option>
-	<option>September</option>
-	<option>October</option>
-	<option>November</option>
-	<option>December</option>
-      </select>
-     <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
-  </form>
-</div> 
-
-<br><br><br>
-<div class="col-md-10 panel panel-default">
-
-<h2> Sample Content Here....</h2>
-<p> Lorem ipsum dolor </p>
-<p> Lorem ipsum dolor </p>
-<p> Lorem ipsum dolor </p>
-</div>
-</div>
+  <div class="container">
+    <br><br><br>
+    <ul class="nav nav-pills nav-stacked col-md-3">
+      <li><a href="/agency/home"> Notification </a></li>
+      <li class="active"><a href="/agency/requirements"> Requirement Status </a></li>
+      <li><a href="/agency/balance"> Balances </a></li>
+      <li><a href="/agency/approved"> Total Approved Budget</a></li>
+    </ul>
+    <div class="col-md-9">
+      <div class="col-md-4">
+	<form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
+	  <label class="control-label">2014</label>
+	  {{month_form.month}}
+	  <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
+	</form>
+      </div> 
+      <br><br><br>
+      <div class="col-md-12">
+	<div class="col-sm-6">
+	  <div class="panel panel-default">
+	    <div class="panel-heading">
+	      <h3 class="panel-title">Submitted Requirements</h3>
+	    </div>
+	  {%if submitted_reqs%}
+	    <table class="table table-condensed">
+	      {%for req in submitted_reqs%}
+	      <tr>
+		<td>
+		  <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req}}
+		</td>
+	      </tr>
+	      {%endfor%}
+	    </table>
+	  {%else%}
+	    <div class="panel-body">
+	      <p class="alert alert-danger">
+		Currently No Requirements Submitted
+	      </p>
+	    </div>
+	  {%endif%}
+	  </div>
+	</div>
+	<div class="col-sm-6">
+	  <div class="panel panel-default">
+	    <div class="panel-heading">
+	      <h3 class="panel-title">Lacking Requirements</h3>
+	    </div>
+	    {%if lacking_reqs%}
+   	    <table class="table table-condensed">
+	      {%for req in lacking_reqs%}
+	      <tr>
+		<td>
+		  <span class="glyphicon glyphicon-remove text-danger"></span>&nbsp;{{req}}
+		</td>
+	      </tr>
+	      {%endfor%}
+	    </table>
+	    {%else%}
+	    <div class="panel-body">
+	      <p class="alert alert-info">
+		All required requirements already submitted
+	      </p>
+	    </div>
+	    {%endif%}
+	  </div>
+	</div>
+      </div>
+      <div class="col-md-12">
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Remarks</h3>
+	  </div>
+	  <div class="panel-body">
+	    Sample Content here ..... 
+	  </div>
+	</div>
+      </div>
+    </div>
 </content>
 {% endblock %}

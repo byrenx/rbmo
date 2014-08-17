@@ -42,6 +42,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'rbmo',
+    'admin',
+    'fund',
+    'wfp',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -37,85 +37,35 @@
 </form>
 </div>
 
-{%if total and totalRelease%}
-
+{%if balances %}
 <div class="col-md-10">
-<h2><small>{{success}}</small></h2>
-  <table class="table table-bordered">{%load humanize%}
+  <center>
+    <h4>Remaining Balances for the Year {{year}}</h4>
+    <p>As of {{cur_date}}</p>
+  </center>
+  <table class="table table-bordered table-condensed">{%load humanize%}
     <tr>
-    <th></th>
-    <th style="text-align: center">PS</th>
-    <th style="text-align: center">MOOE</th>
-    <th style="text-align: center">CO</th>
-    <th style="text-align: center">Total</th>
+      <th style="text-align: center">Allocation</th>
+      <th style="text-align: center">Beggining Balance</th>
+      <th style="text-align: center">Release</th>
+      <th style="text-align: center">Ending Balance</th>
     </tr>
-    <tr>
-      <td>Total Budget</td>
-      <td style="text-align: right">
-      {%if PS%}
-      {{PS|intcomma}}
-      {%endif%}
-      </td>
-      <td style="text-align: right">
-      {%if MOOE%}
-      {{MOOE|intcomma}}      
-      {%endif%}
-      <td style="text-align: right">
-	{%if CO%}
-	{{CO|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if total%}<b>
-	{{total|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
-    <tr><td>Total Released</td>
-      <td style="text-align: right">
-	{%if PSR%}
-	{{PSR|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if MOOER%}
-	{{MOOER|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if COR%}
-	{{COR|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if totalRelease%}<b>
-	{{totalRelease|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
-
-    <tr><td><b>Remaining Balance </b></td>
-      <td style="text-align: right"><b>
-	{%if ps_remaining%}
-	{{ps_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if MOOE_remaining%}<b>
-	{{MOOE_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if CO_remaining%}<b>
-	{{CO_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if overall_balance%}<b>
-	{{overall_balance|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
+    {%for bal in balances%}
+      <tr>
+	<th>
+	  {{bal.allocation}}
+	</th>
+	<td style="text-align: right">
+	  {{bal.beginning_bal|intcomma}}
+	</td>
+	<td style="text-align: right">
+	  {{bal.release|intcomma}}
+	</td>
+	<td style="text-align: right">
+	  {{bal.ending_bal|intcomma}}
+	</td>
+      </tr>
+    {%endfor%}
   </table>
 </div>
 {%elif error%}
