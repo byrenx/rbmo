@@ -3,13 +3,7 @@
 {% block content %}
 <content>
   <div class="container">
-    <br><br><br>
-    <ul class="nav nav-pills nav-stacked col-md-3">
-      <li><a href="/agency/home"> Notification </a></li>
-      <li class="active"><a href="/agency/requirements"> Requirement Status </a></li>
-      <li><a href="/agency/balance"> Balances </a></li>
-      <li><a href="/agency/approved"> Total Approved Budget</a></li>
-    </ul>
+    {%include "./agency/side_bar.html"%}
     <div class="col-md-9">
       <div class="col-md-4">
 	<form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}

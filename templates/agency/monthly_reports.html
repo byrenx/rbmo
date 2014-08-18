@@ -1,0 +1,107 @@
+{% extends 'agentbase.html' %}
+
+{% block content %}
+<content>
+  <div class="container">
+    {%include "./agency/side_bar.html"%}
+    <div class="col-md-9">
+      <h3>Performance Report for {{str_month}}&nbsp;{{year}}</h3>
+      <hr/>
+
+      <form class="form-inline" method="POST" action="">
+	<div class="form-group">
+	  <a href="" class="btn btn-primary">
+	    <span class="glyphicon glyphicon-plus-sign"></span>
+	    Add
+	  </a>
+	</div>
+	  &nbsp;|&nbsp;
+	<div class="form-group">
+	  <select name="year" class="form-control">
+	    {%for year in years%}
+	    <option value="{{year.year}}">{{year.year}}</option>
+	    {%endfor%}
+	  </select>
+	</div>
+	<div class="form-group">
+	  {{month_form.month}}
+	</div>
+	<div class="form-group">
+	  <button class="btn btn-default">
+	    <span class="glyphicon glyphicon-search">
+	    </span>
+	  </button>
+	</div>
+      </form>
+      </br>
+      {%if monthly_acts_reports%}
+      <table class="table table-bordered table-condensed">
+	{%load humanize%}
+	<thead>
+	  <tr>
+	    <th>Programs</th>
+	    <th>Indicators</th>
+	    <th>Target</th>
+	    <th>Acc.</th>
+	    <th>Var</th>
+	    <th class="center">Received</th>
+	    <th class="center">Incurred</th>
+	    <th class="center">UA</th>
+	    <th>Remarks</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {%for acc in monthly_acts_reports%}
+	  <tr>
+	    <td rowspan="{{acc.indicator_count}}">
+	      {{acc.activity}}&nbsp;
+	      <a href="/admin/monthly_reports_form?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" class="btn btn-link" title="Edit">
+		<span class="glyphicon glyphicon-edit"></span>
+	      </a>|
+	      <a href="#" class="btn btn-link" title="Remove">
+		<span class="glyphicon glyphicon-remove text-danger"></span>
+	      </a>
+	    </td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td class="decimal">
+	      {{acc.received|intcomma}}
+	    </td>
+	    <td class="decimal">
+	   {{acc.incurred|intcomma}}
+	    </td>
+	    <td class="decimal">{{acc.remaining}}</td>
+	    <td rowspan="{{acc.indicator_count}}">{{acc.remarks}}</td>
+	  </tr>
+	  {%for indicator in acc.indicators_accs%}
+          <tr>
+	    <td>{{indicator.indicator}}</td>
+	    <td>{{indicator.target}}</td>
+	    <td>{{indicator.acc}}</td>
+	    <td>
+	      {%if indicator.variance < 0%}
+					<span class="glyphicon glyphicon-arrow-down text-danger"></span>
+					{{indicator.variance}}
+	      {%elif indicator.variance > 0%}
+		<span class="glyphicon glyphicon-arrow-up text-success"></span>
+		{{indicator.variance}}
+		{%else%}
+		{{indicator.variance}}
+		{%endif%}			
+	    </td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	  {%endfor%}
+	  {%endfor%}
+	  
+	</tbody>
+      </table>
+      {%endif%}
+    </div>
+  </div>
+</content>
+{% endblock %}

@@ -54,11 +54,11 @@
       	  </tr>
           <tr>
             <th colspan="3">APPROVED APPROPRIATON</th>
-            <th>{{ wfp_data_PS.total_sum|intcomma }}</th>
-            <th>{{ wfp_data_MOOE.total_sum|intcomma }}</th>
-            <th>{{ wfp_data_CO.total_sum|intcomma }}</th>
+            <th style="text-align:right">{{ wfp_data_PS.total_sum|intcomma }}</th>
+            <th style="text-align:right">{{ wfp_data_MOOE.total_sum|intcomma }}</th>
+            <th style="text-align:right">{{ wfp_data_CO.total_sum|intcomma }}</th>
             <th></th>
-            <th>{{ remaining_balance|intcomma }}</th>
+            <th style="text-align:right">{{ remaining_balance|intcomma }}</th>
           </tr>
 	</thead>
 	<tbody>
@@ -77,40 +77,40 @@
 	    <td>{{ value.particulars }}</td>
 	    
 	    {% if value.allocation.name == 'PS' %}
-	    <td>{{ value.allocation.amount_release|intcomma }}</td>
+	    <td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
 	    <td></td>
 	    <td></td>
 	    {% elif value.allocation.name == 'MOOE' %}
 	    <td></td>
-	    <td>{{ value.allocation.amount_release|intcomma }}</td>
+	    <td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
 	    <td></td>
 	    {% else %}
 	    <td></td>
 	    <td></td>
-	    <td>{{ value.allocation.amount_release|intcomma }}</td>
+	    <td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
 	    {% endif %}
 	    
-	    <td>{{ value.total_release|intcomma }}</td>
-	    <td>{{ value.remaining_balance|intcomma }}</td>	
+	    <td style="text-align:right">{{ value.total_release|intcomma }}</td>
+	    <td style="text-align:right">{{ value.remaining_balance|intcomma }}</td>	
 	  </tr>
           {% endfor %}
 	</tbody>
 	<tfoot>
       	  <tr style="font-weight: bold;">
         	<td colspan="3">TOTAL RELEASES</td>
-        	<td>{{ total_PS }}</td>
-        	<td>{{ total_MOOE }}</td>
-        	<td>{{ total_CO }}</td>
-        	<td>{{ total_release }}</td>
+        	<td style="text-align:right">{{ total_PS|intcomma }}</td>
+        	<td style="text-align:right">{{ total_MOOE|intcomma }}</td>
+        	<td style="text-align:right">{{ total_CO|intcomma }}</td>
+        	<td style="text-align:right">{{ total_release|intcomma }}</td>
         	<td></td>
         </tr>
           <tr  style="font-weight: bold;">
             <td colspan="3">TOTAL BALANCE</td>
-            <td>{{ total_PS_balance|intcomma }}</td>
-            <td>{{ total_MOOE_balance|intcomma }}</td>
-            <td>{{ total_CO_balance|intcomma }}</td>
+            <td style="text-align:right">{{ total_PS_balance|intcomma }}</td>
+            <td style="text-align:right">{{ total_MOOE_balance|intcomma }}</td>
+            <td style="text-align:right">{{ total_CO_balance|intcomma }}</td>
             <td></td>
-            <td>{{ total_remaining_balance|intcomma }}</td>
+            <td style="text-align:right">{{ total_remaining_balance|intcomma }}</td>
           </tr>
 	</tfoot>
       </table>

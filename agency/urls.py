@@ -8,5 +8,7 @@ urlpatterns = patterns('',
         url(r'^home$', home),
         url(r'^requirements',requirements),
         url(r'^balance',balance),
-        url(r'^approved',approved)
+        url(r'^approved',approved),
+        url(r'^releases',allotmentReleases),
+        url(r'^monthly_reports', monthlyReports),
 )

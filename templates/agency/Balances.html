@@ -2,81 +2,47 @@
 
 {% block content %}
 <content>
-<br><br><br>
-<div class="container">
-<ul class="nav nav-pills nav-stacked col-md-2">
-  <li ><a href="/agency/home"> Notification </a></li>
-  <li><a href="/agency/requirements"> Requirement Status </a></li>
-  <li class="active"><a href="/agency/balance"> Balances </a></li>
-  <li><a href="/agency/approved"> Total Approved Budget</a></li>
-</ul>
-
-<div class="col-md-3 panel panel-default">
-<form action="/agency/balance" class="form-inline" role="form">
-  <label> Search by year:  </label>
-  <select name="year" class="form-control">
-    <option value="2014">2014</option>
-    <option value="2013">2013</option>
-    <option value="2012">2012</option>
-    <option value="2011">2011</option>
-    <option value="2010">2010</option>
-    <option value="2009">2009</option>
-    <option value="2008">2008</option>
-    <option value="2007">2007</option>
-    <option value="2006">2006</option>
-    <option value="2005">2005</option>
-    <option value="2004">2004</option>
-    <option value="2003">2003</option>
-    <option value="2002">2002</option>
-    <option value="2001">2001</option>
-    <option value="2000">2000</option>
-  </select>
-  <button type="submit" class="btn btn-default">
-    <span class="glyphicon glyphicon-search">
-  </button>
-</form>
-</div>
-
-{%if balances %}
-<div class="col-md-10">
-  <center>
-    <h4>Remaining Balances for the Year {{year}}</h4>
-    <p>As of {{cur_date}}</p>
-  </center>
-  <table class="table table-bordered table-condensed">{%load humanize%}
-    <tr>
-      <th style="text-align: center">Allocation</th>
-      <th style="text-align: center">Beggining Balance</th>
-      <th style="text-align: center">Release</th>
-      <th style="text-align: center">Ending Balance</th>
-    </tr>
-    {%for bal in balances%}
-      <tr>
-	<th>
-	  {{bal.allocation}}
-	</th>
-	<td style="text-align: right">
-	  {{bal.beginning_bal|intcomma}}
-	</td>
-	<td style="text-align: right">
+  <div class="container">
+    {%include "./agency/side_bar.html"%}
+    
+    {%if balances %}
+    <div class="col-md-9">
+	<h3>Remaining Balances for the Year {{year}}</h3>
+	<hr/>
+      <table class="table table-bordered table-condensed">{%load humanize%}
+	<tr class="alerta alert-info">
+	  <th >Allocation</th>
+	  <th style="text-align: right">Beginning Balance</th>
+	  <th style="text-align: right">Release</th>
+	  <th style="text-align: right">Ending Balance</th>
+	</tr>
+	{%for bal in balances%}
+	<tr>
+	  <th>
+	    {{bal.allocation}}
+	  </th>
+	  <td style="text-align: right">
+	    {{bal.beginning_bal|intcomma}}
+	  </td>
+	  <td style="text-align: right">
 	  {{bal.release|intcomma}}
-	</td>
-	<td style="text-align: right">
-	  {{bal.ending_bal|intcomma}}
-	</td>
-      </tr>
-    {%endfor%}
-  </table>
-</div>
-{%elif error%}
-<div class="jumbotron col-md-10">
-  <h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
-</div>
-{%else%}
-<div class="jumbotron col-md-10">
-  <h3> Records not found! <small>Please try another year</small><h3> 
-</div>
-{%endif%}
-</div>
+	  </td>
+	  <td style="text-align: right">
+	    {{bal.ending_bal|intcomma}}
+	  </td>
+	</tr>
+	{%endfor%}
+      </table>
+    </div>
+    {%elif error%}
+    <div class="jumbotron col-md-10">
+      <h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
+    </div>
+    {%else%}
+    <div class="jumbotron col-md-10">
+      <h3> Records not found! <small>Please try another year</small><h3> 
+    </div>
+    {%endif%}
+  </div>
 </content>
 {% endblock %}

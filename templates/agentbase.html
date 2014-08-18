@@ -35,42 +35,19 @@
         </ul>
        
         <ul class="nav navbar-nav navbar-right">
-	  <a class="navbar-brand"> {{ email }}  </a>
-	  
-	  <a class="navbar-brand">|| Logout <span class="glyphicon glyphicon-log-out"></span></a>
-	  {% if user.get_full_name %}
-          <li class="dropdown">
-	    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-	       {{user.get_full_name}} {{ email }}<span class="caret"></span>
-	    </a>
+	  <li class="dropdown">
+	    <a class="dropdown-toggle" data-toggle="dropdown" href="#"> {{ email }} <span class="caret"></span></a>
 	    <ul class="dropdown-menu">
 	      <li><a href="">Change Password</a></li>
-	      <li><a href="/agency/login?logout=1" >Logout</a></li>
+	      <li><a href=""><span class="glyphicon glyphicon-log-out"></span>&nbsp;Logout</a></li>
 	    </ul>
 	  </li>
-	  {% endif %}
-        </ul>
       </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
   </nav>	
 	
   {%block content%}
   {%endblock%}
-<!---	{%block footer%}
-		<footer>
-      <div class="container">
-        <h4 style="float:left; margin:0">Philippine Integrated School</h4>
-        <ul type="none" style="padding-right:15px; float:right">
-        	<li style="float:left"><a href="/">Dashboard</a></li>
-        	<li style="float:left">&nbsp;|&nbsp;<a href="/billing">Billing</a></li>
-        	<li style="float:left">&nbsp;|&nbsp;<a href="/registration">Registrar</a></li>
-        	<li style="float:left">&nbsp;|&nbsp;<a href="#">Grading</a></li>
-        	<li style="float:left">&nbsp;|&nbsp;<a href="/security/login">Security</a></li>
-        </ul>
-      </div>
-    </footer>
-  {%endblock%}--->
-
   {% block scripts %}
   {% endblock scripts %}
 </body>
