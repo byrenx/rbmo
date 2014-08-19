@@ -17,40 +17,48 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import (getMonthLookup, 
                              quarterofMonth,
-                             dictfetchall)
+                             dictfetchall,
+                             stringify_month)
 from datetime import datetime, date
 from decimal import *
 import time
 import sys
 
 month_lookup = getMonthLookup()
+quarters = {1: '1st Quarter', 2: '2nd Quarter', 3: '3rd Quarter', 4: 'Last Quarter'}
 
 def getSubmittedReqs(agency, year, month):
     #monthly requirements
     submitted_reqs = []
     if isMonthlyRepSubmitted(agency, year, month-1):
-        submitted_reqs.append('Monthly Performance Report of Operation')
+        submitted_reqs.append({'name':stringify_month(month-1)+' Performance Report of Operation'})
     #quarterly requirements
     quarter = quarterofMonth(month)
     if quarter==4:
         year-=1
     qrs = getQuarterReqSubmitted(agency, year, quarter)
     for qr in qrs:
-        submitted_reqs.append(qr.requirement.name)
+        submitted_reqs.append({'name': qr.requirement.name,
+                               'date_submitted' : qr.date_submitted})
     
     return submitted_reqs
 
 def getLackingReqs(agency, year, month):
     lacking_reqs = []
-    if not isMonthlyRepSubmitted(agency, year, month-1):
-        lacking_reqs.append('Monthly Performance Report of Operation')
+    required_month = 1
+    if month==1:
+        required_month = 12
+        year -=1
+    else:
+        required_month = month-1
+        
+    if not isMonthlyRepSubmitted(agency, year, required_month):
+        lacking_reqs.append(stringify_month(required_month)+ '-' + str(year) +' Performance Report of Operation')
     #quarter requirements
     quarter = quarterofMonth(month)
-    if quarter==4:
-        year-=1
     quarter_reqs = getLackingQuarterReqs(agency, year, quarter)
     for req in quarter_reqs:
-        lacking_reqs.append(req['name'])
+        lacking_reqs.append(str(year)+'-'+quarters[quarter]+' '+req['name'])
     return lacking_reqs
     
 

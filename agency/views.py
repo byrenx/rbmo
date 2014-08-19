@@ -90,9 +90,11 @@ def requirements(request):
         data = {'system_name'    : agency.name,
                 'email'          : agency.email,
                 'month_form'     : MonthForm({'month': month}),
+                'str_month'      : stringify_month(month),
                 'submitted_reqs' : srs,
                 'lacking_reqs'   : lrs,
-                'page'           : 'requirements'}
+                'page'           : 'requirements',
+                'year'           : year}
 
         return render_to_response('./agency/Requirements.html', data, context)
     else:
