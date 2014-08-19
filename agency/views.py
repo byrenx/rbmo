@@ -101,7 +101,6 @@ def requirements(request):
 
 @transaction.atomic        
 def balance(request):
-
     if "agency_id" in request.session:
         agency_id = request.session["agency_id"]
         agency = Agency.objects.get(id=agency_id)
@@ -130,15 +129,17 @@ def balance(request):
                     {'allocation': 'CO', 
                      'beginning_bal': numify(co_total['total__sum']), 
                      'release': numify(co_release['amount_release__sum']), 
-                     'ending_bal':co_bal},
-                    {'allocation'   : 'Total',
+                     'ending_bal':co_bal}                   
+                   ]
+        total_balance =  {'allocation'   : 'Total',
                      'beginning_bal': numify(ps_total['total__sum']) + numify(mooe_total['total__sum']) + numify(co_total['total__sum']),
                      'release': numify(ps_release['amount_release__sum']) + numify(mooe_release['amount_release__sum']) + numify(co_release['amount_release__sum']),
                      'ending_bal' : ps_bal + mooe_bal + co_bal}
-                   ]
+
         data = {'system_name' : agency.name,
                 'email'       : agency.email,
                 'balances'    : balances,
+                'total_balance': total_balance,
                 'cur_date'    : time.strftime('%B %d, %Y'),
                 'year'        : year,
                 'page'        : 'balance'

@@ -10,7 +10,7 @@
       <form class="form-inline" action="/agency/releases" method="POST">
 	{%csrf_token%}
 	<div class="form-group">
-	  <a href="" class="btn btn-default"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
+	  <a href="javascript:$('#releases_print').printArea()" class="btn btn-default"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
 	  &nbsp;||&nbsp;
 	</div>
 	<div class="form-group">
@@ -101,5 +101,6 @@
 	</tfoot>
       </table>
     </div>
+    {%include "./agency/allotment_releases_print.html"%}
 </content>
 {% endblock %}

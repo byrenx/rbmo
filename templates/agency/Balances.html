@@ -32,6 +32,12 @@
 	  </td>
 	</tr>
 	{%endfor%}
+	<tr>
+	  <th>Total</th>
+	  <th style="text-align: right">{{total_balance.beginning_bal|intcomma}}</th>
+	  <th style="text-align: right">{{total_balance.release|intcomma}}</th>
+	  <th style="text-align: right">{{total_balance.ending_bal|intcomma}}</th>
+	</tr>
       </table>
     </div>
     {%elif error%}
