@@ -36,6 +36,17 @@ class AllotmentReleaseForm(forms.Form):
                             'class'    : 'form-control',
                             'required' : 'True'
     }))
+    
+    date_release = forms.DateField(widget=forms.DateInput(attrs={
+        'class' : 'form-control',
+        'type'  : 'date'
+    }))
+
+    allocation = forms.ChoiceField(choices=ALLOCATION,
+                                   widget = forms.Select(attrs={
+                                       'class' : 'form-control'
+                                   })
+    )
 
     month = forms.ChoiceField(choices=MONTHS,
                               widget=forms.Select(attrs={
@@ -51,7 +62,7 @@ class AllotmentReleaseForm(forms.Form):
 
     class Meta:
         model = AllotmentReleases
-        fields = ['ada', 'month', 'amount_release']
+        fields = ['ada', 'month', 'date_release', 'allocation','amount_release']
 
 
 

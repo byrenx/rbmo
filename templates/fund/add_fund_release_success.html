@@ -1,0 +1,33 @@
+{%extends "./admin/base.html" %}
+
+{% block css %}
+{% endblock %}
+
+{%block headerpage%}
+<div class="container">
+  <h2>{{agency.name}}</h2>
+  <hr/>
+</div>
+{%endblock%}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{%block right-content%}
+<div class="col-sm-9" style="border-left: 1px solid rgb(204, 204, 204); min-height: 350px">
+  <p class="alert alert-success">{{msg}}</p>
+  <p>
+    <a href="/agency/fund/allotment_releases?agency_id={{agency.id}}" class="btn btn-link">
+      <span class="glyphicon glyphicon-arrow-left"></span>
+      Back to Allotment Releases
+    </a>
+    &nbsp;
+    <a href="/agency/fund/fund_release?agency_id={{agency.id}}" class="btn btn-link">
+      <span class="glyphicon glyphicon-plus-sign"></span>
+      Add Another
+    </a>
+
+  </p>
+</div>
+{%endblock%}

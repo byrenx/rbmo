@@ -5,7 +5,7 @@
 
 {%block headerpage%}
 <div class="container">
-  <h2>{{agency.name}}</h2>
+  <h3>{{agency.name}}</h2>
   <hr/>
 </div>
 {%endblock%}
@@ -15,34 +15,29 @@
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9">
+<div class="col-sm-9" style="border-left: 1px solid rgb(204, 204, 204); min-height: 350px">
   <div class="col-sm-12">
+    <h4>Allotment Releases</h4>
+    <hr/>
     {% include "msg_pane.html" %}
     <form class="form-inline">
-      <a href="/agency/fund/fund_release?agency_id={{agency.id}}">
+      <a href="/agency/fund/fund_release?agency_id={{agency.id}}" class="btn btn-primary">
         <span class="glyphicon glyphicon-plus-sign"></span>
           Allotment Release
       </a>
       &nbsp;|&nbsp;
-      <a href="javascript:$('#soar_print').printArea()">
+      <a href="javascript:$('#soar_print').printArea()" class="btn btn-primary">
 	<span class="glyphicon glyphicon-print"></span>
 	Print
       </a>
     </form>
     <br />
-    <div class="col-sm-12" id="soar_print"><!---start allotment releases table fo print-->
-      <center>
-	<h5>STATUS OF CY-{{year}} ALLOTMENT RELEASES</h5>
-	<h5>As of {{cur_date}}</h5>
-      </center>
-      </br>
-      <p>
-	<b>AGENCY&nbsp;:</b>&nbsp;{{agency.name}}
-      </p>
-      <table class="table-normal">
+    <table class="table-normal">
 	{%load humanize%}
 	<thead>
       	  <tr>
+	    <th></th>
+	    <th></th>
       	    <th>DATE</th>
       	    <th>ADA NO.</th>
       	    <th>PARTICULARS</th>
@@ -53,7 +48,7 @@
       	    <th>REMAINING BALANCE</th>
       	  </tr>
           <tr>
-            <th colspan="3">APPROVED APPROPRIATON</th>
+            <th colspan="5">APPROVED APPROPRIATON</th>
             <th style="text-align:right">{{ wfp_data_PS.total_sum|intcomma }}</th>
             <th style="text-align:right">{{ wfp_data_MOOE.total_sum|intcomma }}</th>
             <th style="text-align:right">{{ wfp_data_CO.total_sum|intcomma }}</th>
@@ -63,7 +58,7 @@
 	</thead>
 	<tbody>
       	  <tr style="font-weight: bold;">
-      	    <td colspan="3">ALLOTMENT RELEASES</td>
+      	    <td colspan="5">ALLOTMENT RELEASES</td>
       	    <td></td>
       	    <td></td>
       	    <td></td>
@@ -72,6 +67,8 @@
       	</tr>
           {% for key, value in allotments.items %}
 	  <tr>
+	    <td><a href="/agency/fund/fund_release?agency_id={{agency.id}}&release_id={{value.id}}&action=edit"><span class="glyphicon glyphicon-edit text-primary"></span></a></td>
+	    <td><a href="javascript:confirmDeleteFundRelease('{{value.id}}', '{{value.ada_no}}')"><span class="glyphicon glyphicon-remove text-danger"></span></a></td>
 	    <td>{{ value.date_release|date:"d M" }}</td>
 	    <td>{{ value.ada_no }}</td>
 	    <td>{{ value.particulars }}</td>
@@ -97,7 +94,7 @@
 	</tbody>
 	<tfoot>
       	  <tr style="font-weight: bold;">
-        	<td colspan="3">TOTAL RELEASES</td>
+        	<td colspan="5">TOTAL RELEASES</td>
         	<td style="text-align:right">{{ total_PS|intcomma }}</td>
         	<td style="text-align:right">{{ total_MOOE|intcomma }}</td>
         	<td style="text-align:right">{{ total_CO|intcomma }}</td>
@@ -105,7 +102,7 @@
         	<td></td>
         </tr>
           <tr  style="font-weight: bold;">
-            <td colspan="3">TOTAL BALANCE</td>
+            <td colspan="5">TOTAL BALANCE</td>
             <td style="text-align:right">{{ total_PS_balance|intcomma }}</td>
             <td style="text-align:right">{{ total_MOOE_balance|intcomma }}</td>
             <td style="text-align:right">{{ total_CO_balance|intcomma }}</td>
@@ -114,12 +111,18 @@
           </tr>
 	</tfoot>
       </table>
-    </div><!---end table-container-->
   </div>
 </div>
 {% endblock %}
   
 {% block scripts %}
-  <script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+<script type="text/javascript">
+  function confirmDeleteFundRelease(release_id, ada_no){
+     var rs = confirm("Are you sure to delete Allotment Release with ada no. "+ada_no+"?"); 
+     if (rs==1){
+       window.location = "/agency/fund/del_fund_release?release_id="+release_id;
+     }
+  }
+</script>
 {% endblock %}
   

@@ -56,6 +56,7 @@ def allotmentReleases(request):
             total_release                    = total_release + allotment_release.amount_release
             total_remaining_balance          = total_remaining_balance - allotment_release.amount_release
             allotments[allotment_release.id] =  {
+                'id'                : allotment_release.id,
                 'date_release'      : allotment_release.date_release,
                 'ada_no'            : allotment_release.ada_no,
                 'particulars'       : stringify_month(allotment_release.month),
@@ -157,7 +158,7 @@ def monthlyAlloc(request):
             else:
                 monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
         
-                
+        print allocation, month, year   
         if alreadyRelease(year, month, agency, allocation) and data['amount']-getReleaseAmount(year, month, agency, allocation)<=0:
             monthly_alloc_stat['stat'] = 'RELEASED' 
             data['monthly_alloc_stat'] = monthly_alloc_stat
@@ -174,67 +175,6 @@ def monthlyAlloc(request):
     except Agency.DoesNotExist:
         return HttpResponseRedirect('/admin/agencies')
         
-    """
-    if request.method=='POST':
-        allocation = request.POST.get('allocation')
-        monthly_alloc_stat = {}
-        agency = Agency.objects.get(id=request.POST.get('agency_id'))
-        data['agency'] = agency
-        year = int(request.POST.get('year'))
-        month = int(request.POST.get('month'))
-        data['month_str'] = stringify_month(month)
-        data['year'] = year
-
-        
-        data['form']   = MCASearchForm({'month': month, 'allocation' : allocation})
-        
-        if allocation == 'PS':
-            data['amount'] = gettotalAllocation(year, month, agency, 'PS')
-            has_cos = hasCOSSubmitted(agency, year)
-            if has_cos==False:
-                monthly_alloc_stat['stat'] = 'PENDING'
-                unsubmitted_reqs.append({'name': 'Contract of Service'})
-            elif data['amount'] > 0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            else:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-        elif allocation == 'MOOE':
-            unsubmitted_reqs = lqm(year, month, agency)
-            data['amount'] = gettotalAllocation(year, month, agency, 'MOOE')
-            if len(unsubmitted_reqs)==0 and isMRS(year, month, agency) and data['amount']>0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            elif data['amount']==0:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-            else:
-                if isMRS(year, month, agency)==False:
-                    unsubmitted_reqs.append({'name':'Monthly Physical and Financial Report'})
-                monthly_alloc_stat['stat'] = 'PENDING'
-                monthly_alloc_stat['quarter_reqs'] = unsubmitted_reqs
-
-        else: #CO
-            data['amount'] = gettotalAllocation(year, month, agency, 'CO')
-            if data['amount'] > 0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            else:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-        
-                
-        if alreadyRelease(year, month, agency, allocation) and data['amount']-getReleaseAmount(year, month, agency, allocation)<=0:
-            monthly_alloc_stat['stat'] = 'RELEASED' 
-            data['monthly_alloc_stat'] = monthly_alloc_stat
-        data['amount'] = numify(data['amount'])-numify(getReleaseAmount(year, month, agency, allocation))
-        data['monthly_alloc_stat'] = monthly_alloc_stat
-        data['allocation'] = allocation
-        return render_to_response('./fund/monthly_allocation.html', data, context)
-    else: # if no post request was submitted
-        try:
-            agency = Agency.objects.get(id=request.GET.get('agency_id'))
-            data['agency'] = agency
-            data['form']   = MCASearchForm({'month': datetime.today().month, 'allocation' : 'MOOE'})
-            return render_to_response('./fund/monthly_allocation.html', data, context)
-        except Agency.DoesNotExist:
-            return HttpResponseRedirect('/admin/agencies')
-    """
 
 def hasCOSSubmitted(agency, year):
     try:
@@ -306,15 +246,15 @@ def getYearsMOOEAlloc(agency):
         
 def alreadyRelease(year, month, agency, allocation):
     try:
-        release = AllotmentReleases.objects.get(year=year, month=month, agency=agency, allocation=allocation)
-        return True
+        release = AllotmentReleases.objects.filter(year=year, month=month, agency=agency, allocation=allocation)
+        return release
     except AllotmentReleases.DoesNotExist:
         return False
 
 def getReleaseAmount(year, month, agency, allocation):
     try:
         allotment_release = AllotmentReleases.objects.filter(year=year, month=month, agency=agency, allocation=allocation).aggregate(Sum('amount_release'))
-        return allotment_release['amount_release__sum']
+        return numify(allotment_release['amount_release__sum'])
     except AllotmentReleases.DoesNotExist:
         return 0
 
@@ -379,63 +319,154 @@ def is_allQRS(year, month, agency): # is all quarter requirement submitted
         qrs_count = numify(cursor.fetchone()[0])
         return (q_reqs-qrs_count == 0)
 
+
 @login_required(login_url='/admin/')
 def fundReleaseForm(request):
+    try:
+        if request.method == 'POST':
+            agency = Agency.objects.get(id=request.POST.get('agency_id'))
+            action = request.POST.get('action')
+            if action == 'add':
+                return addAllotmentRelease(request, agency)
+            else:
+                return editFundRelease(request, agency)
+        else:
+            agency = Agency.objects.get(id=request.GET.get('agency_id'))
+            action = request.GET.get('action', 'add')
+            if action == 'add':
+                return showAddForm(request, agency)
+            else:
+                return showEditFundRelForm(request, agency)
+    except Agency.DoesNotExist:
+        return HttpResponse('Error! No Agency Found')
+
+
+def showAddForm(request, agency):
+    context = RequestContext(request)
+    data = {'action'      : 'add',
+            'year'        : datetime.today().year,
+            'system_name' : SYSTEM_NAME,
+            'agency'      : agency,
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'form'        :  AllotmentReleaseForm({'month': datetime.today().month})}
+    return render_to_response('./fund/fund_release_form.html', data, context)
+    
+
+def showEditFundRelForm(request, agency):
+    try:
+        context = RequestContext(request)
+        allotment_release = AllotmentReleases.objects.get(id=request.GET.get('release_id'))
+        data = {'action'      : 'edit',
+                'year'        : allotment_release.year,
+                'system_name' : SYSTEM_NAME,
+                'agency'      : allotment_release.agency,
+                'allowed_tabs': get_allowed_tabs(request.user.id),
+                'form'        :  AllotmentReleaseForm({'ada' : allotment_release.ada_no,
+                                                       'date_release' : allotment_release.date_release,
+                                                       'allocation'   : allotment_release.allocation,
+                                                       'month'        : allotment_release.month,
+                                                       'amount'       : allotment_release.amount_release}),
+                'release_id' : allotment_release.id
+        }
+
+        return render_to_response('./fund/fund_release_form.html', data, context)
+    except AllotmentReleases.DoesNotExist:
+        return render_to_response('./fund/fund_release_form.html', data, context)
+        
+
+def addAllotmentRelease(request, agency):
     context = RequestContext(request)
 
     data = {'system_name' : SYSTEM_NAME,
-            'agency_id'   : request.GET.get('agency_id'),
-            'year'        : time.strftime('%Y'),
+            'year'        : datetime.today().year,
             'agency_tab'  : 'fund_rel',
-            'allowed_tabs': get_allowed_tabs(request.user.id)
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'agency'      : agency,
+            'action'      : 'add'
     }
-
-
-    release_form = AllotmentReleaseForm({'month': datetime.today().month})
-    data['form'] = release_form
-    if request.method == 'POST':
-        allot_release_form = AllotmentReleaseForm(request.POST)
-
-        if allot_release_form.is_valid():
-            allot_release = AllotmentReleases(
-                ada_no = allot_release_form.cleaned_data['ada'],
-                agency = Agency.objects.get(id=request.POST.get('agency_id')),
-                allocation = request.POST.get('allocation'),
-                month = allot_release_form.cleaned_data['month'],
-                year = request.POST.get('year'),
-                date_release = datetime.today(),
-                amount_release = allot_release_form.cleaned_data['amount'],
-                user = request.user
-            )
+    #add allotment releases action
+    allot_release_form = AllotmentReleaseForm(request.POST)
+    if allot_release_form.is_valid():
+        allot_release = AllotmentReleases(
+            ada_no = allot_release_form.cleaned_data['ada'],
+            agency = agency,
+            allocation = allot_release_form.cleaned_data['allocation'],
+            month = allot_release_form.cleaned_data['month'],
+            year = request.POST.get('year'),
+            date_release = allot_release_form.cleaned_data['date_release'],
+            amount_release = allot_release_form.cleaned_data['amount'],
+            user = request.user
+        )
             
-            budget = gettotalAllocation(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
-            #getRelease
-            release = getReleaseAmount(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
-            balance = numify(budget)-numify(release)
-            if budget==0:
-                data['e_msg'] = 'No Alloted amount for %s - %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
-            elif balance <=0 :
-                data['e_msg'] = 'No Remaining Balance for %s - %s Allocation. The full amount already released' %(stringify_month(int(allot_release.month)), allot_release.allocation)
-            elif allot_release.amount_release<=0:
-                data['e_msg'] = 'Please Enter a valid amount'
-            elif allot_release.amount_release>balance:
-                data['e_msg'] = 'The amount you enter an amount that does not exceeds the allotment balance' %(stringify_month(int(allot_release.month)), allot_release.allocation)
-            else:
-                allot_release.save()
-                data['s_msg'] = 'Fund Release was succesfully saved'
-
-            data['agency'] = allot_release.agency
+        budget = gettotalAllocation(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
+        #getRelease
+        release = getReleaseAmount(int(allot_release.year), int(allot_release.month), allot_release.agency, allot_release.allocation)
+        balance = numify(budget)-numify(release)
+        if budget==0:
+            data['e_msg'] = 'No Alloted amount for %s - %s' %(stringify_month(int(allot_release.month)), allot_release.allocation)
+            data['form']   = allot_release_form
+            return render_to_response('./fund/fund_release_form.html', data, context)
+        elif balance <=0 :
+            data['e_msg'] = 'No Remaining Balance for %s - %s Allocation. The full amount already released' %(stringify_month(int(allot_release.month)), allot_release.allocation) 
+            data['form']   = allot_release_form
+            return render_to_response('./fund/fund_release_form.html', data, context)
+        elif allot_release.amount_release<=0:
+            data['e_msg'] = 'Please Enter a valid amount'
+            data['form']   = allot_release_form
+            return render_to_response('./fund/fund_release_form.html', data, context)
+        elif allot_release.amount_release>balance:
+            data['e_msg'] = 'The amount you enter exceeds the allotment balance'
+            data['form']   = allot_release_form
             return render_to_response('./fund/fund_release_form.html', data, context)
         else:
-            data['errors'] = allot_release_form.errors
-            return render_to_response('./fund/fund_release_form.html', data, context)
-            
-    elif data['agency_id'] is None:
-        return HttpResponseRedirect('/admin/agencies')
+            allot_release.save()
+            data['msg'] = 'Fund Release was succesfully saved'
+            data['agency'] = agency
+            return render_to_response('./fund/add_fund_release_success.html', data, context)
     else:
-        agency = Agency.objects.get(id=data['agency_id'])
-        data['agency'] = agency
-        return render_to_response('./fund/fund_release_form.html', data, context)   
+        data['errors'] = allot_release_form.errors
+        data['form']   = allot_release_form
+        return render_to_response('./fund/fund_release_form.html', data, context)
+    
+
+def editFundRelease(request, agency):
+    try:
+        context = RequestContext(request)
+        release_form = AllotmentReleaseForm(request.POST)
+        allotment_release = AllotmentReleases.objects.get(id=request.POST.get('release_id'))
+        if release_form.is_valid():
+            allotment_release.ada_no = release_form.cleaned_data['ada']
+            allotment_release.agency = agency
+            allotment_release.allocation = release_form.cleaned_data['allocation']
+            allotment_release.month = release_form.cleaned_data['month']
+            allotment_release.year = request.POST.get('year')
+            allotment_release.date_release = release_form.cleaned_data['date_release']
+            allotment_release.amount_release = release_form.cleaned_data['amount']
+            allotment_release.user = request.user
+            allotment_release.save()
+            data = {'msg'          : 'Allotment Release succesfully updated',
+                    'allowed_tabs' : get_allowed_tabs(request.user.id),
+                    'system_name'  : SYSTEM_NAME,
+                    'agency'       : agency}
+            
+            return render_to_response('./fund/add_fund_release_success.html', data, context)
+        else:
+            return HttpResponseRedirect('./agency/fund/fund_release?agency_id='+str(allotment_release.agency.id) + '&release_id='+str(allotment_release.id)+'&action=edit')
+
+    except AllotmentReleases.DoesNotExist:
+        return HttpResponseRedirect('/agency/fund/allotment_releases?agency_id'+str(allotment_release.agemcy.id))
+
+
+@login_required(login_url='/admin/')
+def delFundRelease(request):
+    try:
+        allotment_release = AllotmentReleases.objects.get(id=request.GET.get('release_id'))
+        agency = allotment_release.agency
+        allotment_release.delete()
+        return HttpResponseRedirect('/agency/fund/allotment_releases?agency_id='+str(agency.id))
+    except AllotmentReleases.DoesNotExist:
+        return HttpResponse('/admin/')
+
 
 @login_required(login_url='/admin/')
 @transaction.atomic
@@ -542,8 +573,8 @@ def getAllocatedBudget(request):
     cursor = connection.cursor()
     data = {'agency_id'  : request.GET.get('agency_id'),
             'allocation' : Allocation.objects.get(id=request.GET.get('allocation')),
-            'month' : request.GET.get('month'),
-            'year'  : request.GET.get('year')
+            'month'      : request.GET.get('month'),
+            'year'       : request.GET.get('year')
     }
 
     agency = Agency.objects.get(id=data['agency_id'])

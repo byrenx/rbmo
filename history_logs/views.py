@@ -34,13 +34,13 @@ def summary(request):
     month = datetime.today().month
     day = datetime.today().day
 
-    date_query = '''select monthly_req_submitted.*, agency.id, agency.name as agency_name, auth_user.id, auth_user.first_name, auth_user.last_name
+    date_query = '''select monthly_req_submitted.*, agency.id, agency.name as agency_name, auth_user.id, auth_user.first_name as first_name, auth_user.last_name
     from monthly_req_submitted inner join agency
     on agency.id = monthly_req_submitted.agency_id
     inner join auth_user on
     auth_user.id = monthly_req_submitted.user_id
-    where extract(year from date_submitted)=%s
-    and extract(month from date_submitted)=%s
+    where year(date_submitted)=%s
+    and month(date_submitted)=%s
     '''
 
     qrs_query = '''
@@ -90,7 +90,7 @@ where extract(year from date_submitted)=%s
         quarter_rep_submitted = dictfetchall(cursor)
 
     transaction_summary = []
-    
+    print monthly_rep_submitted
     for report in monthly_rep_submitted:
         transaction_summary.append(
             {'date' : report['date_submitted'],

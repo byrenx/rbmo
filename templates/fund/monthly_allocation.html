@@ -87,8 +87,8 @@
 	       <span class="glyphicon glyphicon-stop text-danger"></span>
 	       &nbsp;NO ALLOCATED FUND
 	{% else %}
-	     <span class="glyphicon glyphicon-check text-success"></span>
-	     Release is already made for this month
+	     <span class="glyphicon glyphicon-ok text-success"></span>
+	     Release was already made for this month
 	{% endif %}
     </div>
   </div>
@@ -102,6 +102,16 @@
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+<script type="text/javascript">
+  function printNOT(){//notice of transmittal
+    var agency = $('#agency').val();
+    var oic = $('#oic').val();
+    var content = $('#content').val();
+
+    $('#content_letter').html(content);
+    $('#oic_letter').html(oic);
+    $('#trans_note').printArea();
+  }
+</script>
 {% endblock %}
 

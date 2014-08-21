@@ -73,10 +73,14 @@ $('#id_amount').keydown(function(){
 
 
 $(document).ready(function(){
-    getAllotmentBal();
+    var action = $('#action').val();
+    if (action=="add"){
+	getAllotmentBal();
+    }
+
 });
 
-$('#allocation').change(function(){
+$('#id_allocation').change(function(){
     getAllotmentBal();
 });
 
@@ -88,7 +92,7 @@ function getAllotmentBal(){
     var params = {'year'       : $('#year').val(),
 		  'month'      : $('#id_month').val(),
 		  'agency_id'  : $('#agency_id').val(),
-		  'allocation' : $('#allocation').val()
+		  'allocation' : $('#id_allocation').val()
 		 }
     $.get('/agency/fund/allotment_balance',
 	  params, 

@@ -99,7 +99,7 @@ def getProgActs(allocation, agency, year):
                     'acts' : acts
                 })
     return prog_acts
-
+    
 
 @transaction.atomic
 def getWFPData(request):
@@ -174,14 +174,27 @@ def saveWFPData(request, wfp_form, year, agency_id):
         perf_target.save()
         
 
-
+@transaction.atomic
 def printWFPData(request):
     context = RequestContext(request)
-    data = {'system_name': SYSTEM_NAME}
-    data['agency'] = Agency.objects.get(id=request.GET.get('agency_id'))
-    data['year'] = request.GET.get('year') 
-
-    data['wfp_data'] = WFPData.objects.filter(agency=data['agency'], year=data['year'])
+    agency = Agency.objects.get(id=request.GET.get('agency_id'))
+    year = request.GET.get('year') 
+    
+    pss = getProgOverview('PS', agency, year)
+    mooes = getProgOverview('MOOE', agency, year)
+    cos = getProgOverview('CO', agency, year)
+    wfp_total = getWFPTotal(agency, year)
+    print wfp_total
+    
+    data = {'system_name' : SYSTEM_NAME,
+            'agency'      : agency,
+            'year'        : year,
+            'cur_date'    : time.strftime('%B %d, %Y'),
+            'pss'         : pss,
+            'mooes'       : mooes,
+            'cos'         : cos,
+            'wfp_total'   : wfp_total}
+    
     return render_to_response('./wfp/wfp_print.html',data, context)
 
 
@@ -230,6 +243,7 @@ def coRequests(request):
         return render_to_response('./wfp/co_request.html', data, context)
     except Agency.DoesNotExist:
         return HttpResponseRedirect("/admin/agencies")
+
     
 @login_required(login_url='/admin/')    
 def coRequestForm(request):
@@ -250,7 +264,7 @@ def coRequestForm(request):
             if action == 'add' and co_request_form.is_valid():
                 agency = Agency.objects.get(id=request.POST.get('agency_id'))
                 date_rcv = request.POST.get('date_received')
-                addCORequest(co_request_form, agency, date_rcv)
+                addCORequest(co_request_form, agency, date_rcv, request)
                 data['s_msg'] = 'New request succesfully Saved'
                 data['form']  = CORequestForm()
                 return render_to_response('./wfp/co_request_form.html', data, context)
@@ -266,12 +280,13 @@ def coRequestForm(request):
     except Agency.DoesNotExist:
         return HttpResponseRedirect("/admin/agencies")
 
-def addCORequest(request_form, agency, date_rcv):
+def addCORequest(request_form, agency, date_rcv, request):
     co_request = CoRequest(date_received = date_rcv,
-                          agency = agency,
-                          subject = request_form.cleaned_data['subject'],
-                          action = request_form.cleaned_data['action'],
-                          status = request_form.cleaned_data['status']
+                           agency = agency,
+                           subject = request_form.cleaned_data['subject'],
+                           action = request_form.cleaned_data['action'],
+                           status = request_form.cleaned_data['status'],
+                           user = request.user
                 )
     co_request.save()
 
@@ -432,3 +447,52 @@ def getPerformanceAcc(request):
     except PerformanceTarget.DoesNotExist:
         return render_to_response('./admin/performance_acc.html', data, context)
 
+
+
+'''
+helper methods
+'''
+def getProgOverview(allocation, agency, year):
+    cursor = connection.cursor()
+    query = '''
+    select distinct(program) from wfp_data
+    where allocation=%s and agency_id=%s and year=%s
+    '''
+    cursor.execute(query, [allocation, agency.id, year])
+    prog_acts = []
+    maj_prog = cursor.fetchall()
+    for prog in maj_prog:
+        acts = []
+        activities = WFPData.objects.filter(agency=agency, allocation=allocation , year=year, program=prog[0])
+        for act in activities:
+            physical_targets = PerformanceTarget.objects.filter(wfp_activity = act)
+            targets = []
+            for target in physical_targets:
+                targets.append({'indicator': target.indicator,
+                                'q1'       : target.jan+target.feb+target.mar,
+                                'q2'       : target.apr+target.may+target.jun,
+                                'q3'       : target.jul+target.aug+target.sept,
+                                'q4'       : target.oct+target.nov+target.dec})
+            acts.append({'activity'         : act,
+                         'physical_targets' : targets
+                     })
+        prog_acts.append({'prog' : prog[0], 'acts' : acts})
+    return prog_acts
+
+
+@transaction.atomic
+def getWFPTotal(agency, year):
+    cursor = connection.cursor()
+    query = '''
+            select sum(jan) as jan_total, sum(feb) as feb_total, sum(mar) as mar_total,
+                   sum(apr) as apr_total, sum(may) as may_total, sum(jun) as jun_total,
+                   sum(jul) as jul_total, sum(aug) as aug_total, sum(sept) as sept_total,
+                   sum(oct) as oct_total, sum(nov) as nov_total, sum(`dec`) as dec_total,
+                   sum(total) as total
+            from wfp_data
+                 where agency_id=%s and year=%s
+            '''
+
+    cursor.execute(query, [agency.id, year])    
+    return dictfetchall(cursor)[0]
+    

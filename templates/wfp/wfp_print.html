@@ -1,53 +1,245 @@
-{% extends "print_base.html" %}
+{% extends "./admin/base.html" %}
 
 {% block content %}
 <content>
-  <div class="container">
-    <center>
-      <h5>AUTONOMOUS REGION IN MUSLIM MINDANAO</h5>
-      <p>Monthly Cash Allocation for {{year}}</p>
-    </center>
-      <b>Agency Name: </b>&nbsp;
-      {{agency.name}}
+  <div class="col-sm-12">
+    <form class="form-inline">
+      <a href="javascript:$('#wfp_print').printArea()" class="btn btn-primary">
+	<span class="glyphicon glyphicon-print"></span>&nbsp;
+	Print
+      </a>
+    </form>
+  </div>
+  <div class="col-sm-12" style="left:0px" id="wfp_print">
+    <div class="col-sm-12" style="text-align:center;">
+      <h3>Autonomous Region of Muslim Mindanao</h3>
+      <h4>Work and Financial Plan for {{year}}</h4>
+    </div>
+      <h3>Agency: <small>{{agency.name}}</small></h3>
     <table class="table-normal">
       {%load humanize%}
-      <thead>
-	<tr>
-	  <th>Program</th>
-	  <th>Jan</th>
-	  <th>Feb</th>
-	  <th>Mar</th>
-	  <th>Apr</th>
-	  <th>May</th>
-	  <th>June</th>
-	  <th>July</th>
-	  <th>Aug</th>
-	  <th>Sept</th>
-	  <th>Oct</th>
-	  <th>Nov</th>
-	  <th>Dec</th>
-	</tr>
-      </thead>
+	<!---PS--->
+	{%if pss or mooes or cos%}
+           <thead>
+  	      <tr>
+		<th>Program</th>
+		<th colspan="5">Physical Target</th>
+		<th colspan="13">Financial Target</th>
+	      </tr>
+	      <tr>
+		<th></th>
+		<th>Indicator</th>
+		<th>Q1</th>
+		<th>Q2</th>
+		<th>Q3</th>
+		<th>Q4</th>
+		<th>Jan</th>
+		<th>Feb</th>
+		<th>Mar</th>
+		<th>Apr</th>
+		<th>May</th>
+		<th>June</th>
+		<th>July</th>
+		<th>Aug</th>
+		<th>Sept</th>
+		<th>Oct</th>
+		<th>Nov</th>
+		<th>Dec</th>
+		<th>Total</th>
+	      </tr>
+	   </thead>
+	   <tbody>
+	     {%if pss%}
+	        <th colspan="19">Personnel Services</th>
+	        {%for ps in pss%}
+	           <tr>
+		     <th colspan="19">{{ps.prog}}</th>
+		   </tr>
+                   {%for act in ps.acts%}
+                     <tr>
+		       <td>{{act.activity}}</td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
+		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
+		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
+		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
+		       <td class="decimal">{{act.activity.may|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
+		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
+		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
+		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
+		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
+		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
+		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		     </tr>
+		     {%for pt in act.physical_targets%}
+		        <tr>
+			  <td></td>
+			  <td>{{pt.indicator}}</td>
+			  <td>{{pt.q1}}</td>
+			  <td>{{pt.q2}}</td>
+			  <td>{{pt.q3}}</td>
+			  <td>{{pt.q4}}</td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+		     {%endfor%}
+                   {%endfor%}
+	        {%endfor%}
+	     {%endif%}
+
+	     {%if mooes%}
+	        <th colspan="19">Maintenance and Other Operating Expenses</th>
+	        {%for mooe in mooes%}
+	           <tr>
+		     <th colspan="19">{{mooe.prog}}</th>
+		   </tr>
+                   {%for act in mooe.acts%}
+                     <tr>
+		       <td>{{act.activity}}</td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
+		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
+		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
+		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
+		       <td class="decimal">{{act.activity.may|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
+		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
+		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
+		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
+		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
+		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
+		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		     </tr>
+		     {%for pt in act.physical_targets%}
+		        <tr>
+			  <td></td>
+			  <td>{{pt.indicator}}</td>
+			  <td>{{pt.q1}}</td>
+			  <td>{{pt.q2}}</td>
+			  <td>{{pt.q3}}</td>
+			  <td>{{pt.q4}}</td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+		     {%endfor%}
+                   {%endfor%}
+	        {%endfor%}
+	     {%endif%}
+
+	     {%if cos%}
+	        <th colspan="19">Maintenance and Other Operating Expenses</th>
+	        {%for co in cos%}
+	           <tr>
+		     <th colspan="19">{{co.prog}}</th>
+		   </tr>
+                   {%for act in cos.acts%}
+                     <tr>
+		       <td>{{act.activity}}</td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td></td>
+		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
+		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
+		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
+		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
+		       <td class="decimal">{{act.activity.may|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
+		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
+		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
+		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
+		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
+		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
+		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
+		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		     </tr>
+		     {%for pt in act.physical_targets%}
+		        <tr>
+			  <td></td>
+			  <td>{{pt.indicator}}</td>
+			  <td>{{pt.q1}}</td>
+			  <td>{{pt.q2}}</td>
+			  <td>{{pt.q3}}</td>
+			  <td>{{pt.q4}}</td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			  <td></td>
+			</tr>
+		     {%endfor%}
+                   {%endfor%}
+	        {%endfor%}
+	     {%endif%}
+	<!----total--->
+	     <tr>
+	       <th>Total</th>
+	       <th></th>
+	       <th></th>
+	       <th></th>
+	       <th></th>
+	       <th></th>
+	       <th class="decimal">{{wfp_total.jan_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.feb_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.mar_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.apr_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.may_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.jun_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.jul_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.aug_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.sept_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.oct_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.nov_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.dec_total|intcomma}}</th>
+	       <th class="decimal">{{wfp_total.total|intcomma}}</th>
+	     </tr>
+	   </tbody>
+	{%endif%}
       <tbody>
-	{% for data in wfp_data %}
-	<tr>
-	  <td>{{data.activity}}</td>
-	  <td>{{data.jan|intcomma}}</td>
-	  <td>{{data.feb|intcomma}}</td>
-	  <td>{{data.mar|intcomma}}</td>
-	  <td>{{data.apr|intcomma}}</td>
-	  <td>{{data.may|intcomma}}</td>
-	  <td>{{data.jun|intcomma}}</td>
-	  <td>{{data.jul|intcomma}}</td>
-	  <td>{{data.aug|intcomma}}</td>
-	  <td>{{data.sept|intcomma}}</td>
-	  <td>{{data.oct|intcomma}}</td>
-	  <td>{{data.nov|intcomma}}</td>
-	  <td>{{data.dec|intcomma}}</td>
-	</tr>
-	{% endfor %}
-      </tbody>
     </table>
+    </br></br>
 </div>
 </content>
 {% endblock %}
