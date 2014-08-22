@@ -92,3 +92,15 @@ def getMonthLookup():
     return {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr',
             5: 'may', 6: 'jun', 7: 'jul', 8: 'aug',
             9: 'sept', 10: 'oct', 11: 'nov', 12: 'dec'}
+
+
+def getYearsChoices():
+    cur_year  = datetime.today().year
+    base_year = 2014
+    years = []
+    while cur_year >= base_year:
+        years.append((cur_year, cur_year))
+        cur_year-=1
+
+    return tuple(years)
+    

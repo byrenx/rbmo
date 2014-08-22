@@ -3,7 +3,7 @@
 {%block right-content%}
 <div class="col-sm-12">
   <form class="form-inline">
-    <a href="#" class="btn btn-default">
+    <a href="javascript:$('#running_balance_print').printArea()" class="btn btn-default">
       <span class="glyphicon glyphicon-print"></span>&nbsp;Print
     </a>
     &nbsp;|&nbsp;
@@ -73,4 +73,5 @@
   </table>
   </br></br>
 </div>
+{%include "./fund/running_balances_print.html"%}
 {%endblock%}

@@ -1,0 +1,50 @@
+<div class="col-sm-12" id="running_balance_print" style="display:none">
+    <div style="position:relative; width: 100%; height: 200px;">
+      <div style="position:absolute;left: 30px; top:0px; width: 150px;">
+	<img src="/static/images/rbmo.jpg" width="100px" height="100px">
+      </div>
+      <div style="position: absolute; left: 180px; top:0px; width:330px;text-align:center">
+   	<p>
+	  Republic of the Philippines</br>
+	  <b>Autonomous Region in Muslim Mindanao</b></br>
+	  <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
+	  <i>Regional Budget Management Office</i></br>
+	  ARMM Compound Cotabato City
+	  </br></br>
+	  <b>BALANCES</b></br>
+	  As of {{today}}</br>
+	</p>
+      </div>
+      <div style="position: absolute; top:0px; left: 550px; width:150px;">
+	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <table class="table-normal">
+	<thead>
+	  <th class="center" colspan="2">AGENCY/OFFICE</th>
+	  <th class="center">APPROVED</th>
+	  <th class="center">RELEASE</th>
+	  <th class="center">BALANCES</th>
+	</thead>
+	<tbody>
+	  {% load humanize %}
+	  {%for bal in balances %}
+	  <tr>
+	    <td></td>
+	    <td>{{bal.agency_name}}</td>
+	    <td class="decimal">{{bal.budget|intcomma}}</td>
+	    <td class="decimal">{{bal.release|intcomma}}</td>
+	    <td class="decimal">{{bal.balance|intcomma}}</td>
+	  </tr>
+      {% endfor %}
+	  <tr>
+	    <th colspan="2">GRAND TOTAL</th>
+	    <th class="decimal">{{total_sum.total_budget|intcomma}}</th>
+	    <th class="decimal">{{total_sum.total_release|intcomma}}</th>
+	    <th class="decimal">{{total_sum.total_balance|intcomma}}</th>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+</div>

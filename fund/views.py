@@ -287,7 +287,7 @@ def isMRS(year, month, agency):#is requisite month report was submitted
         if month==1:
             monthly_req_submit = MonthlyReqSubmitted.objects.get(year=year-1, month=12, agency=agency)
         else:
-            monthly_req_submit = MonthlyReqSubmitted.objects.get(year=year, month=month-1, agency=agency)
+            monthly_req_submit = MonthlyReqSubmitted.objects.get(year=year, month=(month-1), agency=agency)
         return True
     except MonthlyReqSubmitted.DoesNotExist:
         return False
@@ -297,11 +297,11 @@ def is_allQRS(year, month, agency): # is all quarter requirement submitted
     cursor = connection.cursor()
     q_reqs = QuarterlyReq.objects.all().count() #count of all quarterly reqs
     q_req_subs = 0
-    qrs_query = '''select count(distinct(requirement_id)) as count
-    from quarter_req_submitted where quarter=%s and agency_id=%s
-    and year=%s
-    '''
-    
+    qrs_query = '''select count(distinct(requirement_id))
+                   from quarter_req_submitted where 
+                   year=%s and quarter=%s and agency_id=%s
+                '''
+    year = int(year)
     if month<=3:
         cursor.execute(qrs_query, [year-1, 4, agency.id])
         qrs_count = numify(cursor.fetchone()[0])

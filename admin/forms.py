@@ -1,6 +1,7 @@
 from django import forms
 from rbmo.models  import *
 from django.contrib.auth.models import User
+from helpers.helpers import getYearsChoices
 
 MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'), 
           (5, 'May'), (6, 'June'), (7, 'July'), (8, 'August'), (9, 'September'),
@@ -10,6 +11,8 @@ MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'),
 MONTHS2 = (('jan', 'January'), ('feb', 'February'), ('mar', 'March'), ('apr', 'April'), 
           ('may', 'May'), ('jun', 'June'), ('jul', 'July'), ('aug', 'August'), ('sept', 'September'),
           ('oct', 'October'), ('nov', 'November'), ('dec', 'December'))
+
+RequirementsAllocation = (('PS', 'PS'), ('MOOE', 'MOOE'))
 
 class UserForm(forms.ModelForm):
     email = forms.EmailField(max_length=100,
@@ -119,3 +122,22 @@ class ChangePassForm(forms.Form):
              }
     ))
     
+
+
+class AllocationMonthYearForm(forms.Form):
+    allocation = forms.ChoiceField(choices=RequirementsAllocation,
+                                   widget = forms.Select(attrs = {
+                                       'class' : 'form-control'
+                                   }))
+
+    month = forms.ChoiceField(choices=MONTHS,
+                              widget = forms.Select(attrs = {
+                                  'class'  : 'form-control'
+                              }))
+    
+    
+    year = forms.ChoiceField(choices=getYearsChoices(),
+                             widget = forms.Select(attrs = {
+                                 'class' : 'form-control'
+                             })
+    )

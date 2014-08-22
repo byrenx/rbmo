@@ -4,7 +4,8 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from .forms import (UserForm, LoginForm, AgencyForm, MonthForm, ChangePassForm)
+from .forms import (UserForm, LoginForm, AgencyForm, 
+                    MonthForm, ChangePassForm, AllocationMonthYearForm)
 from rbmo.models import (UserGroup,
                          Groups,
                          Agency,
@@ -690,29 +691,37 @@ def totalMonthlyReleases(request):
     
 def agenciesCompReqList(request): 
     context = RequestContext(request)
+    allocation = 'MOOE'
     year = datetime.today().year
     month = datetime.today().month
     agency_list = []
     if request.method=='POST':
+        allocation = request.POST.get('allocation')
         month = int(request.POST.get('month'))
+        year = request.POST.get('year')
 
     agencies = Agency.objects.all()
     count = 1
+        
     for agency in agencies:
-        monthly = isMRS(year, month, agency)
-        quarterly = is_allQRS(year, month, agency)
-        if monthly and quarterly:
+        if allocation=='PS' and hasSubmittedCoS(year, agency):
             agency_list.append({'count' : count,
                                 'name'  : agency.name})
             count+=1
-    
+        if allocation=='MOOE' and is_allQRS(year, month, agency) and isMRS(year, month, agency):
+            agency_list.append({'count' : count,
+                                'name'  : agency.name})
+            count+=1
+
+    form_values = {'allocation': allocation, 'month': month, 'year': year}
     data = {'system_name'  : SYSTEM_NAME,
             'year'         : year,
             'month'        : month,
+            'allocation'   : allocation,
             'month_str'    : stringify_month(month),
             'allowed_tabs' : get_allowed_tabs(request.user.id),
             'agencies'     : agency_list,
-            'form'         : MonthForm({'month': month}),
+            'form'         : AllocationMonthYearForm(form_values),
             'total'        : count-1
     }
     return render_to_response('./admin/agencies_with_comp_reqs_list.html', data, context)
@@ -999,3 +1008,10 @@ def savePerformanceReport(request):
         
         return HttpResponse('Ok')
     
+
+def hasSubmittedCoS(year, agency):
+    try:
+        cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency).count()
+        return cos_submitted > 0
+    except COSSubmission.DoesNotExist:
+        return False
