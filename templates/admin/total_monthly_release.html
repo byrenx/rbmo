@@ -38,7 +38,7 @@
     <hr/>
   </div>
   </br> </br>
-  <div class="col-sm-12" id="allot_print">
+  <div class="col-sm-12">
     {% if agency_monthly_releases %}
     <div class="col-sm-12">
       <div class="col-sm-2">
@@ -124,6 +124,7 @@
     {% endif %}
     </div>
 </div>
+{%include "./admin/total_monthly_release_print.html"%}
 {% endblock %}
 {%block scripts%}
 {%endblock%}

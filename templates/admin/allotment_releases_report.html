@@ -6,48 +6,26 @@
 
 {% block content %}
 <div class="container">
+  <h3>TOTAL FUND RELEASE&nbsp;<small>As of {{today}}</small></h3>
+  <hr/>
   <div class="col-sm-12">
     <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
       <span class="glyphicon glyphicon-print"></span>
       Print
     </a>
-    <hr/>
   </div>
-  </br> </br>
-  <div class="col-sm-12" id="allot_print">
+  </br></br>
+  <div class="col-sm-12">
     {% if agencies_releases %}
     <div class="col-sm-12">
-      <div class="col-sm-2">
-	<img src="/static/images/rbmo.jpg" width="100px" height="100px">
-      </div>
-      <div class="col-sm-6 col-sm-offset-1">
-	<center>
-	  <p>
-	  Republic of the Philippines</br>
-	  <b>Autonomous Region in Muslim Mindanao</b></br>
-	  <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
-	  <i>Regional Budget Management Office</i></br>
-	  ARMM Compound Cotabato City
-	  </br></br>
-	  <b>TOTAL FUND RELEASE</b></br>
-	  As of {{today}}</br>
-	  <i>(In Pesos)</i>
-	  </p>
-	</center>
-
-      </div>
-      <div class="col-sm-2 col-sm-offset-1">
-	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
-      </div>
-    </div>
-    <table border="1" class="table-normal">
-      {%load humanize%}
+      <table border="1" class="table-normal">
+	{%load humanize%}
       <thead>
-	  <th colspan="2" class="center">Agency/Office</th>
-	  <th class="center">PS</th>
-	  <th class="center">MOOE</th>
-	  <th class="center">CO</th>
-	  <th class="center">TOTAL</th>
+	<th colspan="2" class="center">Agency/Office</th>
+	<th class="center">PS</th>
+	<th class="center">MOOE</th>
+	<th class="center">CO</th>
+	<th class="center">TOTAL</th>
 	</tr>
       </thead>
       {% for releases in agencies_releases%}
@@ -72,6 +50,7 @@
     {% endif %}
     </div>
 </div>
+{%include "./admin/allotment_releases_print.html"%}
 {% endblock %}
 {%block scripts%}
 {%endblock%}
