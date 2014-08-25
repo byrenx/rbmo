@@ -4,20 +4,16 @@
 <script type="text/javascript" src="/static/js/list.js"></script>
 {%endblock%}
 
-{%block headerpage%}
-<div class="container">
-    <h3>{{agency.name}}</h3>
-    <hr/>
-</div>
-{% endblock %}
 
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9">
-  <h3>Work and Financial Plan Form</h3>
+<div class="col-sm-9" style="background-color: white;">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+  <h4>Work and Financial Plan Form</h4>
   <hr/>
   {% include "msg_pane.html" %}
   <form action="/agency/wfp/wfp_form" role="form" method="POST" class="form-horizontal">{% csrf_token %}

@@ -25,14 +25,15 @@
 
 {% block content%}
 <content>
+  <div class="container">
   {% block headerpage %}
   {% endblock %}
-  <div class="container">
-    {% block left-content%}
-    {% endblock %}
 
-    {% block right-content%}
-    {% endblock %}
+  {% block left-content%}
+  {% endblock %}
+
+  {% block right-content%}
+  {% endblock %}
   </div>
 </content>
 {% endblock %}

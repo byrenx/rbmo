@@ -4,7 +4,6 @@
     <th></th>
     <th>Agency/Office</th>
     <th>Email</th>
-    <th>Sector</th>
   </thead>
   <tbody>
     {%for agency in agencies%}
@@ -17,7 +16,6 @@
       </td>
       <td>{{agency.name}}</td>
       <td>{{agency.email}}</td>
-      <td>{{agency.sector.name}}</td>
     </tr>
     {%endfor%}
   </tbody>

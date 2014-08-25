@@ -9,6 +9,7 @@ from .forms import (UserForm, LoginForm, AgencyForm,
 from rbmo.models import (UserGroup,
                          Groups,
                          Agency,
+                         Sector,
                          MPFRO, 
                          MonthlyReqSubmitted,
                          QuarterlyReq,
@@ -185,21 +186,25 @@ def addEditUser(request):
 
 
 @login_required(login_url='/admin/')
+@transaction.atomic
 def agencies(request):
     context = RequestContext(request)
-    data = {'page': 'agencies',
-            'system_name': SYSTEM_NAME
-    }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
+    data = {'page'         : 'agencies',
+            'system_name'  : SYSTEM_NAME,
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'sectors'      : Sector.objects.all()
+     }
+
 
     if has_permission(request.user.id, 'record', 'agency'):
         data['has_add'] = 'true'
 
     if request.method=='POST':
-        pass
+        agency_search = request.POST.get('agency')
+        data['agencies'] = Agency.objects.filter(name__contains=agency_search)
     else:
-        data['agencies'] = Agency.objects.all()
-        return render_to_response('./admin/agencies.html', data, context)
+        data['agencies'] = Agency.objects.order_by('name')
+    return render_to_response('./admin/agencies.html', data, context)
 
 
 @login_required(login_url='/admin/')

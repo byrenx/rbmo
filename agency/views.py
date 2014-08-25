@@ -8,12 +8,16 @@ from .forms import (BudgetProposalForm, LoginForm)
 from requirements.views import (getSubmittedReqs,
                                 getLackingReqs)
 from rbmo.forms import MonthForm
-from rbmo.models import UserGroup, Groups, Agency, Notification, AllotmentReleases, WFPData, AllotmentReleases
+from rbmo.models import (UserGroup, Groups, Agency, 
+                         Notification, AllotmentReleases, WFPData, 
+                         AllotmentReleases, PerformanceReport)
+
+from wfp.views import getProgOverview, getWFPTotal
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import *
-from datetime import date
+from datetime import date, datetime
 
 months = getMonthLookup()
 month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
@@ -152,15 +156,29 @@ def balance(request):
 @transaction.atomic
 def approved(request):
     if "agency_id" in request.session:
+        context = RequestContext(request)
         agency_id = request.session["agency_id"]
         agency = Agency.objects.get(id=agency_id)
-        
-        
-        context = RequestContext(request)
-        data = {'system_name' : agency.name, 'email' : agency.email}
+        year = request.POST.get('year', datetime.today().year)
+
+        pss = getProgOverview('PS', agency, year)
+        mooes = getProgOverview('MOOE', agency, year)
+        cos = getProgOverview('CO', agency, year)
+        wfp_total = getWFPTotal(agency, year)
+
+        data = {'system_name' : agency.name, 
+                'email'       : agency.email,
+                'page'        : 'wfp',
+                'cur_date'    : time.strftime('%B %d, %Y'),
+                'pss'         : pss,
+                'mooes'       : mooes,
+                'cos'         : cos,
+                'wfp_total'   : wfp_total
+        }
+
         return render_to_response('./agency/approved.html', data, context)
     else:
-        return HttpResponse('????')
+        return HttpResponseRedirect('/')
 
 
 
@@ -294,3 +312,105 @@ def monthlyReports(request):
             return render_to_response('./agency/monthly_reports.html', data, context)
     except Agency.DoesNotExist:
         pass
+
+
+
+def mpfro_form(request):
+    cursor = connection.cursor()
+    context = RequestContext(request)
+
+    this_year = datetime.today().year
+    years = [this_year, (this_year-1)]
+    try:
+        if "agency_id" in request.session:
+            action = request.GET.get('action', 'add')
+            agency = Agency.objects.get(id=request.session['agency_id'])
+          
+            if action == 'add':
+                year = datetime.today().year
+                acts_query = "select id, activity from wfp_data where agency_id=%s and year=%s and wfp_data.id not in (select activity_id from performance_report where performance_report.year=%s and performance_report.month=%s)"
+                cursor.execute(acts_query, [agency.id, year, year, datetime.today().month])
+                activities = dictfetchall(cursor)
+                data = {'system_name': agency.name,
+                        'email'      : agency.email,
+                        'action'     : action,
+                        'agency'     : agency,
+                        'month_form' : MonthForm({'month': datetime.today().month}),
+                        'year'       : year,
+                        'activities' : activities,
+                        'years'      : [2014]
+                }
+
+                return render_to_response('./agency/mpfro_form.html', data, context)
+            else: #edit
+                mpfro_id = request.GET.get('mpfro_id')
+                activity_info = PerformanceReport.objects.get(id = mpfro_id)
+                accs_query = "select id, indicator, "+wfp_month_lookup[activity_info.month]+" as target," + month_acc_dict[activity_info.month] + " as accomplished from performancetarget where wfp_activity_id = %s"
+                cursor.execute(accs_query, [activity_info.activity.id])
+                performance_accs = dictfetchall(cursor)
+                data['activity_info'] = activity_info
+                data['performance_accs'] = performance_accs
+                data['str_month'] = stringify_month(activity_info.month)
+            return render_to_response('./admin/mpfro_form.html', data, context)
+    except Agency.DoesNotExist and PerformanceReport.DoesNotExist:
+        return HttpResponse('Page Not Found Error!')
+
+
+@transaction.atomic
+def savePerformanceReport(request):
+    cursor = connection.cursor()
+    action = request.POST.get('action')
+    
+    if action == "add":
+        month = int(request.POST.get('month'))
+        year = int(request.POST.get('year', datetime.today().year))
+        activity = WFPData.objects.get(id=request.POST.get('activity'))
+        received = request.POST.get('received')
+        incurred = request.POST.get('incurred')
+        remarks = request.POST.get('remarks')
+        accomplished_target = request.POST.getlist('pt_ids[]')
+        
+        #update activity
+        perf_rep = PerformanceReport(activity = activity,
+                                     year = year,
+                                     month = month,
+                                     received = received,
+                                     incurred = incurred,
+                                     remarks = remarks
+                                )
+        perf_rep.save()
+        for acc_t in accomplished_target:
+            acc_target_query = "update performancetarget set "
+            acc_target_query+= month_acc_dict[month] + " = %s "
+            acc_target_query+= "where id=%s"
+            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+
+        return HttpResponseRedirect('/agency/monthly_reports')
+    else:
+        mpfro_id = request.POST.get('mpfro_id')
+        month = int(request.POST.get('month'))
+        received = request.POST.get('received')
+        incurred = request.POST.get('incurred')
+        remarks = request.POST.get('remarks')
+        accomplished_target = request.POST.getlist('pt_ids[]')
+        
+        perf_rep = PerformanceReport.objects.get(id=mpfro_id)
+        perf_rep.received = received
+        perf_rep.incurred = incurred
+        perf_rep.remarks = remarks
+        perf_rep.save()
+
+        for acc_t in accomplished_target:
+            acc_target_query = "update performancetarget set "
+            acc_target_query+= month_acc_dict[month] + " = %s "
+            acc_target_query+= "where id=%s"
+            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
+        
+        return HttpResponseRedirect('/agency/monthly_reports')
+
+
+def logout(request):
+    if "agency_id" in request.session:
+        del request.session['agency_id']
+    return HttpResponseRedirect('/home')
+    

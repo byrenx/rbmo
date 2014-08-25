@@ -2,131 +2,258 @@
 
 {% block content %}
 <content>
-<br><br><br>
-<div class="container">
-<ul class="nav nav-pills nav-stacked col-md-2">
-  <li ><a href="/agency/home"> Notification </a></li>
-  <li><a href="/agency/requirements"> Requirement Status </a></li>
-  <li><a href="/agency/balance"> Balances </a></li>
-  <li class="active"><a href="/agency/balance"> Total Approved Budget</a></li>
-</ul>
-
-<div class="col-md-3 panel panel-default">
-<form action="/agency/balance" class="form-inline" role="form">
-  <label> Search by year:  </label>
-  <select name="year" class="form-control">
-    <option value="2014">2014</option>
-    <option value="2013">2013</option>
-    <option value="2012">2012</option>
-    <option value="2011">2011</option>
-    <option value="2010">2010</option>
-    <option value="2009">2009</option>
-    <option value="2008">2008</option>
-    <option value="2007">2007</option>
-    <option value="2006">2006</option>
-    <option value="2005">2005</option>
-    <option value="2004">2004</option>
-    <option value="2003">2003</option>
-    <option value="2002">2002</option>
-    <option value="2001">2001</option>
-    <option value="2000">2000</option>
-  </select>
-  <button type="submit" class="btn btn-default">
-    <span class="glyphicon glyphicon-search">
-  </button>
-</form>
-</div>
-
-{%if total and totalRelease%}
-
-<div class="col-md-10">
-<h2><small>{{success}}</small></h2>
-  <table class="table table-bordered">{%load humanize%}
-    <tr>
-    <th></th>
-    <th style="text-align: center">PS</th>
-    <th style="text-align: center">MOOE</th>
-    <th style="text-align: center">CO</th>
-    <th style="text-align: center">Total</th>
-    </tr>
-    <tr>
-      <td>Total Budget</td>
-      <td style="text-align: right">
-      {%if PS%}
-      {{PS|intcomma}}
-      {%endif%}
-      </td>
-      <td style="text-align: right">
-      {%if MOOE%}
-      {{MOOE|intcomma}}      
-      {%endif%}
-      <td style="text-align: right">
-	{%if CO%}
-	{{CO|intcomma}}
+  <div class="container">
+    {%include "./agency/side_bar.html" %}
+    <div class="col-md-9">
+      <div class="col-md-12">
+	<form action="/agency/balance" class="form-inline" role="form">
+	  <label> Search by year:  </label>
+	  <select name="year" class="form-control">
+	    <option value="2014">2014</option>
+	    <option value="2013">2013</option>
+	    <option value="2012">2012</option>
+	    <option value="2011">2011</option>
+	    <option value="2010">2010</option>
+	    <option value="2009">2009</option>
+	    <option value="2008">2008</option>
+	    <option value="2007">2007</option>
+	    <option value="2006">2006</option>
+	    <option value="2005">2005</option>
+	    <option value="2004">2004</option>
+	    <option value="2003">2003</option>
+	    <option value="2002">2002</option>
+	    <option value="2001">2001</option>
+	    <option value="2000">2000</option>
+	  </select>
+	  <button type="submit" class="btn btn-default">
+	    <span class="glyphicon glyphicon-search">
+	  </button>
+	</form>
+      </div>
+      <table class="table-normal">
+	{%load humanize%}
+	<!---PS--->
+	{%if pss or mooes or cos%}
+        <thead>
+  	  <tr>
+	    <th>Program</th>
+	    <th colspan="5">Physical Target</th>
+	    <th colspan="13">Financial Target</th>
+	  </tr>
+	  <tr>
+	    <th></th>
+	    <th>Indicator</th>
+	    <th>Q1</th>
+	    <th>Q2</th>
+	    <th>Q3</th>
+	    <th>Q4</th>
+	    <th>Jan</th>
+	    <th>Feb</th>
+	    <th>Mar</th>
+	    <th>Apr</th>
+	    <th>May</th>
+	    <th>June</th>
+	    <th>July</th>
+	    <th>Aug</th>
+	    <th>Sept</th>
+	    <th>Oct</th>
+	    <th>Nov</th>
+	    <th>Dec</th>
+	    <th>Total</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  {%if pss%}
+	  <th colspan="19">Personnel Services</th>
+	  {%for ps in pss%}
+	  <tr>
+	    <th colspan="19">{{ps.prog}}</th>
+	  </tr>
+          {%for act in ps.acts%}
+          <tr>
+	    <td>{{act.activity}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td class="decimal">{{act.activity.jan|intcomma}}</td>
+	    <td class="decimal">{{act.activity.feb|intcomma}}</td>
+	    <td class="decimal">{{act.activity.mar|intcomma}}</td>
+	    <td class="decimal">{{act.activity.apr|intcomma}}</td>
+	    <td class="decimal">{{act.activity.may|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jun|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jul|intcomma}}</td>
+	    <td class="decimal">{{act.activity.aug|intcomma}}</td>
+	    <td class="decimal">{{act.activity.sept|intcomma}}</td>
+	    <td class="decimal">{{act.activity.oct|intcomma}}</td>
+	    <td class="decimal">{{act.activity.nov|intcomma}}</td>
+	    <td class="decimal">{{act.activity.dec|intcomma}}</td>
+	    <td class="decimal">{{act.activity.total|intcomma}}</td>
+	  </tr>
+	  {%for pt in act.physical_targets%}
+	  <tr>
+	    <td></td>
+	    <td>{{pt.indicator}}</td>
+	    <td>{{pt.q1}}</td>
+	    <td>{{pt.q2}}</td>
+	    <td>{{pt.q3}}</td>
+	    <td>{{pt.q4}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	  {%endfor%}
+          {%endfor%}
+	  {%endfor%}
+	  {%endif%}
+	  
+	  {%if mooes%}
+	  <th colspan="19">Maintenance and Other Operating Expenses</th>
+	  {%for mooe in mooes%}
+	  <tr>
+	    <th colspan="19">{{mooe.prog}}</th>
+	  </tr>
+          {%for act in mooe.acts%}
+          <tr>
+	    <td>{{act.activity}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td class="decimal">{{act.activity.jan|intcomma}}</td>
+	    <td class="decimal">{{act.activity.feb|intcomma}}</td>
+	    <td class="decimal">{{act.activity.mar|intcomma}}</td>
+	    <td class="decimal">{{act.activity.apr|intcomma}}</td>
+	    <td class="decimal">{{act.activity.may|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jun|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jul|intcomma}}</td>
+	    <td class="decimal">{{act.activity.aug|intcomma}}</td>
+	    <td class="decimal">{{act.activity.sept|intcomma}}</td>
+	    <td class="decimal">{{act.activity.oct|intcomma}}</td>
+	    <td class="decimal">{{act.activity.nov|intcomma}}</td>
+	    <td class="decimal">{{act.activity.dec|intcomma}}</td>
+	    <td class="decimal">{{act.activity.total|intcomma}}</td>
+	  </tr>
+	  {%for pt in act.physical_targets%}
+	  <tr>
+	    <td></td>
+	    <td>{{pt.indicator}}</td>
+	    <td>{{pt.q1}}</td>
+	    <td>{{pt.q2}}</td>
+	    <td>{{pt.q3}}</td>
+	    <td>{{pt.q4}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	  {%endfor%}
+          {%endfor%}
+	  {%endfor%}
+	  {%endif%}
+	  
+	  {%if cos%}
+	  <th colspan="19">Maintenance and Other Operating Expenses</th>
+	  {%for co in cos%}
+	  <tr>
+	    <th colspan="19">{{co.prog}}</th>
+	  </tr>
+          {%for act in cos.acts%}
+          <tr>
+	    <td>{{act.activity}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td class="decimal">{{act.activity.jan|intcomma}}</td>
+	    <td class="decimal">{{act.activity.feb|intcomma}}</td>
+	    <td class="decimal">{{act.activity.mar|intcomma}}</td>
+	    <td class="decimal">{{act.activity.apr|intcomma}}</td>
+	    <td class="decimal">{{act.activity.may|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jun|intcomma}}</td>
+	    <td class="decimal">{{act.activity.jul|intcomma}}</td>
+	    <td class="decimal">{{act.activity.aug|intcomma}}</td>
+	    <td class="decimal">{{act.activity.sept|intcomma}}</td>
+	    <td class="decimal">{{act.activity.oct|intcomma}}</td>
+	    <td class="decimal">{{act.activity.nov|intcomma}}</td>
+	    <td class="decimal">{{act.activity.dec|intcomma}}</td>
+	    <td class="decimal">{{act.activity.total|intcomma}}</td>
+	  </tr>
+	  {%for pt in act.physical_targets%}
+	  <tr>
+	    <td></td>
+	    <td>{{pt.indicator}}</td>
+	    <td>{{pt.q1}}</td>
+	    <td>{{pt.q2}}</td>
+	    <td>{{pt.q3}}</td>
+	    <td>{{pt.q4}}</td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	    <td></td>
+	  </tr>
+	  {%endfor%}
+          {%endfor%}
+	  {%endfor%}
+	  {%endif%}
+	  <!----total--->
+	  <tr>
+	    <th>Total</th>
+	    <th></th>
+	    <th></th>
+	    <th></th>
+	    <th></th>
+	    <th></th>
+	    <th class="decimal">{{wfp_total.jan_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.feb_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.mar_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.apr_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.may_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.jun_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.jul_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.aug_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.sept_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.oct_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.nov_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.dec_total|intcomma}}</th>
+	    <th class="decimal">{{wfp_total.total|intcomma}}</th>
+	  </tr>
+	</tbody>
 	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if total%}<b>
-	{{total|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
-    <tr><td>Total Released</td>
-      <td style="text-align: right">
-	{%if PSR%}
-	{{PSR|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if MOOER%}
-	{{MOOER|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if COR%}
-	{{COR|intcomma}}
-	{%endif%}
-      </td>
-      <td style="text-align: right">
-	{%if totalRelease%}<b>
-	{{totalRelease|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
-
-    <tr><td><b>Remaining Balance </b></td>
-      <td style="text-align: right"><b>
-	{%if ps_remaining%}
-	{{ps_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if MOOE_remaining%}<b>
-	{{MOOE_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if CO_remaining%}<b>
-	{{CO_remaining|intcomma}}
-	{%endif%}</b>
-      </td>
-      <td style="text-align: right">
-	{%if overall_balance%}<b>
-	{{overall_balance|intcomma}}
-	{%endif%}</b>
-      </td>
-    </tr>
-  </table>
-</div>
-{%elif error%}
-<div class="jumbotron col-md-10">
-  <h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
-</div>
-{%else%}
-<div class="jumbotron col-md-10">
-  <h3> Records not found! <small>Please try another year</small><h3> 
-</div>
-{%endif%}
-</div>
+	<tbody>
+      </table>
+    </div>  
+  </div>
 </content>
 {% endblock %}

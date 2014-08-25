@@ -1,7 +1,7 @@
 {% extends "./admin/base.html" %}
 
 {% block right-content %}
-<div class="col-sm-8 col-sm-offset-2">
+<div class="col-sm-8 col-sm-offset-2" style="background-color: white;">
   <div class="col-sm-12">
     <h2>Agency/Office Form 
       <small> 
@@ -25,9 +25,11 @@
 	<label>Agencie's Sector</label>
       {{form.sector}}
       </div>
-      <button type="submit" class="btn btn-primary">
-	Save
-      </button>
+      <div class="form-group">
+	<button type="submit" class="btn btn-primary">
+	  Save
+	</button>
+      </div>
     </form>
   </div>
 </div>

@@ -1,0 +1,12 @@
+<h4>Sectors</h4>
+<hr/>
+<form action="#">
+{%for sector in sectors%}
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" name="sector[]" id="sector" value="{{sector.id}}">
+      {{sector.name}}
+    </label>
+  </div>
+{%endfor%}
+</form>

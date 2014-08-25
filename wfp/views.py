@@ -184,7 +184,7 @@ def printWFPData(request):
     mooes = getProgOverview('MOOE', agency, year)
     cos = getProgOverview('CO', agency, year)
     wfp_total = getWFPTotal(agency, year)
-    print wfp_total
+
     
     data = {'system_name' : SYSTEM_NAME,
             'agency'      : agency,

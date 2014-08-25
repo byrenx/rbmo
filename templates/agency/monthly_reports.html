@@ -10,7 +10,7 @@
 
       <form class="form-inline" method="POST" action="">
 	<div class="form-group">
-	  <a href="" class="btn btn-primary">
+	  <a href="/agency/monthly_report_form" class="btn btn-primary">
 	    <span class="glyphicon glyphicon-plus-sign"></span>
 	    Add
 	  </a>
@@ -54,7 +54,7 @@
 	  {%for acc in monthly_acts_reports%}
 	  <tr>
 	    <td rowspan="{{acc.indicator_count}}">
-	      {{acc.activity}}&nbsp;
+	      {{acc.activity}}</br>
 	      <a href="/admin/monthly_reports_form?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" class="btn btn-link" title="Edit">
 		<span class="glyphicon glyphicon-edit"></span>
 	      </a>|
@@ -80,7 +80,7 @@
 	    <td>{{indicator.indicator}}</td>
 	    <td>{{indicator.target}}</td>
 	    <td>{{indicator.acc}}</td>
-	    <td>
+	    <td width="45px">
 	      {%if indicator.variance < 0%}
 					<span class="glyphicon glyphicon-arrow-down text-danger"></span>
 					{{indicator.variance}}
