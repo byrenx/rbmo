@@ -1,18 +1,13 @@
 {% extends "./admin/base.html" %}
 
-{% block headerpage %}
-<div class="container">
-  <h3>{{agency.name}}</h3>
-  <hr/>
-</div>
-{% endblock %}
-
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9 right-content-left-border" style="min-height:500px;">
+<div class="col-sm-9" style="min-height:500px;background-color: white;">
+  <h3>{{agency.name}}</h3>
+  <hr/>
   {% include "msg_pane.html" %}
   <div class="col-sm-12">
     <form action="/admin/monthly_reports" method="POST" class="form-inline">

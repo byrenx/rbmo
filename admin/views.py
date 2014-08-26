@@ -4,6 +4,7 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from fund.views import getBudget, getRelease
 from .forms import (UserForm, LoginForm, AgencyForm, 
                     MonthForm, ChangePassForm, AllocationMonthYearForm)
 from rbmo.models import (UserGroup,
@@ -32,7 +33,7 @@ import time
 import sys
 
 # Create your views here.
-SYSTEM_NAME = 'RBMO Management System'
+SYSTEM_NAME = 'e-RBMO Data Management System'
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
           'jul', 'aug', 'sept', 'oct', 'nov', 'dec' ]
 
@@ -84,12 +85,50 @@ def index(request):
 @login_required(login_url='/admin/')
 def home(request):
     context = RequestContext(request)
-    data = {'page': 'users',
-            'system_name': SYSTEM_NAME
-        }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-    data['year'] = time.strftime('%Y')
+    cursor = connection.cursor()
+
+    balances = []
+    agencies = Agency.objects.all()
+    year = datetime.today().year
+    total_budget = 0
+    total_release = 0
+    total_balance = 0
+    for agency in agencies:
+        agency_balances = {}
+        agency_balances['agency_id'] = agency.id
+        agency_balances['agency_name'] = agency.name
+        '''
+        total budget
+        '''
+        ps = getBudget(agency.id, 'PS', year)
+        mooe = getBudget(agency.id, 'MOOE', year)
+        co = getBudget(agency.id, 'CO', year) 
+        agency_balances['budget'] = ps + mooe + co
+        '''
+        total release
+        '''
+        ps = getRelease(agency, 'PS', year)
+        mooe = getRelease(agency, 'MOOE', year)
+        co = getRelease(agency, 'CO', year)
+        agency_balances['release'] = ps + mooe + co 
+        #remaining balance
+        agency_balances['balance'] = agency_balances['budget'] - agency_balances['release']
+        balances.append(agency_balances)
+        total_budget  += agency_balances['budget']
+        total_release += agency_balances['release']
+        total_balance += agency_balances['balance']
     
+    
+    data = {'year'         : year,
+            'system_name'  : SYSTEM_NAME,
+            'allowed_tabs' :get_allowed_tabs(request.user.id),
+            'balances'     : balances,
+            'total_sum'    :{'total_budget'  : total_budget,
+                             'total_release' : total_release,
+                             'total_balance' : total_balance},
+            'today'        : time.strftime('%D %d, %Y')
+        }
+
     return render_to_response('./admin/home.html', data, context)
 
 

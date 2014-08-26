@@ -3,18 +3,12 @@
 {% block css %}
 {% endblock %}
 
-{%block headerpage%}
-<div class="container">
-  <h2>{{agency.name}}</h2>
-</div>
-{%endblock%}
-
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9" style="background-color: rgba(250,250,250,.4);min-height:550px">
+<div class="col-sm-9" style="background-color: white;min-height:550px">
   <div class="col-sm-12"><!---style="background-color: rgba(204,204,204,.4)"-->
     <h3>Allotment Release</h3>
     <a href="/agency/fund/allotment_releases?agency_id={{agency.id}}">

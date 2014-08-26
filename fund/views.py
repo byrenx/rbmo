@@ -21,7 +21,7 @@ from datetime import datetime, date
 import time
 
 # Create your views here.
-SYSTEM_NAME = 'RBMO Management System'
+SYSTEM_NAME = 'e-RBMO Data Management System'
 MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
           'jul', 'aug', 'sept', 'oct', 'nov', 'dec' ]
 

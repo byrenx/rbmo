@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import has_permission, get_allowed_tabs, dictfetchall
 from datetime import datetime, date
 
-SYSTEM_NAME = 'RBMO Management System'
+SYSTEM_NAME = 'e-RBMO Data Management System'
 
 months = ['January', 'February', 'March', 'April', 
           'May', 'June', 'July', 'August', 'September', 

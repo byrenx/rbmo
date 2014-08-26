@@ -24,6 +24,9 @@ from decimal import *
 import time
 import sys
 
+
+SYSTEM_NAME = 'e-RBMO Data Management System'
+
 month_lookup = getMonthLookup()
 quarters = {1: '1st Quarter', 2: '2nd Quarter', 3: '3rd Quarter', 4: 'Last Quarter'}
 

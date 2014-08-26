@@ -23,7 +23,7 @@ import time
 import sys
 
 
-SYSTEM_NAME = 'RBMO Management System'
+SYSTEM_NAME = 'e-RBMO Data Management System'
 
 @login_required(login_url='/admin/')
 @transaction.atomic

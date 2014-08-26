@@ -31,6 +31,21 @@
 	  </tr>
 	</thead>
 	<tbody>
+	  {% load humanize %}
+	  {%for bal in balances %}
+	  <tr>
+	    <td>{{bal.agency_name}}</td>
+	    <td class="decimal">{{bal.budget|intcomma}}</td>
+	    <td class="decimal">{{bal.release|intcomma}}</td>
+	    <td class="decimal">{{bal.balance|intcomma}}</td>
+	  </tr>
+	  {% endfor %}
+	  <tr>
+	    <th>GRAND TOTAL</th>
+	    <th style="text-align:right">{{total_sum.total_budget|intcomma}}</th>
+	    <th style="text-align:right">{{total_sum.total_release|intcomma}}</th>
+	    <th style="text-align:right">{{total_sum.total_balance|intcomma}}</th>
+	  </tr>
 	</tbody>
       </table>
     </div>

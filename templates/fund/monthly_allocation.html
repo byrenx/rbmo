@@ -2,20 +2,15 @@
 
 {%block css%}
 {%endblock%}
-{%block headerpage%}
-<div class="container">
-    <h3>{{agency.name}}</h3>
-    <hr/>
-</div>
-{%endblock%}
-
 
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9">
+<div class="col-sm-9" style="background-color: white;min-height: 500px;">
+  <h3>{{agency.name}}</h3>
+  <hr/>
   <h4>Monthly Cash Allocation</h4>
   {%load humanize%}
   <form action="/agency/fund/monthly_alloc" class="form-inline" method="POST">{%csrf_token%}

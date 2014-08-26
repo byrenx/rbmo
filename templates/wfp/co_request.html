@@ -2,20 +2,16 @@
 
 {%block css%}{%endblock%}
 
-{%block headerpage%}
-<div class="container">
-    <h3>{{agency.name}}</h3>
-    <hr/>
-</div>
-{% endblock %}
-
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9" style="background-color: rgba(250,250,250,.5); min-height: 450px;">
-  <h3>Request Received <small>As of {{month_str}}, {{year}}</small></h3>
+<div class="col-sm-9" style="background-color: white; min-height: 550px;">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+  <h4>Request Received <small>As of {{month_str}}, {{year}}</small></h4>
+  <hr/>
   <div class="col-sm-8">
     <a href="/agency/wfp/co_request_form?agency_id={{agency.id}}" class="btn btn-success">
       <span class="glyphicon glyphicon-plus-sign"></span>
@@ -26,7 +22,6 @@
       Print
     </a>
   </div>
-  <hr/>
   <div class="col-sm-4">
     <form action="/agency/wfp/co_request?agency_id={{agency.id}}" class="form-horizontal" method="POST">{% csrf_token %}
       <div class="form-group">

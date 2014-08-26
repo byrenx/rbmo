@@ -6,7 +6,8 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-sm-12">
+  <div class="col-sm-12" style="background-color: white; min-height: 550px;">
+    </br></br>
     <form class="form-inline" action="/admin/total_monthly_release" method="POST">
       {% csrf_token %}
       <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
@@ -36,7 +37,6 @@
       </button>
     </form>
     <hr/>
-  </div>
   </br> </br>
   <div class="col-sm-12">
     {% if agency_monthly_releases %}
@@ -123,6 +123,7 @@
     </br></br>
     {% endif %}
     </div>
+  </div>
 </div>
 {%include "./admin/total_monthly_release_print.html"%}
 {% endblock %}
