@@ -331,8 +331,12 @@ def updateActivity(request):
     try:
         wfp_id   = request.GET.get('wfp_id')
         activity = request.GET.get('activity')
+        program = request.GET.get('program')
+        allocation = request.GET.get('allocation')
         wfp = WFPData.objects.get(id=wfp_id)
         wfp.activity = activity
+        wfp.program = program
+        wfp.allocation = allocation
         wfp.save()
         return HttpResponse(activity);
     except WFPData.DoesNotExist:

@@ -148,19 +148,25 @@ function updateAmount(){
     );
 }
 
-function setActivityModal(wfp_id){
+function setActivityModal(wfp_id, major_program, allocation){
     $('#wfp_id').val(wfp_id);
     activity = $('#td'+wfp_id).html();
     $('#activity').val(activity);
+    $('#program').val(major_program);
+    $('#allocation').val(allocation);
 }
 
 function updateActivity(){
-    var data = {'wfp_id'   : $('#wfp_id').val(),
-		'activity' : $('#activity').val()
+    var data = {'wfp_id'        : $('#wfp_id').val(),
+		'activity'      : $('#activity').val(),
+		'program'       : $('#program').val(),
+		'allocation'    : $('#allocation').val()
 	       }
     $.get('/agency/wfp/update_activity', data, function(rs){
-	$('#td'+data.wfp_id).html(rs);
-	$('#close_activity_modal').click();
+	agency_id = $('#agency_id').val();
+	window.location = "/agency/wfp/wfpinfo?agency_id="+agency_id;
+	//$('#td'+data.wfp_id).html(rs);
+	//$('#close_activity_modal').click();
     });
 }
 
