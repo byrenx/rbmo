@@ -4,7 +4,7 @@ from django.db import transaction, connection
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from rbmo.models import Agency, WFPData, PerformanceTarget, CoRequest
+from rbmo.models import Agency, WFPData, PerformanceTarget, CoRequest, PerformanceReport
 from django.contrib.auth.models import User
 from .forms import WFPForm, CORequestForm
 from django.contrib.auth import authenticate, login
@@ -341,6 +341,21 @@ def updateActivity(request):
         return HttpResponse(activity);
     except WFPData.DoesNotExist:
         return HttpResponse('Error')
+
+@login_required(login_url='/home')
+@transaction.atomic
+def delActivity(request):
+    activity_id = request.GET.get('activity_id')
+    
+    try:
+        wfp_activity = WFPData.objects.get(id=activity_id)
+        performance_targets = PerformanceTarget.objects.filter(wfp_activity=wfp_activity).delete()
+
+        performance_report = PerformanceReport.objects.filter(activity=wfp_activity).delete()
+        wfp_activity.delete()
+        return HttpResponse('ok')
+    except WFPData.DoesNotExist:
+        return HttpResponseRedirect('/home')
         
 
 def delPerfTarget(request):

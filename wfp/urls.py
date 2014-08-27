@@ -16,4 +16,5 @@ urlpatterns = patterns('',
     url(r'^delete_perf_target$', delPerfTarget),
     url(r'^add_performance_target$', addPerfTarget),
     url(r'^get_performance_acc$', getPerformanceAcc),
+    url(r'^delete_activity$', delActivity),
 )

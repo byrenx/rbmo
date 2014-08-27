@@ -58,11 +58,18 @@
 	  {% for act in ps.acts%}
 	<tr onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	  <td width="70px">
-	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}}, '{{ps.prog}}', 'PS')">
-	      [Edit]
-	    </a>&nbsp;
+	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}}, '{{ps.prog}}', 'PS')" title="Edit this Activity">
+	      <span class="glyphicon glyphicon-edit"></span>
+	    </a>&nbsp;|&nbsp;
+	    <a href="" data-toggle="modal" data-target="#confirmDelActModal" title="Delete this Activity" onclick="$('#activity_id').val({{act.id}})">
+	      <span class="glyphicon glyphicon-remove text-danger"></span>
+	    </a>
 	  </td>
-	  <td id="td{{act.id}}" onclick="getWFPData({{act.id}});">{{act.activity}}</td>
+	  <td>
+	    <a href="javascript:getWFPData({{act.id}});">
+	      <span id="td{{act.id}}">{{act.activity}}</span>
+	    </a>
+	  </td>
 	</tr>
 	  {%endfor%}
 	{% endfor %}
@@ -76,11 +83,18 @@
 	{% for act in mooe.acts%}
 	<tr onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	  <td width="70px">
-	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}}, '{{mooe.prog}}', 'MOOE')">
-	      [Edit]
-	    </a>&nbsp;
+	    <a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}}, '{{mooe.prog}}', 'MOOE')" title="Edit this Activity">
+	      <span class="glyphicon glyphicon-edit"></span>
+	    </a>&nbsp;|&nbsp;
+	    <a href="" data-toggle="modal" data-target="#confirmDelActModal" title="Delete this Activity" onclick="$('#activity_id').val({{act.id}})">
+	      <span class="glyphicon glyphicon-remove text-danger"></span>
+	    </a>
 	  </td>
-	  <td id="td{{act.id}}" onclick="getWFPData({{act.id}});">{{act.activity}}</td>
+	  <td>
+	    <a href="javascript:getWFPData({{act.id}});">
+	      <span id="td{{act.id}}">{{act.activity}}</span>
+	    </a>
+	  </td>
 	</tr>
 	{%endfor%}
 	{% endfor %}
@@ -96,10 +110,15 @@
 	    <tr onmouseover="$(this).addClass('info')" onmouseout="$(this).removeClass()" style="cursor: pointer">
 	      <td width="70px">
 		<a href=""  data-toggle="modal" data-target="#activityModal" onclick="setActivityModal({{act.id}}, '{{co.prog}}', 'CO')">
-		  [Edit]
-		</a>&nbsp;
+		  <span class="glyphicon glyphicon-edit"></span>
+		</a>&nbsp;|&nbsp;
+		<a href="" data-toggle="modal" data-target="#confirmDelActModal" title="Delete this Activity" onclick="$('#activity_id').val({{act.id}})">
+		  <span class="glyphicon glyphicon-remove text-danger"></span>
+		</a>
 	      </td>
-	      <td id="td{{act.id}}" onclick="getWFPData({{act.id}});">{{act.activity}}</td>
+	      <td onclick="getWFPData({{act.id}});">
+		<span id="td{{act.id}}">{{act.activity}}</span>
+	      </td>
 	    </tr>
 	   {%endfor%}
 	{% endfor %}
@@ -155,6 +174,9 @@
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+{%include "./wfp/activity_delete_confirm.html"%}
+
 {% endblock %}
 
 {% block scripts %}

@@ -245,3 +245,16 @@ function fillFinTarget(month){
 }
 
 
+function delActivity(){
+    var activity_id = $('#activity_id').val();
+    var agency_id = $('#agency_id').val();
+    $.get('/agency/wfp/delete_activity'
+	 ,
+	 {'activity_id': activity_id}
+	 ,
+	 function(rs){
+	     window.location = '/agency/wfp/wfpinfo?agency_id='+ agency_id
+	     
+	 }
+	);
+}

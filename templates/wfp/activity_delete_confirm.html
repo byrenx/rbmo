@@ -1,0 +1,32 @@
+<!-- Modal -->
+<div class="modal fade" id="confirmDelActModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Confirm</h4>
+      </div>
+      <form action="javascript:delActivity()" method="GET">
+      <div class="modal-body">
+	  <input type="hidden" id="activity_id" name="activity_id" value="">
+	  <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
+	  <div class="alert alert-warning">
+	    <p>
+	      <span class="glyphicon glyphicon-warning-sign"></span>
+	      &nbsp; When you delete this activity, all performance targets will also
+	      be deleted as well as its related information on monthly performance report
+	    </p>
+	  </div>
+	  </br>
+	  <div>
+	    <b>Are you sure to delete this activity?</b>
+	  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="close_activity_modal" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="submit" class="btn btn-primary">Yes</button>
+      </div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
