@@ -141,3 +141,4 @@ class AllocationMonthYearForm(forms.Form):
                                  'class' : 'form-control'
                              })
     )
+

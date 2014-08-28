@@ -246,6 +246,31 @@ def agencies(request):
     return render_to_response('./admin/agencies.html', data, context)
 
 
+def getAgenciesbySector(request):
+    context = RequestContext(request)
+    try:
+        sectors_selected = request.POST.getlist('sector[]')
+        print sectors_selected
+        agencies = Agency.objects.filter(sector__in = sectors_selected)
+
+        data = {'page'             : 'agencies',
+                'agencies'         : agencies,
+                'system_name'      : SYSTEM_NAME,
+                'sectors'          : Sector.objects.all(),
+                'sectors_selected' : [int(x) for x in sectors_selected],
+                'allowed_tabs'     : get_allowed_tabs(request.user.id)
+        }
+
+        if has_permission(request.user.id, 'record', 'agency'):
+            data['has_add'] = 'true'
+
+        return render_to_response('./admin/agencies.html', data, context)
+    except Agency.DoesNotExist:
+        return HttpResponse('Error 404 Page not Found')
+
+    
+
+
 @login_required(login_url='/admin/')
 def addEditAgency(request):
     context = RequestContext(request)

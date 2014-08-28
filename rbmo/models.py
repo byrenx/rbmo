@@ -165,7 +165,6 @@ class WFPData(models.Model):
                        ('print_report', 'Print Agency WFP Information')
         )
 
-
 class PerformanceTarget(models.Model):
     wfp_activity = models.ForeignKey(WFPData)
     indicator = models.CharField(max_length=45)

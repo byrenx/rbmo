@@ -8,7 +8,7 @@
     {%include "./admin/sectors.html"%}
   </div>
 
-  <div class="col-sm-8" style="border-left: 1px solid rgb(204,204,204);">
+  <div class="col-sm-8" style="border-left: 1px solid rgb(204,204,204);min-height: 450px;">
     <div class="col-sm-8" style="text-align:left">
       <form method="POST" id='srch_stud' action="/admin/agencies" class="form-search">
 	{%csrf_token%}
@@ -43,5 +43,10 @@
   </div>
 </div>
   {% endblock %}
+
+{%block scripts%}
+<script type="text/javascript">
+</script>
+{%endblock%}
   
   

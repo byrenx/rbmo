@@ -11,7 +11,8 @@ function loadFundDistribution(data){
 				       rendererOptions: {
 					   // Put data labels on the pie slices.
 					   // By default, labels show the percentage of the slice.
-					   showDataLabels: true
+					   showDataLabels: true,
+					   sliceMargin   : 4,
 				       }
 				   },
 				   legend: { show:true, location: 'e' }
