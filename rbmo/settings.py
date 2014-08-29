@@ -65,7 +65,7 @@ TEMPLATE_DIRS = (TEMPLATE_PATH.replace('\\','/'),)
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 #mysql settings 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -76,9 +76,9 @@ DATABASES = {
         'PORT': '3306',     
     }
 }
-
-#pythonanywhere settings
 '''
+#pythonanywhere settings
+
 DATABASES = {
     'default': {
         
@@ -92,7 +92,7 @@ DATABASES = {
         'PORT': '',                   
     }
 }
-'''
+
 
 #postgre sql settings
 '''
