@@ -7,8 +7,8 @@
 <content>
   <div class="container">
     {%include "./agency/side_bar.html" %}
-    <div class="col-sm-9" style="min-height:500px;">
-      <h4>Monthly Physical and Financial Report of Operation</h4>
+    <div class="col-sm-10" style="background-color: white; min-height:580px;">
+      <h3>Monthly Physical and Financial Report of Operation</h3>
       <hr/>
       {% include "msg_pane.html" %}
       <form action="/agency/add_performance_report" method="post" class="form-horizontal">
@@ -20,7 +20,8 @@
 	{%endif%}
 	
 	<div class="form-group">
-	  <div class="col-sm-3 col-sm-offset-3">
+	  <label class="col-sm-3">Month</label>
+	  <div class="col-sm-3">
 	    {%if action == "add" %}
 	    {{month_form.month}}
 	    {%else%}
@@ -116,8 +117,9 @@
     </div>
   </div>
 </content>
-    {% endblock %}
-    {%block scripts%}
-    <script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
-    {%endblock%}
+{% endblock %}
+{%block scripts%}
+  <script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
+  <script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+{%endblock%}
   

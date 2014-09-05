@@ -413,4 +413,6 @@ def logout(request):
     if "agency_id" in request.session:
         del request.session['agency_id']
     return HttpResponseRedirect('/home')
+
+    
     

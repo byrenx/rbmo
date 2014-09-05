@@ -103,79 +103,80 @@ def allotmentReleases(request):
 @transaction.atomic
 def monthlyAlloc(request):
     context = RequestContext(request)
-    data = {'system_name' : SYSTEM_NAME,
-            'c_year'      : time.strftime('%Y'),
-            'allowed_tabs': get_allowed_tabs(request.user.id),
-            'cur_date'    : time.strftime('%B %d, %Y')
-    }
-
-    unsubmitted_reqs = []
-    agency_id = None
-    year = datetime.today().year
-    month = datetime.today().month
-    allocation = 'MOOE'
-        
-    if request.method == 'POST':
-        agency_id = request.POST.get('agency_id')
-        allocation = request.POST.get('allocation')
-        year = int(request.POST.get('year'))
-        month = int(request.POST.get('month'))
-    else: #no post request sent
-        #gather default data to display
-        agency_id = request.GET.get('agency_id')
-
-    try:
-        agency = Agency.objects.get(id=agency_id)
-        monthly_alloc_stat = {}
-        
-        if allocation == 'PS':
-            data['amount'] = gettotalAllocation(year, month, agency, 'PS')
-            has_cos = hasCOSSubmitted(agency, year)
-            if has_cos==False:
-                monthly_alloc_stat['stat'] = 'PENDING'
-                unsubmitted_reqs.append({'name': 'Contract of Service'})
-            elif data['amount'] > 0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            else:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-        elif allocation == 'MOOE':
-            unsubmitted_reqs = lqm(year, month, agency)
-            data['amount'] = gettotalAllocation(year, month, agency, 'MOOE')
-            if len(unsubmitted_reqs)==0 and isMRS(year, month, agency) and data['amount']>0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            elif data['amount']==0:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-            else:
-                if isMRS(year, month, agency)==False:
-                    unsubmitted_reqs.append({'name':'Monthly Physical and Financial Report'})
-                monthly_alloc_stat['stat'] = 'PENDING'
-                monthly_alloc_stat['quarter_reqs'] = unsubmitted_reqs
-
-        else: #CO
-            data['amount'] = gettotalAllocation(year, month, agency, 'CO')
-            if data['amount'] > 0:
-                monthly_alloc_stat['stat'] = 'PROCESSED'
-            else:
-                monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
-        
-        print allocation, month, year   
-        if alreadyRelease(year, month, agency, allocation) and data['amount']-getReleaseAmount(year, month, agency, allocation)<=0:
-            monthly_alloc_stat['stat'] = 'RELEASED' 
-            data['monthly_alloc_stat'] = monthly_alloc_stat
-
-        data['agency'] = agency
-        data['allocation'] = allocation
-        data['form']   = MCASearchForm({'month': month, 'allocation' : allocation})
-        data['year'] = year
-        data['month_str'] = stringify_month(month)
-        data['amount'] = numify(data['amount'])-numify(getReleaseAmount(year, month, agency, allocation))
-        data['monthly_alloc_stat'] = monthly_alloc_stat
-        
-        return render_to_response('./fund/monthly_allocation.html', data, context)
-    except Agency.DoesNotExist:
+    if 'admin_agency_id' not in request.session:
         return HttpResponseRedirect('/admin/agencies')
+    else:
+        try:
+            unsubmitted_reqs = []
+            agency_id = 0
+            year = datetime.today().year
+            month = datetime.today().month
+            allocation = 'MOOE'
         
+            if request.method == 'POST':
+                agency_id = request.POST.get('agency_id')
+                allocation = request.POST.get('allocation')
+                year = int(request.POST.get('year'))
+                month = int(request.POST.get('month'))
+            else: #no post request sent
+                #gather default data to display
+                agency_id = request.session['admin_agency_id']
+            
+            agency = Agency.objects.get(id=agency_id)
+            monthly_alloc_stat = {}
+            amount = 0
+                
+            if allocation == 'PS':
+                amount = gettotalAllocation(year, month, agency, 'PS')
+                has_cos = hasCOSSubmitted(agency, year)
+                if has_cos==False:
+                    monthly_alloc_stat['stat'] = 'PENDING'
+                    unsubmitted_reqs.append({'name': 'Contract of Service'})
+                elif amount > 0:
+                    monthly_alloc_stat['stat'] = 'PROCESSED'
+                else:
+                    monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
+            elif allocation == 'MOOE':
+                    unsubmitted_reqs = lqm(year, month, agency)
+                    amount = gettotalAllocation(year, month, agency, 'MOOE')
+                    if len(unsubmitted_reqs)==0 and isMRS(year, month, agency) and amount>0:
+                        monthly_alloc_stat['stat'] = 'PROCESSED'
+                    elif amount==0:
+                        monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
+                    else:
+                        if isMRS(year, month, agency)==False:
+                            unsubmitted_reqs.append({'name':'Monthly Physical and Financial Report'})
+                            monthly_alloc_stat['stat'] = 'PENDING'
+                            monthly_alloc_stat['quarter_reqs'] = unsubmitted_reqs
+                                
+            else: #CO
+                amount = gettotalAllocation(year, month, agency, 'CO')
+                if amount > 0:
+                    monthly_alloc_stat['stat'] = 'PROCESSED'
+                else:
+                    monthly_alloc_stat['stat'] = 'NO ALLOCATED FUND'
+                        
+            if alreadyRelease(year, month, agency, allocation) and amount-getReleaseAmount(year, month, agency, allocation)<=0:
+                monthly_alloc_stat['stat'] = 'RELEASED' 
 
+            data = {'system_name' : SYSTEM_NAME,
+                    'c_year'      : time.strftime('%Y'),
+                    'allowed_tabs': get_allowed_tabs(request.user.id),
+                    'cur_date'    : time.strftime('%B %d, %Y')}
+
+            data['monthly_alloc_stat'] = monthly_alloc_stat
+            data['agency'] = agency
+            data['allocation'] = allocation
+            data['form']   = MCASearchForm({'month': month, 'allocation' : allocation})
+            data['year'] = year
+            data['month_str'] = stringify_month(month)
+            data['amount'] = numify(amount)-numify(getReleaseAmount(year, month, agency, allocation))
+            data['monthly_alloc_stat'] = monthly_alloc_stat
+            return render_to_response('./fund/monthly_allocation.html', data, context)
+        except:
+            return HttpResponseRedirect('/admin/agencies')
+                                        
+                                        
 def hasCOSSubmitted(agency, year):
     try:
         cos_submit = COSSubmission.objects.filter(date_submitted__year=year)

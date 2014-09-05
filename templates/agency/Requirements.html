@@ -4,7 +4,7 @@
 <content>
   <div class="container">
     {%include "./agency/side_bar.html"%}
-    <div class="col-md-9">
+    <div class="col-md-10" style="background-color: white; min-height: 550px;">
       <div class="col-sm-12">
 	<h3>{{str_month}}&nbsp;-&nbsp;{{year}} Requirement Status</h3>
 	<hr/>
@@ -22,7 +22,6 @@
 	<div class="col-sm-6" style="border-right:1px solid rgb(204, 204, 204)">
 <!--	  <div class="panel panel-default">-->
            <h4>Submitted Requirements</h4>
-	   <hr/>
 	  {%if submitted_reqs%}
 	   <table class="table table-condensed">
 	      {%for req in submitted_reqs%}

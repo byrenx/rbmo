@@ -30,11 +30,15 @@ SYSTEM_NAME = 'e-RBMO Data Management System'
 month_lookup = getMonthLookup()
 quarters = {1: '1st Quarter', 2: '2nd Quarter', 3: '3rd Quarter', 4: 'Last Quarter'}
 
+
+
 def getSubmittedReqs(agency, year, month):
     #monthly requirements
     submitted_reqs = []
-    if isMonthlyRepSubmitted(agency, year, month-1):
-        submitted_reqs.append({'name':stringify_month(month-1)+' Performance Report of Operation'})
+    mrs = isMonthlyRepSubmitted(agency, year, month-1) 
+    if mrs:
+        submitted_reqs.append({'name':stringify_month(month-1)+' Performance Report of Operation',
+                               'date_submitted' : mrs.date_submitted})
     #quarterly requirements
     quarter = quarterofMonth(month)
     if quarter==4:
@@ -68,9 +72,9 @@ def getLackingReqs(agency, year, month):
 def isMonthlyRepSubmitted(agency, year, month):
     try:
         mrs = MonthlyReqSubmitted.objects.get(agency=agency, year=year, month=month)
-        return True
+        return mrs
     except MonthlyReqSubmitted.DoesNotExist:
-        return False
+        return None
 
 
 def getQuarterReqSubmitted(agency, year, quarter):

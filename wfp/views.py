@@ -19,6 +19,7 @@ months = ['January', 'February', 'March', 'April',
           'October', 'November', 'December']
 
 @login_required(login_url='/admin/')
+@transaction.atomic
 def wfpForm(request):
     context = RequestContext(request)
     data = {'system_name':SYSTEM_NAME,
@@ -50,29 +51,37 @@ def wfpForm(request):
 def viewWFP(request):
     context = RequestContext(request)
     cursor = connection.cursor()
-    data = {'system_name'  : SYSTEM_NAME,
-            'agency_id'    : request.GET.get('agency_id'),
-            'current_year' : time.strftime('%Y'),
-            'agency_tab'   : 'wfp',
-            'years'        : getYears(request.GET.get('agency_id'))
-    }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-    
-    if request.method=='POST':
-        year = request.POST.get('year')
-        agency = Agency.objects.get(id=request.POST.get('agency_id'))
+
+    if 'admin_agency_id' not in request.session:
+        return HttpResponseRedirect('/admin/agencies')
     else:
-        year = time.strftime('%Y')
-        agency = Agency.objects.get(id=request.GET.get('agency_id'))
+        try:
+            current_year = datetime.today().year
+            agency_id = 0
+            year = datetime.today().year
 
-    data['pss'] = getProgActs('PS', agency, year)
-    data['mooes'] = getProgActs('MOOE', agency, year)
-    data['cos'] = getProgActs('CO', agency, year)
-    data['year'] = year
-    data['agency'] = agency
+            if request.method=='POST':
+                year = request.POST.get('year')
+                agency_id = request.POST.get('agency_id')
+            else:
+                agency_id = request.session['admin_agency_id']
 
-    return render_to_response('./wfp/agency_wfp_info.html', data, context)
-
+            agency = Agency.objects.get(id = agency_id)
+            data = {'system_name'  : SYSTEM_NAME,
+                    'agency_tab'   : 'wfp',
+                    'agency'       : agency,
+                    'allowed_tabs' : get_allowed_tabs(request.user.id),
+                    'years'        : getYears(agency_id),
+                    'current_year' : current_year,
+                    'year'         : year,
+                    'pss'          : getProgActs('PS', agency, year),
+                    'mooes'        : getProgActs('MOOE', agency, year),
+                    'cos'          : getProgActs('CO', agency, year)
+            }
+            return render_to_response('./wfp/agency_wfp_info.html', data, context)
+        except Agency.DoesNotExist:
+            return HttpResponseRedirect('/admin/agencies')
+  
 def getYears(agency_id):
     cursor = connection.cursor()
     query = '''select distinct(year) from wfp_data where agency_id=%s'''

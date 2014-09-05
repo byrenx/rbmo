@@ -149,6 +149,8 @@ def getagencyBalances(year):
         #mooe
         #co
 
+
+@login_required(login_url='/admin/')
 def users(request):
     context = RequestContext(request)
     data = { 'page_title': 'Registered Users',
@@ -228,13 +230,17 @@ def addEditUser(request):
 @transaction.atomic
 def agencies(request):
     context = RequestContext(request)
+
+    if 'admin_agency_id' in request.session:
+        del request.session['admin_agency_id']
+
     data = {'page'         : 'agencies',
             'system_name'  : SYSTEM_NAME,
             'allowed_tabs' : get_allowed_tabs(request.user.id),
             'sectors'      : Sector.objects.all()
      }
 
-
+    
     if has_permission(request.user.id, 'record', 'agency'):
         data['has_add'] = 'true'
 
@@ -246,6 +252,7 @@ def agencies(request):
     return render_to_response('./admin/agencies.html', data, context)
 
 
+@login_required(login_url='/admin/')
 def getAgenciesbySector(request):
     context = RequestContext(request)
     try:
@@ -320,56 +327,55 @@ def addEditAgency(request):
         else:
             return render_to_response('./admin/agency_form.html', data, context)
 
-@login_required(login_url='/admin/')
-def agencyMainPage(request):
-    context = RequestContext(request)
-    cursor  = connection.cursor()
-    data = {'agency_id'  : request.GET.get('agency_id'),
-            'system_name': SYSTEM_NAME
-    }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-    try:
-        agency = Agency.objects.get(id=data['agency_id'])
-        data['agency'] = agency
-        return render_to_response('./admin/agency_main_page.html', data, context)
-    except Agency.DoesNotExist:
-        return render_to_response('./admin/agency_main_page.html', data, context)
-
 
 @login_required(login_url = '/admin/')
 @transaction.atomic
 def manageAgencyDocs(request):
     context = RequestContext(request)
-    data = {'system_name': SYSTEM_NAME,
-            'agency_id'  : request.GET.get('agency_id'),
-            'agency_tab' : 'reqs',
-            'year'       : request.GET.get('year', time.strftime('%Y'))
-    }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-
     try:
         current_year = datetime.today().year
+        agency_id = 0
+        if 'admin_agency_id' in request.session:
+            agency_id = request.session['admin_agency_id']
+        else:
+            agency_id = request.GET.get('agency_id')
+
+        year = request.GET.get('year', datetime.today().year)
         years = []
         while current_year>=2013:
             years.append(current_year)
             current_year-=1
-        data['years'] = years
         #get the agency
-        agency = Agency.objects.get(id=data['agency_id'])
-        data['agency'] = agency
+        agency = Agency.objects.get(id=agency_id)
         #year
-        data['monthly'] = getAgencyMonthlyReq(data['year'], agency)
-        print data['monthly']
-        data['quarterly'] = QuarterlyReq.objects.all()
-        data['q1_req_s'] = getSumittedQReq(data['year'], agency, 1) #1st quarter submitted requirements
-        data['q2_req_s'] = getSumittedQReq(data['year'], agency, 2) #2nd quarter submitted requirements
-        data['q3_req_s'] = getSumittedQReq(data['year'], agency, 3) #3rd quarter submitted requirements
-        data['q4_req_s'] = getSumittedQReq(data['year'], agency, 4) #4th quarter submitted requirements
+        monthly   = getAgencyMonthlyReq(year, agency)
+        quarterly = QuarterlyReq.objects.all()
+        q1_req_s  = getSumittedQReq(year, agency, 1) #1st quarter submitted requirements
+        q2_req_s  = getSumittedQReq(year, agency, 2) #2nd quarter submitted requirements
+        q3_req_s  = getSumittedQReq(year, agency, 3) #3rd quarter submitted requirements
+        q4_req_s  = getSumittedQReq(year, agency, 4) #4th quarter submitted requirements
         #get submitted contract of service
-        data['cos_submitted'] = COSSubmission.objects.filter(date_submitted__year=data['year'], agency=agency)
+        cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
+        #store current agency session
+        if 'agency_id' not in request.session:
+            request.session['admin_agency_id'] = agency_id
+
+        data = {'system_name'  : SYSTEM_NAME,
+                'agency_tab'   : 'reqs',
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency'       : agency,
+                'years'        : years,
+                'monthly'      : monthly,
+                'quarterly'    : quarterly,
+                'q1_req_s'     : q1_req_s,
+                'q2_req_s'     : q2_req_s,
+                'q3_req_s'     : q3_req_s,
+                'q4_req_s'     : q4_req_s,
+                'cos_submitted': cos_submitted}
+
         return render_to_response('./admin/agency_docs_recording.html', data, context)
-    except Agency.DoesNotExist:
-        return render_to_response('./admin/agency_docs_recording.html', data, context)  
+    except: #Agency.DoesNotExist
+        return HttpResponseRedirect('/admin/agencies')  
 
 def getSumittedQReq(year, agency, quarter):
     quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)

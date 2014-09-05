@@ -197,7 +197,7 @@ class PerformanceTarget(models.Model):
         db_table = 'performancetarget'
 
 class PerformanceReport(models.Model):
-    activity = models.OneToOneField(WFPData)
+    activity = models.ForeignKey(WFPData)
     month = models.IntegerField()
     year = models.IntegerField()
     received = models.DecimalField(max_digits=12, decimal_places=2)

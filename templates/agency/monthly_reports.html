@@ -4,11 +4,11 @@
 <content>
   <div class="container">
     {%include "./agency/side_bar.html"%}
-    <div class="col-md-9">
+    <div class="col-md-10" style="background-color: white; min-height: 550px;">
       <h3>Performance Report for {{str_month}}&nbsp;{{year}}</h3>
       <hr/>
 
-      <form class="form-inline" method="POST" action="">
+      <form class="form-inline" method="POST" action="/agency/monthly_reports">{%csrf_token%}
 	<div class="form-group">
 	  <a href="/agency/monthly_report_form" class="btn btn-primary">
 	    <span class="glyphicon glyphicon-plus-sign"></span>
@@ -35,7 +35,7 @@
       </form>
       </br>
       {%if monthly_acts_reports%}
-      <table class="table table-bordered table-condensed">
+      <table class="table-normal">
 	{%load humanize%}
 	<thead>
 	  <tr>
@@ -100,6 +100,11 @@
 	  
 	</tbody>
       </table>
+      {%else%}
+         <p class="alert alert-info">
+	   <span class="glyphicon glyphicon-info-sign"></span>&nbsp;
+	   No performance Report Found for this Month
+	 </p>
       {%endif%}
     </div>
   </div>
