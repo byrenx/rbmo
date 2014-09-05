@@ -11,7 +11,7 @@ def has_permission(user_id, action, target):
     return cursor.fetchone()>0
 
 def get_allowed_tabs(user_id):
-    tabs=[]
+    tabs=[{'tag' : 'Home', 'link': '/admin/home'}]
     if has_permission(user_id, 'record', 'user'):
         tabs.append({'tag': 'Users', 'link': '/admin/users'})
     if has_permission(user_id, 'view', 'agency'):
