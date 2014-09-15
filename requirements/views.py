@@ -101,16 +101,31 @@ def submitMPFR(request):
 
 
 
+@login_required(login_url='/admin/')
 def delMonthReqs(request):
-    #try:
+    try:
         month_req_id = request.GET.get('req_id')
         print month_req_id
         month_req_submitted = MonthlyReqSubmitted.objects.get(id=month_req_id)
         month_req_submitted.delete()
         return HttpResponseRedirect("/admin/manage_agency_docs?agency_id="+str(month_req_submitted.agency.id))
-    #except:
-     #   return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
+    except:
+       return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 
+
+@login_required(login_url='/admin/')
+def delQuarterSubmittedReqs(request):
+    '''
+    this function  delete the quarterly requirement submitted by
+    an agency if it is mistakenly checked
+    '''
+    try:
+        q_req_sub_id = request.GET.get("q_req_sub")
+        q_req_submitted  = QuarterReqSubmission.objects.get(id = q_req_sub_id)
+        q_req_submitted.delete()
+        return HttpResponseRedirect("/admin/manage_agency_docs?agency_id="+str(q_req_submitted.agency.id))
+    except:
+       return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 
 def getSubmittedReqs(agency, year, month):
     #monthly requirements

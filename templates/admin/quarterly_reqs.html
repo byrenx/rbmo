@@ -20,7 +20,7 @@
 	  <td>{{requirement.name}}</td>
 	  <td>
 	    {% if requirement.id in q1_req_s %}
-	    <a href="#" id="1{{requirement.id}}" onmouseover="removeReqMode('1{{requirement.id}}','')" onmouseout="viewReqStatmode('1{{requirement.id}}')">
+	    <a href="/requirements/delete_quarter_sub_req?q_req_sub={{requirement.id}}" id="1{{requirement.id}}" onmouseover="removeReqMode('1{{requirement.id}}','')" onmouseout="viewReqStatmode('1{{requirement.id}}')">
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	    </a>
 	    {%else%}
