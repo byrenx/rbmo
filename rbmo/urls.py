@@ -17,4 +17,5 @@ urlpatterns = patterns('',
     url(r'^agency/fund/', include('fund.urls')),
     url(r'^agency/', include('agency.urls')),
     url(r'^history/', include('history_logs.urls')),
+    url(r'^requirements/', include('requirements.urls')),
 )

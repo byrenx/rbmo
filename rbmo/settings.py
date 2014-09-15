@@ -10,9 +10,11 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 STATIC_PATH   = os.path.join(BASE_DIR, 'static')
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -23,12 +25,15 @@ SECRET_KEY = '*d#x#)e90lxef!jl^nk3#^rq2-#dksb91cuqtra%p2t4++tpc8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = False
 
 TEMPLATE_DEBUG = True
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
-ALLOWED_HOSTS = []
+ADMINS = ('Jofel Bayron', 'bayron.jofel@gmail.com')
+
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.auth.hashers',
     'django.contrib.humanize',
     'rbmo',
     'admin',
@@ -129,6 +135,8 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
+
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = ( STATIC_PATH.replace('\\','/'),
    #'E:/Projects/pis_system/templates/static',

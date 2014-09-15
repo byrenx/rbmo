@@ -365,6 +365,7 @@ def manageAgencyDocs(request):
                 'allowed_tabs' : get_allowed_tabs(request.user.id),
                 'agency'       : agency,
                 'years'        : years,
+                'year'         : year,
                 'monthly'      : monthly,
                 'quarterly'    : quarterly,
                 'q1_req_s'     : q1_req_s,
@@ -391,7 +392,7 @@ def submitMPFR(request):
     year = request.POST.get('year')
     agency = Agency.objects.get(id=agency_id)
     months = request.POST.getlist('month[]')
-    
+
     for month in months:
         monthly_req_submit = MonthlyReqSubmitted(year=year,
                                                  agency = agency,
@@ -402,6 +403,7 @@ def submitMPFR(request):
         monthly_req_submit.save()
     return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
 
+
 def getAgencyMonthlyReq(year, agency):
     try:
         submitted = MonthlyReqSubmitted.objects.filter(year=year, agency=agency).order_by('month')
@@ -410,7 +412,8 @@ def getAgencyMonthlyReq(year, agency):
             found = 0
             for submit in submitted:
                 if i==submit.month:
-                    req_submitted[i] = {'status' : 'ok',
+                    req_submitted[i] = {'id'     : submit.id,
+                                        'status' : 'ok',
                                         'date_submitted' : submit.date_submitted,
                                         'receiver' : submit.user.first_name + ' ' + submit.user.last_name}                        
                     found=1

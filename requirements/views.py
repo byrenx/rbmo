@@ -31,6 +31,86 @@ month_lookup = getMonthLookup()
 quarters = {1: '1st Quarter', 2: '2nd Quarter', 3: '3rd Quarter', 4: 'Last Quarter'}
 
 
+@login_required(login_url = '/admin/')
+@transaction.atomic
+def manageAgencyDocs(request):
+    context = RequestContext(request)
+    try:
+        current_year = datetime.today().year
+        agency_id = 0
+        if 'admin_agency_id' in request.session:
+            agency_id = request.session['admin_agency_id']
+        else:
+            agency_id = request.GET.get('agency_id')
+
+        year = request.GET.get('year', datetime.today().year)
+        years = []
+        while current_year>=2013:
+            years.append(current_year)
+            current_year-=1
+        #get the agency
+        agency = Agency.objects.get(id=agency_id)
+        #year
+        monthly   = getAgencyMonthlyReq(year, agency)
+        quarterly = QuarterlyReq.objects.all()
+        q1_req_s  = getSumittedQReq(year, agency, 1) #1st quarter submitted requirements
+        q2_req_s  = getSumittedQReq(year, agency, 2) #2nd quarter submitted requirements
+        q3_req_s  = getSumittedQReq(year, agency, 3) #3rd quarter submitted requirements
+        q4_req_s  = getSumittedQReq(year, agency, 4) #4th quarter submitted requirements
+        #get submitted contract of service
+        cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
+        #store current agency session
+        if 'agency_id' not in request.session:
+            request.session['admin_agency_id'] = agency_id
+
+        data = {'system_name'  : SYSTEM_NAME,
+                'agency_tab'   : 'reqs',
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency'       : agency,
+                'years'        : years,
+                'year'         : year,
+                'monthly'      : monthly,
+                'quarterly'    : quarterly,
+                'q1_req_s'     : q1_req_s,
+                'q2_req_s'     : q2_req_s,
+                'q3_req_s'     : q3_req_s,
+                'q4_req_s'     : q4_req_s,
+                'cos_submitted': cos_submitted}
+
+        return render_to_response('./admin/agency_docs_recording.html', data, context)
+    except: #Agency.DoesNotExist
+        return HttpResponseRedirect('/admin/agencies')  
+
+
+@login_required(login_url='/admin/')
+def submitMPFR(request):
+    agency_id = request.POST.get('agency_id')
+    year = request.POST.get('year')
+    agency = Agency.objects.get(id=agency_id)
+    months = request.POST.getlist('month[]')
+
+    for month in months:
+        monthly_req_submit = MonthlyReqSubmitted(year=year,
+                                                 agency = agency,
+                                                 date_submitted = datetime.today(),
+                                                 month = month,
+                                                 user = request.user
+        )
+        monthly_req_submit.save()
+    return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
+
+
+
+def delMonthReqs(request):
+    #try:
+        month_req_id = request.GET.get('req_id')
+        print month_req_id
+        month_req_submitted = MonthlyReqSubmitted.objects.get(id=month_req_id)
+        month_req_submitted.delete()
+        return HttpResponseRedirect("/admin/manage_agency_docs?agency_id="+str(month_req_submitted.agency.id))
+    #except:
+     #   return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
+
 
 def getSubmittedReqs(agency, year, month):
     #monthly requirements
