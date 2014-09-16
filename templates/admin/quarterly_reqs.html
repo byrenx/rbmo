@@ -1,62 +1,111 @@
-<h4>Quarterly Requirements - {{year}}</h4>
 <div class="panel panel-default">
-  <form action="/admin/submit_quarter_reqs" method="POST">{% csrf_token %}
-    <input type="hidden" name="agency_id" value="{{agency.id}}">
-    <input type="hidden" name="year" value="{{year}}">
-    <table class="table">
-      <thead>
-	<tr>
-	  <th>Req</th>
-	  <th>Q1</th>
-	  <th>Q2</th>
-	  <th>Q3</th>
-	  <th>Q4</th>
-	</tr>
-      </thead>
-      <tbody>
-
-	{% for requirement in quarterly %}
-	<tr>
-	  <td>{{requirement.name}}</td>
-	  <td>
-	    {% if requirement.id in q1_req_s %}
-	    <a href="/requirements/delete_quarter_sub_req?q_req_sub={{requirement.id}}" id="1{{requirement.id}}" onmouseover="removeReqMode('1{{requirement.id}}','')" onmouseout="viewReqStatmode('1{{requirement.id}}')">
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#quarterly_req">Quarterly Requirements - {{year}}</a>
+    </h4>
+  </div>
+  <div id="quarterly_req" class="panel-collapse collapse">
+    <form action="/admin/submit_quarter_reqs" method="POST">{% csrf_token %}
+      <input type="hidden" name="agency_id" value="{{agency.id}}">
+      <input type="hidden" name="year" value="{{year}}">
+      <table class="table">
+	<thead>
+	  <tr>
+	    <th>Req</th>
+	    <th>Q1</th>
+	    <th>Q2</th>
+	    <th>Q3</th>
+	    <th>Q4</th>
+	  </tr>
+	</thead>
+	<tbody>
+	  
+	  {% for requirement in quarterly %}
+	  <tr>
+	    <td>{{requirement.name}}</td>
+	    <td>
+	      {% if requirement.id in q1_req_s %}
+	      <a href="/requirements/delete_quarter_sub_req?q_req_sub={{requirement.id}}" id="1{{requirement.id}}" onmouseover="removeReqMode('1{{requirement.id}}','')" onmouseout="viewReqStatmode('1{{requirement.id}}')">
+		<span class="glyphicon glyphicon-check text-success"></span>
+	      </a>
+	      {%else%}
+	      <input type="checkbox" name="qr[]" value="1;{{requirement.id}}"/>
+	      {% endif %}
+	    </td>
+	    <td>
+	      {% if requirement.id in q2_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
-	    </a>
-	    {%else%}
-	    <input type="checkbox" name="qr[]" value="1;{{requirement.id}}"/>
-	    {% endif %}
-	  </td>
-	  <td>
-	    {% if requirement.id in q2_req_s %}
-	    <span class="glyphicon glyphicon-check text-success"></span>
-	    {%else%}
-	    <input type="checkbox" name="qr[]" value="2;{{requirement.id}}"/>
-	    {% endif %}
-	  </td>
-
-	  <td>
-	    {% if requirement.id in q3_req_s %}
-	    <span class="glyphicon glyphicon-check text-success"></span>
-	    {%else%}
-	    <input type="checkbox" name="qr[]" value="3;{{requirement.id}}"/>
-	    {% endif %}
-	  </td>
-	  <td>
-	    {% if requirement.id in q4_req_s %}
-	    <span class="glyphicon glyphicon-check text-success"></span>
-	    {%else%}
-	    <input type="checkbox" name="qr[]" value="4;{{requirement.id}}"/>
-	    {% endif %}
-	  </td>
-	</tr>
-	{% endfor %}
-      </tbody>
-    </table>
-    <div class="panel-footer">
-      <div class="form-group">
-	<input class="btn btn-primary" type="submit" name="" value="Submit">
+	      {%else%}
+	      <input type="checkbox" name="qr[]" value="2;{{requirement.id}}"/>
+	      {% endif %}
+	    </td>
+	    
+	    <td>
+	      {% if requirement.id in q3_req_s %}
+	      <span class="glyphicon glyphicon-check text-success"></span>
+	      {%else%}
+	      <input type="checkbox" name="qr[]" value="3;{{requirement.id}}"/>
+	      {% endif %}
+	    </td>
+	    <td>
+	      {% if requirement.id in q4_req_s %}
+	      <span class="glyphicon glyphicon-check text-success"></span>
+	      {%else%}
+	      <input type="checkbox" name="qr[]" value="4;{{requirement.id}}"/>
+	      {% endif %}
+	    </td>
+	  </tr>
+	  {% endfor %}
+	</tbody>
+      </table>
+      <div class="panel-body">
+	<!---<div class="form-group">
+	    <label>Date Submitted</label>
+	<input type="date" name="date_submitted" class="form-control">
+	</div>--->
+	
+	<div class="form-group">
+	  <input class="btn btn-primary" type="submit" name="" value="Submit">
+	</div>
       </div>
-    </div>
-  </form>
+      <div class="panel-footer" style="background-color:white">
+	<table class="table table-condensed table-striped table-bordered">
+	  <tr>
+	    <th colspan="3">Submitted Quarterly Requirements</th>
+	  </tr>
+	  <tr>
+	    <th colspan="3">
+	      <input type="hidden" id="year" name="year" value="{{year}}">
+	      <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
+	      <select id="quarter" name="quarter" class="form-control" onchange="showSubmittedQReqs()">
+		<option value="1">1st Quarter</option>
+		<option value="2">2nd Quarter</option>
+		<option value="3">3rd Quarter</option>
+		<option value="4">4th Quarter</option>
+	      </select>
+	    </th>
+	  </tr>
+	  <tbody id="sqreqs">
+	    <tr>
+	      <th></th>
+	      <th>Requirement</th>
+	      <th>Date Submitted</th>
+	    </tr>
+	    
+	    {%for req in quarter_req_submitted%}
+	    <tr>
+	      <td>
+		<a href="/requirements/delete_quarter_sub_req?q_req_sub={{req.id}}">
+		  <span class="glyphicon glyphicon-remove text-danger"></span>
+		</a>
+	      </td>
+	      <td>{{req.requirement.name}}</td>
+	      <td>{{req.date_submitted}}</td>
+	    </tr>
+	    {%endfor%}
+	  </tbody>
+	</table>
+      </div><!---/ panel-body -->
+    </form>
+  </div>
 </div>

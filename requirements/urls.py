@@ -7,4 +7,5 @@ urlpatterns = patterns('',
     url(r'^$', manageAgencyDocs),
     url(r'^delete_month_sub_req$', delMonthReqs),
     url(r'^delete_quarter_sub_req$', delQuarterSubmittedReqs),
+    url(r'^delete_cos_sub$', delCOSSubmitted),
 )

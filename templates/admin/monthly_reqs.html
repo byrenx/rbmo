@@ -1,21 +1,27 @@
-<h4>Monthly Requirements Submission for {{year}}</h4>
 <div class="panel panel-default">
-  <div class="panel-body">
-    <p>
-      <strong>Instruction:</strong>
-      Check the month if <b>{{agency.name}}</b> already submitted the <b>Monthly Physical and Financial Reports</b> for that month
-    </p>
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#monthly_req">Monthly Requirements Submission for {{year}}</a>
+    </h4>    
   </div>
+  <div id="monthly_req" class="panel-collapse collapse in">
+    <div class="panel-body">
+      <p>
+	<strong>Instruction:</strong>
+	Check the month if <b>{{agency.name}}</b> already submitted the <b>Monthly Physical and Financial Reports</b> for that month
+      </p>
+    </div>
     <form action="/admin/submit_monthly_mpfr" class="form-horizontal" method="POST">{% csrf_token %}
       <input type="hidden" name="year" value="{{year}}">
       <input type="hidden" name="agency_id" value="{{agency.id}}">
-	<table class="table">
+      <table class="table">
+	<tbody>
 	  <tr>
 	    <th>January</th>
 	    <td>
 	      {%if monthly.1.status == "ok" %} 
 	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.1.id}}" id="jan" onmouseover="removeMonthlyReqMode('jan','')" onmouseout="" title="Remove">
-	      <span class="glyphicon glyphicon-remove"></span>
+		<span class="glyphicon glyphicon-remove"></span>
 	      </a>
 	      &nbsp;{{monthly.1.date_submitted}}
 	      {%else%}
@@ -26,8 +32,8 @@
 	  <tr>
 	    <th>February</th>
 	    <td>{%if monthly.2.status == "ok" %}
-                  <a href="/requirements/delete_month_sub_req?req_id={{monthly.2.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
-                  </a>&nbsp;{{monthly.2.date_submitted}}
+              <a href="/requirements/delete_month_sub_req?req_id={{monthly.2.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
+              </a>&nbsp;{{monthly.2.date_submitted}}
 	      {%else%}<input type="checkbox" name="month[]" value="2"/>
               {%endif%}
 	    </td>
@@ -44,9 +50,9 @@
 	  <tr>
 	    <th>April</th>
 	    <td>{%if monthly.4.status == "ok" %}
-                   <a href="/requirements/delete_month_sub_req?req_id={{monthly.4.id}}">
-                     <span class="glyphicon glyphicon-remove" title="Remove"></span>
-                  </a>&nbsp;{{monthly.4.date_submitted}}
+              <a href="/requirements/delete_month_sub_req?req_id={{monthly.4.id}}">
+		<span class="glyphicon glyphicon-remove" title="Remove"></span>
+              </a>&nbsp;{{monthly.4.date_submitted}}
               {%else%}<input type="checkbox" name="month[]" value="4"/>
 	      {%endif%}
 	    </td>
@@ -55,8 +61,8 @@
 	    <th>May</th>
 	    <td>{%if monthly.5.status == "ok" %}
 	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.5.id}}">
-                <span class="glyphicon glyphicon-remove" title="Remove"></span>
-             </a>&nbsp;{{monthly.5.date_submitted}}
+		<span class="glyphicon glyphicon-remove" title="Remove"></span>
+              </a>&nbsp;{{monthly.5.date_submitted}}
 	      {%else%}<input type="checkbox" name="month[]" value="5"/>
               {%endif%}
 	    </td>
@@ -64,8 +70,8 @@
 	  <tr>
 	    <th>June</th>
 	    <td>{%if monthly.6.status == "ok" %}
-	            <a href="/requirements/delete_month_sub_req?req_id={{monthly.6.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
-		    </a>&nbsp;{{monthly.6.date_submitted}}
+	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.6.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
+	      </a>&nbsp;{{monthly.6.date_submitted}}
 	      {%else%} <input type="checkbox" name="month[]" value="6"/>
 	      {%endif%}
 	    </td>
@@ -82,8 +88,8 @@
 	  <tr>
 	    <th>August</th>
 	    <td>{%if monthly.8.status == "ok" %}
-	             <a href="/requirements/delete_month_sub_req?req_id={{monthly.8.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
-		     </a>&nbsp;{{monthly.8.date_submitted}}
+	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.8.id}}"><span class="glyphicon glyphicon-remove" title="Remove"></span>
+	      </a>&nbsp;{{monthly.8.date_submitted}}
 	      {%else%}<input type="checkbox" name="month[]" value="8"/>
 	      {%endif%}
 	    </td>
@@ -110,8 +116,8 @@
 	  <tr>
 	    <th>November</th>
 	    <td>{%if monthly.11.status == "ok" %}
-	          <a href="/requirements/delete_month_sub_req?req_id={{monthly.11.id}}"><span class="glyphicon glyphicon-remove" title="Remove">
-		  </a></span> &nbsp;{{monthly.11.date_submitted}}
+	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.11.id}}"><span class="glyphicon glyphicon-remove" title="Remove">
+	      </a></span> &nbsp;{{monthly.11.date_submitted}}
 	      {%else%}<input type="checkbox" name="month[]" value="11"/>
 	      {%endif%}
 	    </td>
@@ -122,15 +128,15 @@
 	      <a href="/requirements/delete_month_sub_req?req_id={{monthly.12.id}}">
 		<span class="glyphicon glyphicon-remove" title="Remove"></span>
 	      </a>&nbsp;{{monthly.12.date_submitted}}
-	    {%else%}<input type="checkbox" name="month[]" value="12"/>
-	    {%endif%}
+	      {%else%}<input type="checkbox" name="month[]" value="12"/>
+	      {%endif%}
 	    </td>
 	  </tr>
-</tr>
-</tbody>
-</table>
-<div class="panel-footer">
-  <button class="btn btn-primary">Submit</button>
-</div>
-</form>
+	</tbody>
+      </table>
+      <div class="panel-footer">
+	<button class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
 </div>

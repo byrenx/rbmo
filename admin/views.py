@@ -372,7 +372,8 @@ def manageAgencyDocs(request):
                 'q2_req_s'     : q2_req_s,
                 'q3_req_s'     : q3_req_s,
                 'q4_req_s'     : q4_req_s,
-                'cos_submitted': cos_submitted}
+                'cos_submitted': cos_submitted,
+                'quarter_req_submitted' : getSubmittedQuarterReq(year, agency, 1)}
 
         return render_to_response('./admin/agency_docs_recording.html', data, context)
     except: #Agency.DoesNotExist
@@ -380,10 +381,30 @@ def manageAgencyDocs(request):
 
 def getSumittedQReq(year, agency, quarter):
     quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)
+
     quarter_submitted = []
     for qrs in quarter_req_submitted:
         quarter_submitted.append(qrs.requirement.id)
     return quarter_submitted
+
+
+def getSubmittedQuarterReq(year, agency, quarter):
+    quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)
+    return quarter_req_submitted
+
+
+def getDisplaySubmittedQReq(request):
+    context = RequestContext(request)
+    try:
+        year = request.GET.get("year")
+        agency_id = request.GET.get("agency_id")
+        agency = Agency.objects.get(id=agency_id)
+        quarter = request.GET.get("quarter")
+        submitted_req = getSubmittedQuarterReq(year, agency, quarter)
+        data = {'quarter_req_submitted' : submitted_req}
+        return render_to_response("./admin/submitted_qreqtable.html", data, context)
+    except:
+        return HttpResponse("</h3>Error</h3><p>Invalid Request Found</p>")
 
 
 @login_required(login_url='/admin/')

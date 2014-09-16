@@ -127,6 +127,16 @@ def delQuarterSubmittedReqs(request):
     except:
        return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 
+@login_required(login_url='/admin/')
+def delCOSSubmitted(request):
+    try:
+        cos_submit_id = request.GET.get("cos_submit_id")
+        cos = COSSubmission.objects.get(id=cos_submit_id)
+        cos.delete()
+        return HttpResponseRedirect("/admin/manage_agency_docs?agency_id="+str(cos.agency.id))
+    except:
+       return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
+
 def getSubmittedReqs(agency, year, month):
     #monthly requirements
     submitted_reqs = []

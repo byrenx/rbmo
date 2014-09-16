@@ -29,4 +29,5 @@ urlpatterns = patterns('',
     url(r'^approved_budget$', approvedBudget),
     url(r'^smca$', smca),
     url(r'^add_performance_report', savePerformanceReport),
+    url(r'^display_sub_qreqs', getDisplaySubmittedQReq),
 )
