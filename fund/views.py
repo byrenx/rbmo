@@ -89,7 +89,7 @@ def allotmentReleases(request):
             'total_MOOE_balance'      : total_MOOE_balance,
             'total_CO_balance'        : total_CO_balance,
             'allowed_tabs'            : get_allowed_tabs(request.user.id),
-            'cur_date'                : date.today(),
+            'today'                   : date.today(),
             'year'                    : year
         }
 

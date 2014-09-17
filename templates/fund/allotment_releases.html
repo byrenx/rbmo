@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9" style="min-height: 450px; background-color: white;">
+<div class="col-sm-9" style="min-height: 500px; background-color: white;">
   <h3>{{agency.name}}</h3>
   <hr/>
   <div class="col-sm-12">
@@ -21,7 +21,7 @@
           Allotment Release
       </a>
       &nbsp;|&nbsp;
-      <a href="javascript:$('#soar_print').printArea()" class="btn btn-primary">
+      <a href="javascript:$('#allotment_releases_print').printArea()" class="btn btn-primary">
 	<span class="glyphicon glyphicon-print"></span>
 	Print
       </a>
@@ -108,6 +108,9 @@
       </table>
   </div>
 </div>
+
+{%include "./fund/allotment_releases_print.html"%}
+
 {% endblock %}
   
 {% block scripts %}
