@@ -294,7 +294,7 @@ def addEditAgency(request):
         action = request.POST.get('action', 'add')
         agency_frm = AgencyForm(request.POST)
         if action=='add' and agency_frm.is_valid():
-            addAgency(agency_frm)
+            addAgency(request, agency_frm)
             data['s_msg'] = 'New Agency/Office was succesfully added.'
             return render_to_response('./admin/agency_form.html', data, context)
         elif action=='edit' and agency_frm.is_valid():
@@ -303,6 +303,8 @@ def addEditAgency(request):
             agency.name = agency_frm.cleaned_data['name']
             agency.email = agency_frm.cleaned_data['email']
             agency.sector = agency_frm.cleaned_data['sector']
+            agency.a_type = agency_frm.cleaned_data['a_type']
+            agency.pa_key = request.POST.get('head_agency')
             agency.save()
             data['s_msg'] = 'Agency/Office was succesfully Updated.'
             return render_to_response('./admin/agency_form.html', data, context)
@@ -318,13 +320,18 @@ def addEditAgency(request):
                 agency = Agency.objects.get(id=agency_id)
                 data['form'] = AgencyForm({'name'  : agency.name,
                                            'email' : agency.email,
-                                           'sector': agency.sector
+                                           'sector': agency.sector,
+                                           'a_type': agency.a_type
                                        })
+                
                 data['agency_id'] = agency.id
+                data['pa_key'] = agency.pa_key
+                data['agencies_selection'] = Agency.objects.exclude(id=agency.id)
                 return render_to_response('./admin/agency_form.html', data, context)
             except Agency.DoesNotExist:
                 return render_to_response('./admin/agency_form.html', data, context)
         else:
+            data['agencies_selection'] = Agency.objects.all()
             return render_to_response('./admin/agency_form.html', data, context)
 
 
@@ -470,10 +477,12 @@ def delSubmitReqs(request):
     return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency_id))
 
 @transaction.atomic
-def addAgency(agency_frm):
+def addAgency(request, agency_frm):
     agency = Agency(name = agency_frm.cleaned_data['name'],
                     email = agency_frm.cleaned_data['email'],
-                    sector = agency_frm.cleaned_data['sector']
+                    sector = agency_frm.cleaned_data['sector'],
+                    a_type = agency_frm.cleaned_data['a_type'],
+                    pa_key = request.POST.get('head_agency')
                 )
     agency.save()
 
@@ -975,7 +984,7 @@ def smca(request):#schedule of monthly cash allocation
         data['allocation'] = request.POST.get('allocation')
         data['search_form'] = MCASearchForm({'month'      : data['month'],
                                              'allocation' : data['allocation']
-                                         })
+                                           })
 
     quarter = quarterofMonth(data['month'])
     req_year = data['year']
@@ -984,11 +993,11 @@ def smca(request):#schedule of monthly cash allocation
     
     if data['allocation']=='PS':
         query = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
-        query+= "from wfp_data where year=%s and agency_id=agency.id "
-        query+= "and allocation='PS') as amount, "
-        query+= "(select sum(amount_release) from allotmentreleases where "
-        query+= "agency_id=agency.id and allocation='PS' "
-        query+= "and month=%s and year=%s) as total_release from agency"
+        query += "from wfp_data where year=%s and agency_id=agency.id "
+        query += "and allocation='PS') as amount, "
+        query += "(select sum(amount_release) from allotmentreleases where "
+        query += "agency_id=agency.id and allocation='PS' "
+        query += "and month=%s and year=%s) as total_release from agency"
         cursor.execute(query, [data['year'], data['month'], data['year']])
         data['allocation_str'] = "Personnel Services"
         agencies = dictfetchall(cursor)
@@ -998,20 +1007,20 @@ def smca(request):#schedule of monthly cash allocation
         if month_req == 0:
             month_req = 12
         
-        query = "select agency.* , "
-        query+= "(select sum("+ wfp_month_lookup[data['month']] +") "
-        query+= "from wfp_data where "
-        query+= "year=%s and agency_id=agency.id and allocation='MOOE') "
-        query+= "as amount , " #year
-        query+= "(select sum(amount_release) from allotmentreleases where "
-        query+= "agency_id=agency.id and allocation='MOOE' "
-        query+= "and month=%s and year=%s) as total_release " #year
-        query+= "from agency, monthly_req_submitted where "
-        query+= "(select count(*) from quarterly_req)= "
-        query+= "(select count(*) from quarter_req_submitted "
-        query+= "where year=%s and quarter=%s and agency_id=agency.id) " #req_year
-        query+= "and monthly_req_submitted.agency_id=agency.id "
-        query+= "and month=%s and  year=%s group by agency.id" #req_year
+        query  = "select agency.* , "
+        query += "(select sum("+ wfp_month_lookup[data['month']] +") "
+        query += "from wfp_data where "
+        query += "year=%s and agency_id=agency.id and allocation='MOOE') "
+        query += "as amount , " #year
+        query += "(select sum(amount_release) from allotmentreleases where "
+        query += "agency_id=agency.id and allocation='MOOE' "
+        query += "and month=%s and year=%s) as total_release " #year
+        query += "from agency, monthly_req_submitted where "
+        query += "(select count(*) from quarterly_req)= "
+        query += "(select count(*) from quarter_req_submitted "
+        query += "where year=%s and quarter=%s and agency_id=agency.id) " #req_year
+        query += "and monthly_req_submitted.agency_id=agency.id "
+        query += "and month=%s and  year=%s group by agency.id" #req_year
         cursor.execute(query, [data['year'],
                                data['month'],
                                data['year'],
@@ -1039,6 +1048,12 @@ def smca(request):#schedule of monthly cash allocation
     total = 0
     for agency in agencies:
         balance = numify(agency['amount']) - numify(agency['total_release'])
+        '''
+        locally funded agencies
+        locally_funded = []
+        if agency.a_type == "lf":
+           if 
+        '''
         if balance > 0:
             agencies_allocation.append({
                 'no'     : count,

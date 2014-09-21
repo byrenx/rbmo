@@ -77,10 +77,14 @@ class Sector(models.Model):
 
 
 class Agency(models.Model):
-    name = models.CharField(max_length = 200)
+    name   = models.CharField(max_length = 200)
     sector = models.ForeignKey(Sector)
-    email = models.EmailField()
+    email  = models.EmailField()
+    a_type = models.CharField(max_length = 2, choices=(('lf', 'Locally Funded'),
+                                                       ('la', 'Line Agencies')))
+    pa_key    = models.IntegerField(default=0)
     acces_key = models.CharField(max_length = 150)
+    
 
     def __unicode__(self):
         return self.name
@@ -90,10 +94,10 @@ class Agency(models.Model):
 
 
 class Notification(models.Model):
-    agency = models.ForeignKey(Agency)
+    agency      = models.ForeignKey(Agency)
     date_notify = models.DateField()
-    subject = models.CharField(max_length=45)
-    msg = models.TextField()
+    subject     = models.CharField(max_length=45)
+    msg         = models.TextField()
 
     class Meta:
         db_table = 'notification'

@@ -82,9 +82,12 @@ class AgencyForm(forms.ModelForm):
                                    })
     )
 
+    a_type = forms.ChoiceField(choices = (('lf', 'Locally Funded'),('la', 'Line Agencies')),
+                                    widget = forms.Select(attrs = {'class': 'form-control'}))
+
     class Meta:
         model = Agency
-        fields = ['name', 'email', 'sector']
+        fields = ['name', 'email', 'sector', 'a_type']
 
 
 class GroupForm(forms.Form):

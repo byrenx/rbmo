@@ -254,7 +254,7 @@ def coRequests(request):
         return HttpResponseRedirect("/admin/agencies")
 
     
-@login_required(login_url='/admin/')    
+@login_required(login_url='/admin/')
 def coRequestForm(request):
     context = RequestContext(request)
     data  = {'system_name' : SYSTEM_NAME,
@@ -345,6 +345,7 @@ def updateActivity(request):
         activity = request.GET.get('activity')
         program = request.GET.get('program')
         allocation = request.GET.get('allocation')
+
         wfp = WFPData.objects.get(id=wfp_id)
         wfp.activity = activity
         wfp.program = program
@@ -362,7 +363,6 @@ def delActivity(request):
     try:
         wfp_activity = WFPData.objects.get(id=activity_id)
         performance_targets = PerformanceTarget.objects.filter(wfp_activity=wfp_activity).delete()
-
         performance_report = PerformanceReport.objects.filter(activity=wfp_activity).delete()
         wfp_activity.delete()
         return HttpResponse('ok')
@@ -407,7 +407,7 @@ def getPerformanceAcc(request):
     context = RequestContext(request)
     data = {}
     activity = WFPData.objects.get(id=request.GET.get('activity'))
-    month = request.GET.get('month',datetime.today().month)
+    month = request.GET.get('month', datetime.today().month)
     try:
         perf_targets = []
         targets = PerformanceTarget.objects.filter(wfp_activity=activity)
