@@ -258,7 +258,7 @@ def getAgenciesbySector(request):
     try:
         sectors_selected = request.POST.getlist('sector[]')
         print sectors_selected
-        agencies = Agency.objects.filter(sector__in = sectors_selected)
+        agencies = Agency.objects.filter(sector__in = sectors_selected).order_by('name')
 
         data = {'page'             : 'agencies',
                 'agencies'         : agencies,
