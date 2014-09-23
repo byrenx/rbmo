@@ -299,6 +299,7 @@ def addCORequest(request_form, agency, date_rcv, request):
                 )
     co_request.save()
 
+
 @transaction.atomic
 def updateMonthlyAmount(request):
     month  = int(request.GET.get('month'))
@@ -332,7 +333,6 @@ def updateMonthlyAmount(request):
             wfp.nov = amount
         else:
             wfp.dec = amount
-
         wfp.total = wfp.jan + wfp.feb + wfp.mar + wfp.apr + wfp.may + wfp.jun + wfp.jul + wfp.aug + wfp.sept + wfp.oct + wfp.nov + wfp.dec
         wfp.save()
         return HttpResponse('Updated')
@@ -485,6 +485,7 @@ helper methods
 '''
 def getProgOverview(allocation, agency, year):
     cursor = connection.cursor()
+    #wfp_data = WFPData.objects.filter(agency = agency, year = year, allocation = allocation)
     query = '''
     select distinct(program) from wfp_data
     where allocation=%s and agency_id=%s and year=%s
@@ -498,15 +499,71 @@ def getProgOverview(allocation, agency, year):
         for act in activities:
             physical_targets = PerformanceTarget.objects.filter(wfp_activity = act)
             targets = []
-            for target in physical_targets:
-                targets.append({'indicator': target.indicator,
-                                'q1'       : target.jan+target.feb+target.mar,
-                                'q2'       : target.apr+target.may+target.jun,
-                                'q3'       : target.jul+target.aug+target.sept,
-                                'q4'       : target.oct+target.nov+target.dec})
-            acts.append({'activity'         : act,
-                         'physical_targets' : targets
-                     })
+
+            if len(physical_targets) > 0:
+                target_count = 1
+                for target in physical_targets:
+                    if target_count == 1:
+                        acts.append({'activity'  : act.activity,
+                                     'indicator' : target.indicator,
+                                     'q1'        : target.jan+target.feb+target.mar,
+                                     'q2'        : target.apr+target.may+target.jun,
+                                     'q3'        : target.jul+target.aug+target.sept,
+                                     'q4'        : target.oct+target.nov+target.dec,
+                                     'jan' : act.jan,
+                                     'feb' : act.feb,
+                                     'mar' : act.mar,
+                                     'apr' : act.apr,
+                                     'may' : act.may,
+                                     'jun' : act.jun,
+                                     'jul' : act.jul,
+                                     'aug' : act.aug,
+                                     'sept': act.sept,
+                                     'oct' : act.oct,
+                                     'nov' : act.nov,
+                                     'dec' : act.dec,
+                                     'total' : act.total})
+                    else:
+                        acts.append({'activity'  : '',
+                                     'indicator' : target.indicator,
+                                     'q1'        : target.jan+target.feb+target.mar,
+                                     'q2'        : target.apr+target.may+target.jun,
+                                     'q3'        : target.jul+target.aug+target.sept,
+                                     'q4'        : target.oct+target.nov+target.dec,
+                                     'jan' : '',
+                                     'feb' : '',
+                                     'mar' : '',
+                                     'apr' : '',
+                                     'may' : '',
+                                     'jun' : '',
+                                     'jul' : '',
+                                     'aug' : '',
+                                     'sept': '',
+                                     'oct' : '',
+                                     'nov' : '',
+                                     'dec' : '',
+                                     'total' : ''})
+                    target_count += 1
+            else:#no monthly physical targets
+                acts.append({'activity'  : act.activity,
+                             'indicator' : '',
+                             'q1'        : '',
+                             'q2'        : '',
+                             'q3'        : '',
+                             'q4'        : '',
+                             'jan' : act.jan,
+                             'feb' : act.feb,
+                             'mar' : act.mar,
+                             'apr' : act.apr,
+                             'may' : act.may,
+                             'jun' : act.jun,
+                             'jul' : act.jul,
+                             'aug' : act.aug,
+                             'sept': act.sept,
+                             'oct' : act.oct,
+                             'nov' : act.nov,
+                             'dec' : act.dec,
+                             'total' : act.total})
         prog_acts.append({'prog' : prog[0], 'acts' : acts})
     return prog_acts
 

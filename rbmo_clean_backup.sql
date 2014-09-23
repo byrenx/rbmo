@@ -31,3 +31,12 @@ INSERT INTO `quarter_req_submit` VALUES (1,2,1,2014,1,'2014-07-14'),(2,2,1,2014,
 
 /*user group inserts*/
 INSERT INTO `user_group` VALUES (1,1,4),(2,2,4),(3,3,4),(4,4,4),(5,5,2),(6,6,4),(7,8,4);
+
+
+
+create trigger update_total
+before insert on wfp_data
+for each row
+begin
+	NEW.total = NEW.jan+NEW.feb+NEW.mar+NEW.apr+NEW.may+NEW.jun+NEW.jul+NEW.aug+NEW.sept+NEW.oct+NEW.nov+NEW.dec	
+end;

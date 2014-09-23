@@ -58,48 +58,25 @@
                    {%for act in ps.acts%}
                      <tr>
 		       <td>{{act.activity}}</td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
-		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
-		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
-		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
-		       <td class="decimal">{{act.activity.may|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
-		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
-		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
-		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
-		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
-		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
-		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		       <td>{{act.indicator}}</td>
+		       <td>{{act.q1}}</td>
+		       <td>{{act.q2}}</td>
+		       <td>{{act.q3}}</td>
+		       <td>{{act.q4}}</td>
+		       <td class="decimal">{{act.jan|intcomma}}</td>
+		       <td class="decimal">{{act.feb|intcomma}}</td>
+		       <td class="decimal">{{act.mar|intcomma}}</td>
+		       <td class="decimal">{{act.apr|intcomma}}</td>
+		       <td class="decimal">{{act.may|intcomma}}</td>
+		       <td class="decimal">{{act.jun|intcomma}}</td>
+		       <td class="decimal">{{act.jul|intcomma}}</td>
+		       <td class="decimal">{{act.aug|intcomma}}</td>
+		       <td class="decimal">{{act.sept|intcomma}}</td>
+		       <td class="decimal">{{act.oct|intcomma}}</td>
+		       <td class="decimal">{{act.nov|intcomma}}</td>
+		       <td class="decimal">{{act.dec|intcomma}}</td>
+		       <td class="decimal">{{act.total|intcomma}}</td>
 		     </tr>
-		     {%for pt in act.physical_targets%}
-		        <tr>
-			  <td></td>
-			  <td>{{pt.indicator}}</td>
-			  <td>{{pt.q1}}</td>
-			  <td>{{pt.q2}}</td>
-			  <td>{{pt.q3}}</td>
-			  <td>{{pt.q4}}</td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			</tr>
-		     {%endfor%}
                    {%endfor%}
 	        {%endfor%}
 	     {%endif%}
@@ -113,48 +90,25 @@
                    {%for act in mooe.acts%}
                      <tr>
 		       <td>{{act.activity}}</td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
-		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
-		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
-		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
-		       <td class="decimal">{{act.activity.may|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
-		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
-		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
-		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
-		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
-		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
-		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		       <td>{{act.indicator}}</td>
+		       <td>{{act.q1}}</td>
+		       <td>{{act.q2}}</td>
+		       <td>{{act.q3}}</td>
+		       <td>{{act.q4}}</td>
+		       <td class="decimal">{{act.jan|intcomma}}</td>
+		       <td class="decimal">{{act.feb|intcomma}}</td>
+		       <td class="decimal">{{act.mar|intcomma}}</td>
+		       <td class="decimal">{{act.apr|intcomma}}</td>
+		       <td class="decimal">{{act.may|intcomma}}</td>
+		       <td class="decimal">{{act.jun|intcomma}}</td>
+		       <td class="decimal">{{act.jul|intcomma}}</td>
+		       <td class="decimal">{{act.aug|intcomma}}</td>
+		       <td class="decimal">{{act.sept|intcomma}}</td>
+		       <td class="decimal">{{act.oct|intcomma}}</td>
+		       <td class="decimal">{{act.nov|intcomma}}</td>
+		       <td class="decimal">{{act.dec|intcomma}}</td>
+		       <td class="decimal">{{act.total|intcomma}}</td>
 		     </tr>
-		     {%for pt in act.physical_targets%}
-		        <tr>
-			  <td></td>
-			  <td>{{pt.indicator}}</td>
-			  <td>{{pt.q1}}</td>
-			  <td>{{pt.q2}}</td>
-			  <td>{{pt.q3}}</td>
-			  <td>{{pt.q4}}</td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			</tr>
-		     {%endfor%}
                    {%endfor%}
 	        {%endfor%}
 	     {%endif%}
@@ -168,48 +122,25 @@
                    {%for act in cos.acts%}
                      <tr>
 		       <td>{{act.activity}}</td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td></td>
-		       <td class="decimal">{{act.activity.jan|intcomma}}</td>
-		       <td class="decimal">{{act.activity.feb|intcomma}}</td>
-		       <td class="decimal">{{act.activity.mar|intcomma}}</td>
-		       <td class="decimal">{{act.activity.apr|intcomma}}</td>
-		       <td class="decimal">{{act.activity.may|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jun|intcomma}}</td>
-		       <td class="decimal">{{act.activity.jul|intcomma}}</td>
-		       <td class="decimal">{{act.activity.aug|intcomma}}</td>
-		       <td class="decimal">{{act.activity.sept|intcomma}}</td>
-		       <td class="decimal">{{act.activity.oct|intcomma}}</td>
-		       <td class="decimal">{{act.activity.nov|intcomma}}</td>
-		       <td class="decimal">{{act.activity.dec|intcomma}}</td>
-		       <td class="decimal">{{act.activity.total|intcomma}}</td>
+		       <td>{{act.indicator}}</td>
+		       <td>{{act.q1}}</td>
+		       <td>{{act.q2}}</td>
+		       <td>{{act.q3}}</td>
+		       <td>{{act.q4}}</td>
+		       <td class="decimal">{{act.jan|intcomma}}</td>
+		       <td class="decimal">{{act.feb|intcomma}}</td>
+		       <td class="decimal">{{act.mar|intcomma}}</td>
+		       <td class="decimal">{{act.apr|intcomma}}</td>
+		       <td class="decimal">{{act.may|intcomma}}</td>
+		       <td class="decimal">{{act.jun|intcomma}}</td>
+		       <td class="decimal">{{act.jul|intcomma}}</td>
+		       <td class="decimal">{{act.aug|intcomma}}</td>
+		       <td class="decimal">{{act.sept|intcomma}}</td>
+		       <td class="decimal">{{act.oct|intcomma}}</td>
+		       <td class="decimal">{{act.nov|intcomma}}</td>
+		       <td class="decimal">{{act.dec|intcomma}}</td>
+		       <td class="decimal">{{act.total|intcomma}}</td>
 		     </tr>
-		     {%for pt in act.physical_targets%}
-		        <tr>
-			  <td></td>
-			  <td>{{pt.indicator}}</td>
-			  <td>{{pt.q1}}</td>
-			  <td>{{pt.q2}}</td>
-			  <td>{{pt.q3}}</td>
-			  <td>{{pt.q4}}</td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			  <td></td>
-			</tr>
-		     {%endfor%}
                    {%endfor%}
 	        {%endfor%}
 	     {%endif%}

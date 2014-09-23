@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.db import transaction, connection
 from django.db.models import Sum, Avg
@@ -992,12 +993,12 @@ def smca(request):#schedule of monthly cash allocation
         req_year-=1
     
     if data['allocation']=='PS':
-        query = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
+        query  = "select agency.* , (select sum("+ wfp_month_lookup[data['month']] +") "
         query += "from wfp_data where year=%s and agency_id=agency.id "
         query += "and allocation='PS') as amount, "
         query += "(select sum(amount_release) from allotmentreleases where "
         query += "agency_id=agency.id and allocation='PS' "
-        query += "and month=%s and year=%s) as total_release from agency"
+        query += "and month=%s and year=%s) as total_release from agency order by agency.name"
         cursor.execute(query, [data['year'], data['month'], data['year']])
         data['allocation_str'] = "Personnel Services"
         agencies = dictfetchall(cursor)
@@ -1020,7 +1021,7 @@ def smca(request):#schedule of monthly cash allocation
         query += "(select count(*) from quarter_req_submitted "
         query += "where year=%s and quarter=%s and agency_id=agency.id) " #req_year
         query += "and monthly_req_submitted.agency_id=agency.id "
-        query += "and month=%s and  year=%s group by agency.id" #req_year
+        query += "and month=%s and  year=%s group by agency.id order by agency.name " #req_year
         cursor.execute(query, [data['year'],
                                data['month'],
                                data['year'],
@@ -1038,22 +1039,32 @@ def smca(request):#schedule of monthly cash allocation
         query+= "and allocation='CO') as amount, "
         query+= "(select sum(amount_release) from allotmentreleases where "
         query+= "agency_id=agency.id and allocation='co' "
-        query+= "and month=%s and year=%s) as total_release from agency"
+        query+= "and month=%s and year=%s) as total_release from agency order by agency.name"
         cursor.execute(query, [data['year'], data['month'], data['year']])
         agencies = dictfetchall(cursor)
         data['allocation_str'] = "Capital Outlay"
     
     agencies_allocation = []
+    locally_funded = []
     count = 1
     total = 0
     for agency in agencies:
         balance = numify(agency['amount']) - numify(agency['total_release'])
         '''
-        locally funded agencies
-        locally_funded = []
-        if agency.a_type == "lf":
-           if 
+        if agency['a_type'] == "lf":
+        
+           if agency['pa_key'] == 0 and balance > 0:
+               sub_agencies = []
+               locally_funded.append({'no'     : count, 
+                                      'agency' : agency['name'],
+                                      'amount' : balance})
+               getSubAgencies(count, agencies, agency['id'], sub_agencies, total)
+               if len(sub_agencies) > 0:
+                   locally_funded.append({'sub_agencies' : sub_agencies})
+                   count += 1
+        total += balance
         '''
+
         if balance > 0:
             agencies_allocation.append({
                 'no'     : count,
@@ -1061,13 +1072,27 @@ def smca(request):#schedule of monthly cash allocation
                 'amount' : balance
             })
             count+=1
-        total+=balance
+        total += balance
+
 
     data['agencies']  = agencies_allocation
     data['str_month'] = stringify_month(data['month'])
     data['total'] = total
     return render_to_response('./admin/smca.html', data, context)
 
+
+def getSubAgencies(count, fetched_agencies, parent_key, sub_agencies, total):
+    sub_agencies = []
+    sub_count = 0.1
+    for agency in fetched_agencies:
+        balance = numify(agency['balance'])
+        if agency['pa_key'] == parent_key and balance > 0:
+            sub_agencies.append({'no'     : count+sub_count, 
+                                 'agency' : agency['name'],
+                                 'amount' : balance})
+            total += balance
+            sub_count += 0.1
+    return
 
 @transaction.atomic
 def savePerformanceReport(request):
