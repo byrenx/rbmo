@@ -45,7 +45,24 @@ def get_allowed_tabs(user_id):
         reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/admin/agencies_with_increqs'})
     tabs.append({'tag':'Reports', 'menus':reports})
     return tabs
-            
+
+
+def getAgencyTabs(user_id, agency_id):
+    tabs = []
+    if has_permission(user_id, 'record', 'agency submitted requirements'):
+        tabs.append({'tag' : "Requirements", 'link': '/admin/manage_agency_docs/'+str(agency_id)+'/'})
+    if has_permission(user_id, 'record', 'wfp'):
+        tabs.append({'tag' : 'WFP', 'link': '/agency/wfp/wfpinfo/'+str(agency_id)+'/'})
+    if has_permission(user_id, 'process', 'monthly cash allocation'):
+        tabs.append({'tag' : 'Monthly Cash Allocation', 'link': '/agency/fund/monthly_alloc/'+str(agency_id)+'/'})
+    if has_permission(user_id, 'print', 'comprehensive performance report'):
+        tabs.append({'tag' : 'Monthly Report of Operation', 'link': '/admin/monthly_reports/'+str(agency_id)+'/'})
+    if has_permission(user_id, 'record', 'allotment releases'):
+        tabs.append({'tag' : 'Allotment Releases', 'link': '/agency/fund/allotment_releases/'+str(agency_id)+'/'})
+    if has_permission(user_id, 'record', 'request received'):
+        tabs.append({'tag' : 'Request Received', 'link': '/agency/wfp/co_request/'+str(agency_id)+'/'})
+    return tabs
+    
 
 def stringify_month(month): # month is an integer starting 1 trough 12
     months = {1:'January', 2: 'February', 3:'March', 4:'April', 

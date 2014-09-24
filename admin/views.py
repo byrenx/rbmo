@@ -1,4 +1,3 @@
-
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.db import transaction, connection
 from django.db.models import Sum, Avg
@@ -53,12 +52,17 @@ wfp_month_lookup = {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr',
 def submitCOS(request):#submit Contract of Service
     submit = request.POST.get('cos_submit')
     agency_id = request.POST.get('agency_id')
-    if submit is not None and agency_id is not None:
-        today = datetime.today()
-        agency = Agency.objects.get(id=agency_id)
-        cos_submit = COSSubmission(agency=agency, date_submitted=today)
-        cos_submit.save()
-    return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id)+'&year='+str(today.year))
+    try:
+        if submit is not None and agency_id is not None:
+            today = datetime.today()
+            agency = Agency.objects.get(id=agency_id)
+            cos_submit = COSSubmission(agency=agency, date_submitted=today)
+            cos_submit.save()
+            return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/'+str(today.year))
+        else:
+            return HttpResponseRedirect('/agencies')
+    except:
+        return HttpResponseRedirect('/agencies')
 
  
 def index(request):
@@ -338,17 +342,10 @@ def addEditAgency(request):
 
 @login_required(login_url = '/admin/')
 @transaction.atomic
-def manageAgencyDocs(request):
+def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     context = RequestContext(request)
     try:
         current_year = datetime.today().year
-        agency_id = 0
-        if 'admin_agency_id' in request.session:
-            agency_id = request.session['admin_agency_id']
-        else:
-            agency_id = request.GET.get('agency_id')
-
-        year = request.GET.get('year', datetime.today().year)
         years = []
         while current_year>=2013:
             years.append(current_year)
@@ -365,12 +362,13 @@ def manageAgencyDocs(request):
         #get submitted contract of service
         cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
         #store current agency session
-        if 'agency_id' not in request.session:
-            request.session['admin_agency_id'] = agency_id
+#        if 'agency_id' not in request.session:
+ #           request.session['admin_agency_id'] = agency_id
 
         data = {'system_name'  : SYSTEM_NAME,
-                'agency_tab'   : 'reqs',
+                'current_tab'  : "Requirements",
                 'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
                 'agency'       : agency,
                 'years'        : years,
                 'year'         : year,
@@ -430,7 +428,7 @@ def submitMPFR(request):
                                                  user = request.user
         )
         monthly_req_submit.save()
-    return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
+    return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/')
 
 
 def getAgencyMonthlyReq(year, agency):
@@ -623,7 +621,7 @@ def submitQuarterReq(request):
                                           )
         quarter_submit.save()
 
-    return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id)+'&year='+str(year))
+    return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/'+str(year)+'/')
 
 
 @transaction.atomic

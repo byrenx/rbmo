@@ -16,7 +16,7 @@
   <h4>Work and Financial Plan Form</h4>
   <hr/>
   {% include "msg_pane.html" %}
-  <form action="/agency/wfp/wfp_form" role="form" method="POST" class="form-horizontal">{% csrf_token %}
+  <form action="/agency/wfp/wfp_form/{{agency.id}}/" role="form" method="POST" class="form-horizontal">{% csrf_token %}
     <div class="form-group">
       <input type="hidden" name="agency" value="{{agency.id}}">
       <label class="col-sm-3">Year</label>

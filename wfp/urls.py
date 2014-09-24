@@ -4,12 +4,12 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^wfp_form$', wfpForm),
-    url(r'^wfpinfo$', viewWFP),
+    url(r'^wfp_form/(?P<agency_id>[0-9]+)/$', wfpForm),
+    url(r'^wfpinfo/(?P<agency_id>[0-9]+)/$', viewWFP),
     url(r'^wfpdetail$', getWFPData),
     url(r'^wfp_print$', printWFPData),
     url(r'^approved_budget$', viewApprovedBudget),
-    url(r'^co_request$', coRequests),
+    url(r'^co_request/(?P<agency_id>[0-9]+)/$', coRequests),
     url(r'^co_request_form$', coRequestForm),
     url(r'^update_monthly_amount$', updateMonthlyAmount),
     url(r'^update_activity$', updateActivity),

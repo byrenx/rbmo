@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from .forms import WFPForm, CORequestForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
-from helpers.helpers import has_permission, get_allowed_tabs, dictfetchall
+from helpers.helpers import * 
 from datetime import datetime, date
 
 SYSTEM_NAME = 'e-RBMO Data Management System'
@@ -20,68 +20,60 @@ months = ['January', 'February', 'March', 'April',
 
 @login_required(login_url='/admin/')
 @transaction.atomic
-def wfpForm(request):
+def wfpForm(request, agency_id):
     context = RequestContext(request)
-    data = {'system_name':SYSTEM_NAME,
-            'agency_id': request.GET.get('agency_id')
-    }
-    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-    data['current_year'] = time.strftime('%Y')
-    data['form'] = WFPForm()
-    if request.method=='POST':
-        wfp_form = WFPForm(request.POST)
-        if wfp_form.is_valid():
-            saveWFPData(request, wfp_form, request.POST.get('year'), request.POST.get('agency'))
-            data['s_msg'] = 'WFP Entry was succesfully saved'
-            data['agency'] = Agency.objects.get(id=request.POST.get('agency'))
-            return render_to_response('./wfp/wfp_form.html', data, context)
+    try:
+        agency = Agency.objects.get(id=agency_id)
+        data = {'system_name'  : SYSTEM_NAME,
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'current_year' : time.strftime('%Y'),
+                'current_tab'  : "WFP",
+                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
+                'form'         : WFPForm(),
+                'agency'       : agency}
+    
+        if request.method=='POST':
+            wfp_form = WFPForm(request.POST)
+            if wfp_form.is_valid():
+                saveWFPData(request, wfp_form, request.POST.get('year'), request.POST.get('agency'))
+                data['s_msg'] = 'WFP Entry was succesfully saved'
+                data['agency'] = Agency.objects.get(id=request.POST.get('agency'))
+                return render_to_response('./wfp/wfp_form.html', data, context)
+            else:
+                data['frm_errors'] = wfp_form.errors
+                data['form'] = wfp_form
+                return render_to_response('./wfp/wfp_form.html', data, context)
         else:
-            data['frm_errors'] = wfp_form.errors
-            data['form'] = wfp_form
             return render_to_response('./wfp/wfp_form.html', data, context)
-    else:
-        try:
-            data['agency'] = Agency.objects.get(id=data['agency_id'])
-            return render_to_response('./wfp/wfp_form.html', data, context)
-        except Agency.DoesNotExist:
-            return HttpResponseRedirect('/admin/agencies')
+    except Agency.DoesNotExist:
+        return HttpResponseRedirect('/admin/agencies')
     
 @login_required(login_url='/admin/')
 @transaction.atomic
-def viewWFP(request):
+def viewWFP(request, agency_id, year = datetime.today().year):
     context = RequestContext(request)
     cursor = connection.cursor()
 
-    if 'admin_agency_id' not in request.session:
+    try:
+        current_year = datetime.today().year
+        year = datetime.today().year
+        agency = Agency.objects.get(id = agency_id)
+        data = {'system_name'  : SYSTEM_NAME,
+                'current_tab'  : 'WFP',
+                'agency'       : agency,
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
+                'years'        : getYears(agency_id),
+                'current_year' : current_year,
+                'year'         : year,
+                'pss'          : getProgActs('PS', agency, year),
+                'mooes'        : getProgActs('MOOE', agency, year),
+                'cos'          : getProgActs('CO', agency, year)
+        }
+        return render_to_response('./wfp/agency_wfp_info.html', data, context)
+    except Agency.DoesNotExist:
         return HttpResponseRedirect('/admin/agencies')
-    else:
-        try:
-            current_year = datetime.today().year
-            agency_id = 0
-            year = datetime.today().year
-
-            if request.method=='POST':
-                year = request.POST.get('year')
-                agency_id = request.POST.get('agency_id')
-            else:
-                agency_id = request.session['admin_agency_id']
-
-            agency = Agency.objects.get(id = agency_id)
-            data = {'system_name'  : SYSTEM_NAME,
-                    'agency_tab'   : 'wfp',
-                    'agency'       : agency,
-                    'allowed_tabs' : get_allowed_tabs(request.user.id),
-                    'years'        : getYears(agency_id),
-                    'current_year' : current_year,
-                    'year'         : year,
-                    'pss'          : getProgActs('PS', agency, year),
-                    'mooes'        : getProgActs('MOOE', agency, year),
-                    'cos'          : getProgActs('CO', agency, year)
-            }
-            return render_to_response('./wfp/agency_wfp_info.html', data, context)
-        except Agency.DoesNotExist:
-            return HttpResponseRedirect('/admin/agencies')
-  
+            
 def getYears(agency_id):
     cursor = connection.cursor()
     query = '''select distinct(year) from wfp_data where agency_id=%s'''

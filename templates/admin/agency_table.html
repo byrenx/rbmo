@@ -7,7 +7,7 @@
   </thead>
   <tbody>
     {%for agency in agencies%}
-    <tr onclick="window.location = '/admin/manage_agency_docs?agency_id={{agency.id}}'"
+    <tr onclick="window.location = '/admin/manage_agency_docs/{{agency.id}}/'"
        onmouseover="$(this).addClass('warning')" onmouseout="$(this).removeClass()" style="cursor: pointer">
       <td>
 	<a href="/admin/pm_agency?action=edit&a_id={{agency.id}}" title="Edit this Agency/Office">
