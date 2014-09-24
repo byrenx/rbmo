@@ -304,8 +304,8 @@ def addEditAgency(request):
             agency.name = agency_frm.cleaned_data['name']
             agency.email = agency_frm.cleaned_data['email']
             agency.sector = agency_frm.cleaned_data['sector']
-            agency.a_type = agency_frm.cleaned_data['a_type']
-            agency.pa_key = request.POST.get('head_agency')
+            #agency.a_type = agency_frm.cleaned_data['a_type']
+            #agency.pa_key = request.POST.get('head_agency')
             agency.save()
             data['s_msg'] = 'Agency/Office was succesfully Updated.'
             return render_to_response('./admin/agency_form.html', data, context)
@@ -321,13 +321,13 @@ def addEditAgency(request):
                 agency = Agency.objects.get(id=agency_id)
                 data['form'] = AgencyForm({'name'  : agency.name,
                                            'email' : agency.email,
-                                           'sector': agency.sector,
-                                           'a_type': agency.a_type
+                                           'sector': agency.sector
+                                           #'a_type': agency.a_type
                                        })
                 
                 data['agency_id'] = agency.id
-                data['pa_key'] = agency.pa_key
-                data['agencies_selection'] = Agency.objects.exclude(id=agency.id)
+             #   data['pa_key'] = agency.pa_key
+             #  data['agencies_selection'] = Agency.objects.exclude(id=agency.id)
                 return render_to_response('./admin/agency_form.html', data, context)
             except Agency.DoesNotExist:
                 return render_to_response('./admin/agency_form.html', data, context)
@@ -482,8 +482,9 @@ def addAgency(request, agency_frm):
     agency = Agency(name = agency_frm.cleaned_data['name'],
                     email = agency_frm.cleaned_data['email'],
                     sector = agency_frm.cleaned_data['sector'],
-                    a_type = agency_frm.cleaned_data['a_type'],
-                    pa_key = request.POST.get('head_agency')
+                    acces_key = str(agency_frm.cleaned_data['email'])+'_1234'
+                    #a_type = agency_frm.cleaned_data['a_type'],
+                    #pa_key = request.POST.get('head_agency')
                 )
     agency.save()
 

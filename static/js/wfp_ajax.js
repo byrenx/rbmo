@@ -137,8 +137,8 @@ function setMonthlyTargetModal(id, month, amount){
 
 function updateAmount(){
     data = {'id_wfp' : $('#id_wfp').val(),
-	   'month'  : $('#month').val(),
-	   'amount' : $('#amount').val()
+ 	    'month'  : $('#month').val(),
+	    'amount' : $('#amount').val()
 	   }
     $.get('/agency/wfp/update_monthly_amount', data,
 	  function(rs){

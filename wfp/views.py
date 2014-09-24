@@ -305,6 +305,7 @@ def updateMonthlyAmount(request):
     month  = int(request.GET.get('month'))
     wfp_id = int(request.GET.get('id_wfp'))
     amount = eval(request.GET.get('amount'))
+    print amount
     
     try:
         wfp = WFPData.objects.get(id=wfp_id)
@@ -333,7 +334,8 @@ def updateMonthlyAmount(request):
             wfp.nov = amount
         else:
             wfp.dec = amount
-        wfp.total = wfp.jan + wfp.feb + wfp.mar + wfp.apr + wfp.may + wfp.jun + wfp.jul + wfp.aug + wfp.sept + wfp.oct + wfp.nov + wfp.dec
+            print wfp.jan, wfp.feb
+        wfp.total = float(wfp.jan) + float(wfp.feb) + float(wfp.mar) + float(wfp.apr) + float(wfp.may) + float(wfp.jun) + float(wfp.jul) + float(wfp.aug) + float(wfp.sept) + float(wfp.oct) + float(wfp.nov) + float(wfp.dec)
         wfp.save()
         return HttpResponse('Updated')
     except WFPData.DoesNotExist:
