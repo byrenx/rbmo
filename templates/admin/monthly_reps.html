@@ -10,16 +10,9 @@
   <hr/>
   {% include "msg_pane.html" %}
   <div class="col-sm-12">
-    <form action="/admin/monthly_reports" method="POST" class="form-inline">
+    <form action="/admin/monthly_reports/{{agency.id}}/" method="POST" class="form-inline">
       {%csrf_token%}
       <input type="hidden" name="agency_id" value="{{agency.id}}">
-      <div class="form-group">
-	<a href="/admin/monthly_reports_form?agency_id={{agency.id}}" class="btn btn-primary">
-	  <span class="glyphicon glyphicon-plus-sign"></span>
-	  Add
-	</a>
-      </div>
-      &nbsp;|&nbsp;
       <div class="form-group">
 	{{month_form.month}}
       </div>

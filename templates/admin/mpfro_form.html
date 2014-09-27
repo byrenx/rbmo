@@ -3,22 +3,16 @@
 <script type="text/javascript" src="/static/js/list.js"></script>
 {% endblock %}
 
-{% block headerpage %}
-<div class="container">
-  <h3>{{agency.name}}</h3>
-  <hr/>
-</div>
-{% endblock %}
-
 {% block left-content %}
   {% include "./admin/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
-<div class="col-sm-9 right-content-left-border" style="min-height:500px;">
-  <h4>Monthly Physical and Financial Report of Operation</h4>
-  <a href="/admin/monthly_reports?agency_id={{agency.id}}">
-    <span class="glyphicon glyphicon-arrow-left"></span>
+<div class="col-sm-9" style="min-height:500px;background-color:white;padding-bottom: 40px;">
+  <h3>{{agency.name}}</h3>
+  <h3><small>Monthly Physical and Financial Report of Operation</small></h3>
+  <a href="/admin/monthly_reports/{{agency.id}}/">
+    <span class="glyphicon glyphicon-backward"></span>
     Back
   </a>
   <hr/>

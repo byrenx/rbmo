@@ -60,7 +60,7 @@ def getAgencyTabs(user_id, agency_id):
     if has_permission(user_id, 'record', 'allotment releases'):
         tabs.append({'tag' : 'Allotment Releases', 'link': '/agency/fund/allotment_releases/'+str(agency_id)+'/'})
     if has_permission(user_id, 'record', 'request received'):
-        tabs.append({'tag' : 'Request Received', 'link': '/agency/wfp/co_request/'+str(agency_id)+'/'})
+        tabs.append({'tag' : 'CO Requests', 'link': '/agency/wfp/co_request/'+str(agency_id)+'/'})
     return tabs
     
 

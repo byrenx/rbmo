@@ -214,16 +214,12 @@ def viewApprovedBudget(request):
 
 
 @login_required(login_url='/admin/')        
-def coRequests(request):
+def coRequests(request, agency_id):
     cursor = connection.cursor()
     context = RequestContext(request)
-    data  = {'system_name' : SYSTEM_NAME,
-             'agency_id'   : request.GET.get('agency_id')}
 
     try:
-        data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-        agency = Agency.objects.get(id=data['agency_id'])
-        data['agency'] = agency
+        agency = Agency.objects.get(id=agency_id)
         year = 0
         month = 0
         co_requests = None
@@ -232,32 +228,40 @@ def coRequests(request):
             year = int(year_month[0])
             month = int(year_month[1])
         else:
-            year  = int(time.strftime('%Y'))
-            month = int(time.strftime('%m'))
+            year  = int(datetime.today().year)
+            month = int(datetime.today().month)
             #get current month and year
         co_requests = CoRequest.objects.filter(date_received__year=year, date_received__month=month, agency=agency)
-        data['co_requests'] = co_requests
-        data['year'] = year
-        data['month'] = month
-        data['month_str'] = months[month-1]
-        
+        data = {'system_name'  : SYSTEM_NAME,
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency'       : agency,
+                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
+                'current_tab'  : "CO Requests",
+                'co_requests'  : co_requests,
+                'year'         : year,
+                'month'        : month,
+                'month_str'    : months[month-1]}
+
         return render_to_response('./wfp/co_request.html', data, context)
-    except Agency.DoesNotExist:
+    except:
         return HttpResponseRedirect("/admin/agencies")
 
     
 @login_required(login_url='/admin/')
 def coRequestForm(request):
     context = RequestContext(request)
+
     data  = {'system_name' : SYSTEM_NAME,
              'agency_id'   : request.GET.get('agency_id'),
-             'action'      : request.GET.get('action')
+             'action'      : request.GET.get('action')             
     }
     
     try:
         data['allowed_tabs'] = get_allowed_tabs(request.user.id)
         agency = Agency.objects.get(id=data['agency_id'])
         data['agency'] = agency
+        data['agency_tabs'] = getAgencyTabs(request.user.id, agency.id)
+        data['current_tab'] = "CO Requests"
         
         if request.method == 'POST':
             co_request_form = CORequestForm(request.POST)

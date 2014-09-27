@@ -13,7 +13,7 @@
   <hr/>
   <h4>Monthly Cash Allocation</h4>
   {%load humanize%}
-  <form action="/agency/fund/monthly_alloc" class="form-inline" method="POST">{%csrf_token%}
+  <form action="/agency/fund/monthly_alloc/{{agency.id}}/" class="form-inline" method="POST">{%csrf_token%}
     <input type="hidden" name="agency_id" value="{{agency.id}}">
     <label>{{c_year}}</label>
     <div class="form-group">
@@ -68,16 +68,17 @@
 	     </br></br>
 	     <b>ALLOCATION</b>&nbsp;:&nbsp;Php. {{amount|intcomma}}
 	     </br></br>
+	     <!---
 	     <a href="javascript:$('#transmittal').printArea()" class="btn btn-default">
 	       <span class="glyphicon glyphicon-print"></span>
 	       &nbsp;Transmittal Letter
 	     </a>
+	     --->
 	     <a href="" data-toggle="modal" data-target="#noticeModal" class="btn btn-default">
 	       <span class="glyphicon glyphicon-print"></span>
 	       &nbsp;Notice of Transmittal
 	     </a>
 	     {% include "./fund/notice_of_allocation.html" %}
-	     {% include "./fund/transmittal_note.html" %}
 	{% elif monthly_alloc_stat.stat == "NO ALLOCATED FUND" %}
 	       <span class="glyphicon glyphicon-stop text-danger"></span>
 	       &nbsp;NO ALLOCATED FUND
@@ -107,6 +108,17 @@
     $('#oic_letter').html(oic);
     $('#trans_note').printArea();
   }
+
+  function printNOC(){
+     var agency = $('#agency').val();
+     var oic = $('#oic').val();
+     var content = $('#content').val();
+  
+     $('#compliance_content').html(content);
+     $('#oic_letter').html(oic);
+     $('#com_note').printArea();
+  }
+
 </script>
 {% endblock %}
 

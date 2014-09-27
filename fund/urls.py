@@ -4,7 +4,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    url(r'^fund_release$', fundReleaseForm),
+    url(r'^fund_release/(?P<agency_id>[0-9]+)/$', fundReleaseForm),
     url(r'^monthly_alloc/(?P<agency_id>[0-9]+)/$', monthlyAlloc),
     url(r'^get_budget$', getAllocatedBudget),
     url(r'^view_fund_status$',  getFundStatus),

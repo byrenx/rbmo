@@ -504,12 +504,12 @@ def reqsStats(year):
 
 @login_required(login_url='/admin/')
 @transaction.atomic
-def mpfroReports(request):
+def mpfroReports(request, agency_id):
     context = RequestContext(request)
     cursor = connection.cursor()
     data  = {'system_name' : SYSTEM_NAME,
              'allowed_tabs': get_allowed_tabs(request.user.id),
-             'agency_id'   : request.GET.get('agency_id'),
+             'agency_id'   : agency_id,
              'year'        : datetime.today().year,
              'month'       : datetime.today().month,
              'month_form'  : MonthForm({'month': datetime.today().month})
@@ -519,7 +519,6 @@ def mpfroReports(request):
         if request.method=='POST':
             data['year'] = request.POST.get('year')
             data['month'] = request.POST.get('month')
-            data['agency_id'] = request.POST.get('agency_id')
 
         agency = Agency.objects.get(id=data['agency_id'])        
         perf_accs_query = "select "+months[int(data['month'])]+" as budget, "
@@ -555,27 +554,33 @@ def mpfroReports(request):
                                          'indicators_accs' : indicators_accs
                                      })
         data['agency'] = agency
+        data['agency_tabs'] = getAgencyTabs(request.user.id, agency.id)
+        data['current_tab'] = "Monthly Report of Operation"
         yrs_query = "select distinct(year) from performance_report"
         cursor.execute(yrs_query)
         data['years'] = dictfetchall(cursor)
         data['monthly_acts_reports'] = monthly_acts_reports
         data['str_month'] = stringify_month(int(data['month']))
         return render_to_response('./admin/monthly_reps.html', data, context)
-    except Agency.DoesNotExist:
-        pass
+    except:
+        return HttpResponseRedirect('/admin/agencies')
 
 
-def mpfro_form(request):
+@login_required(login_url="/admin/")
+def mpfro_form(request, agency_id):
     cursor = connection.cursor()
     context = RequestContext(request)
-    data = {'system_name' : SYSTEM_NAME,
-            'agency_id'   : request.GET.get('agency_id'),
-            'allowed_tabs': get_allowed_tabs(request.user.id),
+    try:
+        agency = Agency.objects.get(id=agency_id)
+        data = {'system_name' : SYSTEM_NAME,
+                'agency_id'   : agency_id,
+                'allowed_tabs': get_allowed_tabs(request.user.id),
+                'agency_tabs' : getAgencyTabs(request.user.id, agency.id),
+                'current_tab' : "Monthly Report of Operation"
         } 
     
-    this_year = datetime.today().year
-    data['years'] = [this_year, (this_year-1)]
-    try:
+        this_year = datetime.today().year
+        data['years'] = [this_year, (this_year-1)]
         action = request.GET.get('action', 'add')
         agency = Agency.objects.get(id=data['agency_id'])
         data['action'] = action

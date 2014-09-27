@@ -3,7 +3,7 @@ var pi_lists = new List();
 function getWFPData(wfp_id){
     $.get('/agency/wfp/wfpdetail', {'wfp_id':wfp_id}, function(data){
 	$("#wfp_detail").html(data);
-    });
+s    });
 }
 
 function addPhysicalTarget(){
@@ -164,7 +164,7 @@ function updateActivity(){
 	       }
     $.get('/agency/wfp/update_activity', data, function(rs){
 	agency_id = $('#agency_id').val();
-	window.location = "/agency/wfp/wfpinfo?agency_id="+agency_id;
+	window.location = "/agency/wfp/wfpinfo/"+agency_id+"/";
 	//$('#td'+data.wfp_id).html(rs);
 	//$('#close_activity_modal').click();
     });
@@ -253,7 +253,7 @@ function delActivity(){
 	 {'activity_id': activity_id}
 	 ,
 	 function(rs){
-	     window.location = '/agency/wfp/wfpinfo?agency_id='+ agency_id
+	     window.location = '/agency/wfp/wfpinfo/'+ agency_id+"/";
 	     
 	 }
 	);

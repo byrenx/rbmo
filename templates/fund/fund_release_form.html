@@ -9,14 +9,15 @@
 
 {% block right-content %}
 <div class="col-sm-9" style="background-color: white;min-height:550px">
+  <h3>{{agency.name}}</h3>
   <div class="col-sm-12"><!---style="background-color: rgba(204,204,204,.4)"-->
-    <h3>Allotment Release</h3>
-    <a href="/agency/fund/allotment_releases?agency_id={{agency.id}}">
-      <span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Back
+    <h4>Allotment Release Form</h4>
+    <a href="/agency/fund/allotment_releases/{{agency.id}}/">
+      <span class="glyphicon glyphicon-backward"></span>&nbsp;Back
     </a>
     </br></br>
     {% include "msg_pane.html" %}
-    <form action="/agency/fund/fund_release" role="form" class="form-horizontal" method="POST" >{% csrf_token %}
+    <form action="/agency/fund/fund_release/{{agency.id}}/" role="form" class="form-horizontal" method="POST" >{% csrf_token %}
       <!---onsubmit="return checkFundAmountRelease()"--->
       <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
       <input type="hidden" id="action" name="action" value="{{action}}">
