@@ -1,13 +1,13 @@
 {%if s_msg%}
-  <p class="alert alert-success">
+  <div class="alert alert-success">
     <span class="glyphicon glyphicon-check"></span>&nbsp;<strong>{{s_msg}}</strong>
-  </p>
+  </div>
 {%endif%}
 
 {%if e_msg%}
-  <p class="alert alert-danger">
+  <div class="alert alert-danger">
     <strong>{{e_msg}}</strong>
-  </p>
+  </div>
 {%endif%}
 
 {%if frm_errors%}
@@ -18,7 +18,24 @@
 
 {%if info_msg%}
   <div class="alert alert-info">
-    <span class="glyphicon glyphicon-info-sign"></span>&nbsp;<strong>{{info_msg}}</strong>
+
+    <span class="glyphicon glyphicon-info-sign"></span>&nbsp;
+    {{info_msg}}
   </div>
 {%endif%}
+
+{%if rm_err%}
+  <div class="alert alert-warning">
+    <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;
+    <strong>{{rm_err}}</strong></br>
+    <ul>
+      <li>Submitted requirements records</li>
+      <li>Work and Financial Plan records</li>
+      <li>Allotment Releases records</li>
+      <li>CO Requests records</li>
+    </ul>
+    Either of the ff. records are important and to keep them is also important</br><b>Note:&nbsp;</b>When the system delete an agency it make sure that it has no records attach to it
+  </div>
+{%endif%}
+
 

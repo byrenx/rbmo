@@ -19,7 +19,8 @@ from rbmo.models import (UserGroup,
                          WFPData,
                          COSSubmission,
                          PerformanceReport,
-                         PerformanceTarget
+                         PerformanceTarget,
+                         CoRequest
 )
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
@@ -262,7 +263,6 @@ def getAgenciesbySector(request):
     context = RequestContext(request)
     try:
         sectors_selected = request.POST.getlist('sector[]')
-        print sectors_selected
         agencies = Agency.objects.filter(sector__in = sectors_selected).order_by('name')
 
         data = {'page'             : 'agencies',
@@ -343,20 +343,49 @@ def addEditAgency(request):
 
 @login_required(login_url='/admin/')
 def deleteAgency(request, agency_id):
-    try:
+    #try:
         context = RequestContext(request)
         agency = Agency.objects.get(id=agency_id)
         a_name = agency.name
-        agency.delete()
         data = {'system_name'   : SYSTEM_NAME,
                 'allowed_tabs'  : get_allowed_tabs(request.user.id),
-                's_msg'         : "Agency named '"+a_name+"' succesfully removed from the list of agencies",
+
                 'links'         : [{'url'   : '/admin/agencies',
                                     'label' : 'Back to List of Agencies'}]}
+        if hasCurrRecord(agency):
+            data['rm_err'] = "Agency named '"+a_name+"' cannot be removed due to the ff. records this agency may have: "
+        else:
+            agency.delete()
+            data['s_msg'] = "Agency named '"+a_name+"' succesfully removed from the list of agencies"
+
         return render_to_response('response.html', data, context)
-    except:
-        return HttpResponseRedirect('/admin/agencies')
+#    except:
+  #      return HttpResponseRedirect('/admin/agencies')
+
+def hasCurrRecord(agency):
+    year = datetime.today().year
+    #if has requirment record
+    mrec = MonthlyReqSubmitted.objects.filter(agency=agency)
+    qrec = QuarterReqSubmission.objects.filter(agency=agency)
+    crec = COSSubmission.objects.filter(agency=agency)
+    #if has wfprecord
+    wfprec = WFPData.objects.filter(agency=agency)
+    #if has request
+    request = CoRequest.objects.filter(agency=agency)
+    #if has allotment releases received
+    releases = AllotmentReleases.objects.filter(agency=agency)
+    if len(mrec)>0 or len(qrec)>0 or len(crec)>0 or len(wfprec)>0 or len(request)>0 or len(releases)>0:
+        return True
+    else:
+        return False
     
+    
+    
+
+
+
+def hasWFP(year, agency):
+    return WFPData.objects.filter(year=year, agency=agency)
     
 
 
@@ -414,9 +443,15 @@ def getSumittedQReq(year, agency, quarter):
     return quarter_submitted
 
 
-def getSubmittedQuarterReq(year, agency, quarter):
-    quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)
-    return quarter_req_submitted
+def getSubmittedQuarterReq(year, agency, quarter=0):
+    if quarter == 0:
+        quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency)
+        return quarter_req_submitted
+    else:
+        quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)   
+        return quarter_req_submitted
+
+
 
 
 def getDisplaySubmittedQReq(request):
