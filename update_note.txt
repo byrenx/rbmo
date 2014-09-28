@@ -1,0 +1,3 @@
+update agency table:
+       alter agency add a_type of type integer, add parent_key of type integer
+edit agencies according to their head agency and type whether they are line agency or local agencies

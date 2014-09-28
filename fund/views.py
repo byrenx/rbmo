@@ -478,6 +478,11 @@ def delFundRelease(request):
         return HttpResponse('/admin/')
 
 
+total_budget = 0
+total_release = 0
+total_balance = 0
+count = 1.0
+
 @login_required(login_url='/admin/')
 @transaction.atomic
 def agenciesBudgetSummary(request):
@@ -488,46 +493,128 @@ def agenciesBudgetSummary(request):
             'allowed_tabs' :get_allowed_tabs(request.user.id)
         }
 
-    balances = []
-    agencies = Agency.objects.all()
-    total_budget = 0
+    line_agencies = []
+    local_agencies = []
+    total_budget  = 0
     total_release = 0
-    total_balance = 0
+    total_balance = 0 
+    count = 1.0
+    #line agencies
+    agencies = Agency.objects.filter(parent_key=0, a_type=2).order_by('name')
     for agency in agencies:
         agency_balances = {}
+        agency_balances['count']     = count
         agency_balances['agency_id'] = agency.id
         agency_balances['agency_name'] = agency.name
-        '''
-        total budget
-        '''
-        ps = getBudget(agency.id, 'PS', data['year'])
-        mooe = getBudget(agency.id, 'MOOE', data['year'])
-        co = getBudget(agency.id, 'CO', data['year']) 
-        agency_balances['budget'] = ps + mooe + co
-        '''
-        total release
-        '''
-        ps = getRelease(agency, 'PS', data['year'])
-        mooe = getRelease(agency, 'MOOE', data['year'])
-        co = getRelease(agency, 'CO', data['year'])
-        agency_balances['release'] = ps + mooe + co 
+
+        #total budget
+        agency_balances['budget'] = getBudget(agency.id, 'PS', data['year']) + getBudget(agency.id, 'MOOE', data['year']) + getBudget(agency.id, 'CO', data['year'])
+
+        #total release
+        agency_balances['release'] = getRelease(agency, 'PS', data['year']) + getRelease(agency, 'MOOE', data['year']) + getRelease(agency, 'CO', data['year'])
         #remaining balance
         agency_balances['balance'] = agency_balances['budget'] - agency_balances['release']
-        balances.append(agency_balances)
+        #update total budget, release and balance
         total_budget  += agency_balances['budget']
         total_release += agency_balances['release']
         total_balance += agency_balances['balance']
 
+        #get subagencies
+        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
+        sub_count = count
+        agency_balances['sub_agencies'] = []
+
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_balances = {}
+            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['agency_id'] = sub_agency.id
+            sub_agency_balances['agency_name'] = sub_agency.name
+
+            
+            #total budget
+            sub_agency_balances['budget'] = getBudget(sub_agency.id, 'PS', data['year']) + getBudget(sub_agency.id, 'MOOE', data['year']) + getBudget(sub_agency.id, 'CO', data['year'])
+            
+            #total release
+            sub_agency_balances['release'] = getRelease(sub_agency, 'PS', data['year']) + getRelease(sub_agency, 'MOOE', data['year']) + getRelease(sub_agency, 'CO', data['year'])
+            sub_agency_balances['balance'] = sub_agency_balances['budget'] - sub_agency_balances['release']
+            agency_balances['sub_agencies'].append(sub_agency_balances)
+
+            total_budget  += sub_agency_balances['budget']
+            total_release += sub_agency_balances['release']
+            total_balance += sub_agency_balances['balance']
+        #append to agencies balances list
+        line_agencies.append(agency_balances)
+        #end get sub agencies
+        count += 1
+    #end of for 
+
+    #locally funded agencies
+    agencies = Agency.objects.filter(parent_key=0, a_type=1).order_by('name')
+    count = 1.0
+    for agency in agencies:
+        agency_balances = {}
+        agency_balances['count']     = count
+        agency_balances['agency_id'] = agency.id
+        agency_balances['agency_name'] = agency.name
+
+        #total budget
+        agency_balances['budget'] = getBudget(agency.id, 'PS', data['year']) + getBudget(agency.id, 'MOOE', data['year']) + getBudget(agency.id, 'CO', data['year'])
+
+        #total release
+        agency_balances['release'] = getRelease(agency, 'PS', data['year']) + getRelease(agency, 'MOOE', data['year']) + getRelease(agency, 'CO', data['year'])
+        #remaining balance
+        agency_balances['balance'] = agency_balances['budget'] - agency_balances['release']
+        #update total budget, release and balance
+        total_budget  += agency_balances['budget']
+        total_release += agency_balances['release']
+        total_balance += agency_balances['balance']
+
+        #get subagencies
+        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
+        sub_count = count
+        agency_balances['sub_agencies'] = []
+
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_balances = {}
+            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['agency_id'] = sub_agency.id
+            sub_agency_balances['agency_name'] = sub_agency.name
+
+            
+            #total budget
+            sub_agency_balances['budget'] = getBudget(sub_agency.id, 'PS', data['year']) + getBudget(sub_agency.id, 'MOOE', data['year']) + getBudget(sub_agency.id, 'CO', data['year'])
+            
+            #total release
+            sub_agency_balances['release'] = getRelease(sub_agency, 'PS', data['year']) + getRelease(sub_agency, 'MOOE', data['year']) + getRelease(sub_agency, 'CO', data['year'])
+            sub_agency_balances['balance'] = sub_agency_balances['budget'] - sub_agency_balances['release']
+            agency_balances['sub_agencies'].append(sub_agency_balances)
+
+            total_budget  += sub_agency_balances['budget']
+            total_release += sub_agency_balances['release']
+            total_balance += sub_agency_balances['balance']
+        #append to agencies balances list
+        local_agencies.append(agency_balances)
+        #end get sub agencies
+        count += 1
+    #end of for 
+
+
     years_query = "select distinct(year) as year from wfp_data"
     cursor.execute(years_query)
     data['years'] = dictfetchall(cursor)
-    data['balances'] = balances
+    data['line_agencies'] = line_agencies
+    data['local_agencies'] = local_agencies
     data['total_sum'] = {'total_budget'  : total_budget,
                          'total_release' : total_release,
                          'total_balance' : total_balance
     }
     data['today'] = date.today()
     return render_to_response('./fund/running_balances.html', data, context)
+
+
+
 
 def getBudget(agency, allocation, year):
     cursor=connection.cursor()
