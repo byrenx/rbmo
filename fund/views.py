@@ -498,7 +498,7 @@ def agenciesBudgetSummary(request):
     total_budget  = 0
     total_release = 0
     total_balance = 0 
-    count = 1.0
+    count = 1
     #line agencies
     agencies = Agency.objects.filter(parent_key=0, a_type=2).order_by('name')
     for agency in agencies:
@@ -551,7 +551,7 @@ def agenciesBudgetSummary(request):
 
     #locally funded agencies
     agencies = Agency.objects.filter(parent_key=0, a_type=1).order_by('name')
-    count = 1.0
+    count = 1
     for agency in agencies:
         agency_balances = {}
         agency_balances['count']     = count

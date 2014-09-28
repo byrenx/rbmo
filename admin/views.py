@@ -967,58 +967,123 @@ def changePass(request):
 def approvedBudget(request):
     cursor = connection.cursor()
     context = RequestContext(request)
-    agencies_app_budget = []
+    line_agencies = []
     total_ps    = 0
     total_mooe  = 0
     total_co    = 0
     grand_total = 0
     count = 1
-
-    query = '''select agency.*, 
-    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='PS') as ps,
-    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='MOOE') as mooe,
-    (select sum(wfp_data.total) from wfp_data where wfp_data.agency_id=agency.id and year=%s and allocation='CO') as co
-    from agency'''
-
-    yrs_query = "select distinct(year) from wfp_data"
-    cursor.execute(yrs_query)
-    years = dictfetchall(cursor)
     year = datetime.today().year
-    if request.method=='POST':
-        year  = request.POST.get('year')
-    
-    cursor.execute(query, [year, year, year])
-    agencies_budget = dictfetchall(cursor)
-    
-    for agency in agencies_budget:
-        agencies_app_budget.append({
-            'count' : count,
-            'id'    : agency['id'],
-            'name'  : agency['name'],
-            'ps'    : numify(agency['ps']),
-            'mooe'  : numify(agency['mooe']),
-            'co'    : numify(agency['co']),
-            'total' : numify(agency['ps']) + numify(agency['mooe']) + numify(agency['co'])
-        })
-        total_ps   += numify(agency['ps']) 
-        total_mooe += numify(agency['mooe']) 
-        total_co   += numify(agency['co']) 
-        grand_total+= total_ps + total_mooe + total_co 
-        count+=1
-        
+    if request.method=="POST":
+        year = request.POST.get('year')
+
+    #line agencies
+    agencies = Agency.objects.filter(a_type = 2, parent_key = 0).order_by('name')
+    for agency in agencies:
+        agency_budget = {}
+        ps   = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
+        mooe = WFPData.objects.filter(agency=agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
+        co   = WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
+        agency_budget['count'] = count
+        agency_budget['id']    = agency.id
+        agency_budget['name']  = agency.name
+        agency_budget['ps']    = numify(ps['ps_total'])
+        agency_budget['mooe']  = numify(mooe['mooe_total'])
+        agency_budget['co']    = numify(co['co_total'])
+        agency_budget['total'] = agency_budget['ps'] + agency_budget['mooe'] + agency_budget['co']
+        #get sub_agencies
+        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
+        agency_budget['sub_agencies'] = []
+        sub_count = count
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_budget = {}
+            sub_ps   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
+            sub_mooe = WFPData.objects.filter(agency=sub_agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
+            sub_co   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
+            sub_agency_budget['count'] = sub_count
+            sub_agency_budget['id']    = sub_agency.id
+            sub_agency_budget['name']  = sub_agency.name
+            sub_agency_budget['ps']    = numify(sub_ps['ps_total'])
+            sub_agency_budget['mooe']  = numify(sub_mooe['mooe_total'])
+            sub_agency_budget['co']    = numify(sub_co['co_total'])
+            sub_agency_budget['total'] = sub_agency_budget['ps'] + sub_agency_budget['mooe'] + sub_agency_budget['co']
+            agency_budget['sub_agencies'].append(sub_agency_budget)    
+            total_ps   += numify(sub_ps['ps_total'])
+            total_mooe += numify(sub_mooe['mooe_total']) 
+            total_co   += numify(sub_co['co_total'])
+
+        line_agencies.append(agency_budget)
+
+        total_ps   += numify(ps['ps_total'])
+        total_mooe += numify(mooe['mooe_total']) 
+        total_co   += numify(co['co_total'])
+
+
+        count += 1
+
+    #local agencies
+    local_agencies = []
+    agencies = Agency.objects.filter(a_type = 1, parent_key = 0).order_by('name')
+    count = 1
+    for agency in agencies:
+        agency_budget = {}
+        ps   = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
+        mooe = WFPData.objects.filter(agency=agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
+        co   = WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
+        agency_budget['count'] = count
+        agency_budget['id']    = agency.id
+        agency_budget['name']  = agency.name
+        agency_budget['ps']    = numify(ps['ps_total'])
+        agency_budget['mooe']  = numify(mooe['mooe_total'])
+        agency_budget['co']    = numify(co['co_total'])
+        agency_budget['total'] = agency_budget['ps'] + agency_budget['mooe'] + agency_budget['co']
+        #get sub_agencies
+        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
+        agency_budget['sub_agencies'] = []
+        sub_count = count
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_budget = {}
+            sub_ps   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
+            sub_mooe = WFPData.objects.filter(agency=sub_agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
+            sub_co   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
+            sub_agency_budget['count'] = sub_count
+            sub_agency_budget['id']    = sub_agency.id
+            sub_agency_budget['name']  = sub_agency.name
+            sub_agency_budget['ps']    = numify(sub_ps['ps_total'])
+            sub_agency_budget['mooe']  = numify(sub_mooe['mooe_total'])
+            sub_agency_budget['co']    = numify(sub_co['co_total'])
+            sub_agency_budget['total'] = sub_agency_budget['ps'] + sub_agency_budget['mooe'] + sub_agency_budget['co']
+            agency_budget['sub_agencies'].append(sub_agency_budget)    
+            total_ps   += numify(sub_ps['ps_total'])
+            total_mooe += numify(sub_mooe['mooe_total']) 
+            total_co   += numify(sub_co['co_total'])
+
+        local_agencies.append(agency_budget)
+
+        total_ps   += numify(ps['ps_total'])
+        total_mooe += numify(mooe['mooe_total']) 
+        total_co   += numify(co['co_total'])
+        count += 1
+
+    cursor.execute("select distinct(year) from wfp_data")
+    years = dictfetchall(cursor)
+
     total_budget = {'total_ps'   : total_ps,
                     'total_mooe' : total_mooe,
                     'total_co'   : total_co,
-                    'grand_total': grand_total
-                }
+                    'grand_total': total_ps+total_mooe+total_co}
 
-    data ={'year' : year,
-           'agencies_app_budget' : agencies_app_budget,
-           'system_name'     : SYSTEM_NAME,
-           'allowed_tabs'    : get_allowed_tabs(request.user.id),
-           'total_budget'    : total_budget,
-           'years'           : years
-    }
+    data ={'year'           : year,
+           'line_agencies'  : line_agencies,
+           'local_agencies' : local_agencies,
+           'system_name'    : SYSTEM_NAME,
+           'allowed_tabs'   : get_allowed_tabs(request.user.id),
+           'total_budget'   : total_budget,
+           'years'          : years}
+
+    
     return render_to_response('./admin/approved_budget.html', data, context)
     
 
