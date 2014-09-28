@@ -61,34 +61,16 @@ class LoginForm(forms.ModelForm):
     
 
 class AgencyForm(forms.ModelForm):
-
-    name = forms.CharField(widget=forms.TextInput(attrs={
-        'class' : 'form-control',
-        'required': 'True',
-        'placeholder' : 'Type the Name of Agency here..'
-    }))
-
-    email = forms.EmailField(max_length=75,
-                             widget = forms.TextInput(attrs={
-                                 'class' : 'form-control',
-                                 'required': 'True',
-                                 'placeholder': 'Type a valid email here..'
-                             })
-                         )
-    
-    sector = forms.ModelChoiceField(queryset = Sector.objects.all(),
-                                   widget = forms.Select(attrs = {
-                                       'class' : 'form-control'
-                                   })
-    )
-    '''
-    a_type = forms.ChoiceField(choices = (('lf', 'Locally Funded'),('la', 'Line Agencies')),
-                                    widget = forms.Select(attrs = {'class': 'form-control'}))
-    '''
-
     class Meta:
         model = Agency
-        fields = ['name', 'email', 'sector']
+        fields = ['name', 'email', 'sector', 'a_type']
+        widgets = {'name'   : forms.TextInput(attrs = {'class'       : 'form-control',
+                                                       'required'    : 'True'}),
+                   'email'  : forms.TextInput(attrs = {'class'       : 'form-control',
+                                                       'required'    : 'True',
+                                                       'placeholder' : 'example@gmail.com'}),
+                   'sector' : forms.Select(attrs = {'class'     : 'form-control'}),
+                   'a_type' : forms.Select(attrs = {'class': 'form-control'})}
 
 
 class GroupForm(forms.Form):

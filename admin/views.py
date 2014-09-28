@@ -280,7 +280,7 @@ def getAgenciesbySector(request):
     except Agency.DoesNotExist:
         return HttpResponse('Error 404 Page not Found')
 
-    
+
 
 
 @login_required(login_url='/admin/')
@@ -308,8 +308,8 @@ def addEditAgency(request):
             agency.name = agency_frm.cleaned_data['name']
             agency.email = agency_frm.cleaned_data['email']
             agency.sector = agency_frm.cleaned_data['sector']
-            #agency.a_type = agency_frm.cleaned_data['a_type']
-            #agency.pa_key = request.POST.get('head_agency')
+            agency.a_type = agency_frm.cleaned_data['a_type']
+            agency.parent_key = request.POST.get('head_agency')
             agency.save()
             data['s_msg'] = 'Agency/Office was succesfully Updated.'
             return render_to_response('./admin/agency_form.html', data, context)
@@ -319,25 +319,45 @@ def addEditAgency(request):
             return render_to_response('./admin/agency_form.html', data, context)
     else:
         data['action'] = request.GET.get('action', 'add')
+        print request.GET
         if data['action']=='edit':
             try:
                 agency_id = request.GET.get('a_id')
                 agency = Agency.objects.get(id=agency_id)
                 data['form'] = AgencyForm({'name'  : agency.name,
                                            'email' : agency.email,
-                                           'sector': agency.sector
-                                           #'a_type': agency.a_type
+                                           'sector': agency.sector,
+                                           'a_type': agency.a_type
                                        })
                 
                 data['agency_id'] = agency.id
-             #   data['pa_key'] = agency.pa_key
-             #  data['agencies_selection'] = Agency.objects.exclude(id=agency.id)
+                data['parent_key'] = agency.parent_key
+                data['agencies_selection'] = Agency.objects.exclude(id=agency.id).order_by('name')
                 return render_to_response('./admin/agency_form.html', data, context)
             except Agency.DoesNotExist:
                 return render_to_response('./admin/agency_form.html', data, context)
         else:
-            data['agencies_selection'] = Agency.objects.all()
+            data['agencies_selection'] = Agency.objects.all().order_by('name')
             return render_to_response('./admin/agency_form.html', data, context)
+
+
+@login_required(login_url='/admin/')
+def deleteAgency(request, agency_id):
+    try:
+        context = RequestContext(request)
+        agency = Agency.objects.get(id=agency_id)
+        a_name = agency.name
+        agency.delete()
+        data = {'system_name'   : SYSTEM_NAME,
+                'allowed_tabs'  : get_allowed_tabs(request.user.id),
+                's_msg'         : "Agency named '"+a_name+"' succesfully removed from the list of agencies",
+                'links'         : [{'url'   : '/admin/agencies',
+                                    'label' : 'Back to List of Agencies'}]}
+        return render_to_response('response.html', data, context)
+    except:
+        return HttpResponseRedirect('/admin/agencies')
+    
+    
 
 
 @login_required(login_url = '/admin/')

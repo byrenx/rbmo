@@ -80,13 +80,11 @@ class Agency(models.Model):
     name   = models.CharField(max_length = 200)
     sector = models.ForeignKey(Sector)
     email  = models.EmailField()
-    '''
-    a_type = models.CharField(max_length = 2, choices=(('lf', 'Locally Funded'),
-                                                       ('la', 'Line Agencies')))
+    a_type = models.IntegerField(choices=((1, 'Locally Funded'),
+                                          (2, 'Line Agencies')))
 
-    pa_key    = models.IntegerField(default=0)
-    '''
-    acces_key = models.CharField(max_length = 150)
+    parent_key    = models.IntegerField(default=0)
+    acces_key     = models.CharField(max_length = 150)
 
     
 

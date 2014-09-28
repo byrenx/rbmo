@@ -1,6 +1,6 @@
 {%if s_msg%}
   <p class="alert alert-success">
-    <strong>{{s_msg}}</strong>
+    <span class="glyphicon glyphicon-check"></span>&nbsp;<strong>{{s_msg}}</strong>
   </p>
 {%endif%}
 
@@ -15,3 +15,10 @@
     <strong>{{frm_errors}}</strong>
   </div>
 {%endif%}
+
+{%if info_msg%}
+  <div class="alert alert-info">
+    <span class="glyphicon glyphicon-info-sign"></span>&nbsp;<strong>{{info_msg}}</strong>
+  </div>
+{%endif%}
+

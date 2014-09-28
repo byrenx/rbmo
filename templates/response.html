@@ -1,0 +1,22 @@
+{% extends "./admin/base.html" %}
+
+{% block right-content %}
+<div class="col-sm-8 col-sm-offset-2">
+  <div class="col-sm-8 col-sm-offset-2" style="padding-top:50px;">
+    {%include "msg_pane.html"%}    
+  </div>
+
+  <div class="col-sm-8 col-sm-offset-2">
+    {%for link in links%}
+      <ul syle="list-style-type: horizontal">
+	<li>
+	  <a href="{{link.url}}">{{link.label}}</a>
+	</li>
+      </ul>
+    {%endfor%}
+  </div>
+</div>
+{% endblock %}
+
+  
+  
