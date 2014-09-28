@@ -692,13 +692,16 @@ def allot_releases(request):
             'allowed_tabs' : get_allowed_tabs(request.user.id)
         }
     data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-    agencies_releases = []
+    line_agencies = []
     total_ps = 0
     total_mooe = 0
     total_co = 0
-    agencies = Agency.objects.all()
-    count = 0
+
+    #line agencies
+    agencies = Agency.objects.filter(a_type=2, parent_key = 0).order_by('name')
+    count = 1
     for agency in agencies:
+        agency_release = {}
         #get total ps_release
         ps = AllotmentReleases.objects.filter(agency=agency, allocation='PS').aggregate(Sum('amount_release'))
         #get total mooe release
@@ -706,20 +709,100 @@ def allot_releases(request):
         #get total co release
         co = AllotmentReleases.objects.filter(agency=agency, allocation='co').aggregate(Sum('amount_release'))
         total = numify( ps['amount_release__sum']) + numify( mooe['amount_release__sum']) + numify( co['amount_release__sum'])
-        agencies_releases.append({'count' : count,
-                                  'agency': agency.name,
-                                  'ps'    : numify(ps['amount_release__sum']),
-                                  'mooe'  : numify(mooe['amount_release__sum']),
-                                  'co'    : numify(co['amount_release__sum']),
-                                  'total' : total
-                              })
-        total_ps = total_ps + numify( ps['amount_release__sum'])
-        total_mooe = total_mooe + numify( mooe['amount_release__sum'])
-        total_co = total_co + numify( co['amount_release__sum'])        
+        agency_release['count'] = count
+        agency_release['name']  = agency.name
+        agency_release['ps']    = numify(ps['amount_release__sum'])
+        agency_release['mooe']  = numify(mooe['amount_release__sum'])
+        agency_release['co']    = numify(co['amount_release__sum'])
+        agency_release['total'] = total
+        
+        #sub agencies
+        sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
+        agency_release['sub_agencies'] = []
+        sub_count = count
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_release = {}
+            #get total ps_release
+            sub_ps = AllotmentReleases.objects.filter(agency=sub_agency, allocation='PS').aggregate(Sum('amount_release'))
+            #get total mooe release
+            sub_mooe = AllotmentReleases.objects.filter(agency=sub_agency, allocation='MOOE').aggregate(Sum('amount_release'))
+            #get total co release
+            sub_co = AllotmentReleases.objects.filter(agency=sub_agency, allocation='co').aggregate(Sum('amount_release'))
+            sub_total = numify(sub_ps['amount_release__sum']) + numify(sub_mooe['amount_release__sum']) + numify(sub_co['amount_release__sum'])
+            sub_agency_release['count'] = sub_count
+            sub_agency_release['name']  = sub_agency.name
+            sub_agency_release['ps']    = numify(sub_ps['amount_release__sum'])
+            sub_agency_release['mooe']  = numify(sub_mooe['amount_release__sum'])
+            sub_agency_release['co']    = numify(sub_co['amount_release__sum'])
+            sub_agency_release['total'] = sub_total
+            
+            agency_release['sub_agencies'].append(sub_agency_release)
+            total_ps += numify(sub_ps['amount_release__sum'])
+            total_mooe += numify(sub_mooe['amount_release__sum'])
+            total_co += numify(sub_co['amount_release__sum'])        
+        #end of inner for
+        line_agencies.append(agency_release)
+        total_ps += numify(ps['amount_release__sum'])
+        total_mooe += numify( mooe['amount_release__sum'])
+        total_co += numify(co['amount_release__sum'])        
+        count = count + 1
+    
+    #local agencies
+    local_agencies = []
+    agencies = Agency.objects.filter(a_type=1, parent_key = 0).order_by('name')
+    count = 1
+    for agency in agencies:
+        agency_release = {}
+        #get total ps_release
+        ps = AllotmentReleases.objects.filter(agency=agency, allocation='PS').aggregate(Sum('amount_release'))
+        #get total mooe release
+        mooe = AllotmentReleases.objects.filter(agency=agency, allocation='MOOE').aggregate(Sum('amount_release'))
+        #get total co release
+        co = AllotmentReleases.objects.filter(agency=agency, allocation='co').aggregate(Sum('amount_release'))
+        total = numify( ps['amount_release__sum']) + numify( mooe['amount_release__sum']) + numify( co['amount_release__sum'])
+        agency_release['count'] = count
+        agency_release['name']  = agency.name
+        agency_release['ps']    = numify(ps['amount_release__sum'])
+        agency_release['mooe']  = numify(mooe['amount_release__sum'])
+        agency_release['co']    = numify(co['amount_release__sum'])
+        agency_release['total'] = total
+        
+        #sub agencies
+        sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
+        agency_release['sub_agencies'] = []
+        sub_count = count
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_release = {}
+            #get total ps_release
+            sub_ps = AllotmentReleases.objects.filter(agency=sub_agency, allocation='PS').aggregate(Sum('amount_release'))
+            #get total mooe release
+            sub_mooe = AllotmentReleases.objects.filter(agency=sub_agency, allocation='MOOE').aggregate(Sum('amount_release'))
+            #get total co release
+            sub_co = AllotmentReleases.objects.filter(agency=sub_agency, allocation='co').aggregate(Sum('amount_release'))
+            sub_total = numify(sub_ps['amount_release__sum']) + numify(sub_mooe['amount_release__sum']) + numify(sub_co['amount_release__sum'])
+            sub_agency_release['count'] = sub_count
+            sub_agency_release['name']  = sub_agency.name
+            sub_agency_release['ps']    = numify(sub_ps['amount_release__sum'])
+            sub_agency_release['mooe']  = numify(sub_mooe['amount_release__sum'])
+            sub_agency_release['co']    = numify(sub_co['amount_release__sum'])
+            sub_agency_release['total'] = sub_total
+            
+            agency_release['sub_agencies'].append(sub_agency_release)
+            total_ps += numify(sub_ps['amount_release__sum'])
+            total_mooe += numify(sub_mooe['amount_release__sum'])
+            total_co += numify(sub_co['amount_release__sum'])        
+        #end of inner for
+        local_agencies.append(agency_release)
+        total_ps += numify(ps['amount_release__sum'])
+        total_mooe += numify( mooe['amount_release__sum'])
+        total_co += numify(co['amount_release__sum'])        
         count = count + 1
     
     
-    data['agencies_releases'] = agencies_releases
+    data['line_agencies'] = line_agencies
+    data['local_agencies'] = local_agencies
     data['grand_total'] = {'ps': total_ps, 'mooe': total_mooe, 'co': total_co, 'total': total_ps+total_mooe+total_co}
     data['today'] = date.today()
     return render_to_response('./admin/allotment_releases_report.html', data, context)

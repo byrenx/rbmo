@@ -19,7 +19,6 @@
       <div style="position: absolute; top:0px; left: 550px; width:150px;">
 	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
       </div>
-      {% if agencies_releases %}
     </div>
     <table border="1" class="table-normal">
       {%load humanize%}
@@ -31,26 +30,68 @@
 	  <th class="center">TOTAL</th>
 	</tr>
       </thead>
-      {% for releases in agencies_releases%}
-      <tr>
-	<td>{{releases.count}}</td>
-	<td>{{releases.agency}}</td>
-	<td class="decimal">{{releases.ps|intcomma}}</td>
-	<td class="decimal">{{releases.mooe|intcomma}}</td>
-	<td class="decimal">{{releases.co|intcomma}}</td>
-	<td class="decimal">{{releases.total|intcomma}}</td>
-      </tr>
-	{% endfor %}
-      <tr>
-	<th colspan="2">Grand Total</th>
-	<th class="decimal">{{grand_total.ps|intcomma}}</th>
-	<th class="decimal">{{grand_total.mooe|intcomma}}</th>
-	<th class="decimal">{{grand_total.co|intcomma}}</th>
-	<th class="decimal">{{grand_total.total|intcomma}}</th>
-      </tr>
+      <tbody>
+          {%if line_agencies%}
+	    <tr>
+	      <th colspan="6">Line Agencies</th>
+	    </tr>
+          {%endif%}
+	  {% for agency in line_agencies%}
+	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.total|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	       <tr>
+		 <td></td>
+		 <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+		 <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	       </tr>
+	     {%endfor%}
+	  {% endfor %}
+          <!----local agencies ---->
+	  {%if local_agencies%}
+	    <tr>
+	      <th colspan="6">Local Agencies</th>
+	    </tr>
+	  {%endif%}
+	  {% for agency in local_agencies%}
+	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.total|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	       <tr>
+		 <td></td>
+		 <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+		 <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	       </tr>
+	     {%endfor%}
+	  {% endfor %}
+	  <tr>
+	    <th colspan="2">Grand Total</th>
+	    <th class="decimal">{{grand_total.ps|intcomma}}</th>
+	    <th class="decimal">{{grand_total.mooe|intcomma}}</th>
+	    <th class="decimal">{{grand_total.co|intcomma}}</th>
+	    <th class="decimal">{{grand_total.total|intcomma}}</th>
+	  </tr>
+      </tbody>
     </table>
     </br></br>
     {%include "table_print_footer.html"%}
-    {% endif %}
 </div>
 
