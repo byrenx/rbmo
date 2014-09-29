@@ -3,12 +3,6 @@
 {%block css%}
 <script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/dist/jquery.jqplot.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.1.0.8/dist/jquery.jqplot.css" />
-<script language="javascript" type="text/javascript">
-  $(document).ready(function(){
-  $.jqplot('chartdiv',  [[[1, 2],[3,5.12],[5,13.1],[7,33.6],[9,85.9],[11,219.9]]]);
-  });
-
-</script>
 {%endblock%}
 
 {%block right-content%}
@@ -24,26 +18,73 @@
       <table class="table">
 	<thead>
 	  <tr>
-	    <th>Agencies</th>
-	    <th>PS</th>
-	    <th>MOOE</th>
-	    <th>CO</th>
+	    <th width="25px;"></th>
+	    <th>AGENCIES/OFFICES</th>
+	    <th class="decimal">PS</th>
+	    <th class="decimal">MOOE</th>
+	    <th class="decimal">CO</th>
+	    <th class="decimal">TOTAL</th>
 	  </tr>
 	</thead>
 	<tbody>
 	  {% load humanize %}
-	  {%for bal in balances %}
+	  {%if line_agencies%}
 	  <tr>
-	    <td>{{bal.agency_name}}</td>
-	    <td class="decimal">{{bal.budget|intcomma}}</td>
-	    <td class="decimal">{{bal.release|intcomma}}</td>
-	    <td class="decimal">{{bal.balance|intcomma}}</td>
+	    <th colspan="6">Line Agencies</th>
 	  </tr>
+	  {%endif%}
+	  {%for agency in line_agencies %}
+    	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.agency_name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.balance|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	        <tr>
+		  <td></td>
+		  <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
+		  <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.balance|intcomma}}</td>
+		</tr>
+	     {%endfor%}
 	  {% endfor %}
+          <!----local agencies--->
+	  {%if local_agencies%}
 	  <tr>
-	    <th>GRAND TOTAL</th>
-	    <th style="text-align:right">{{total_sum.total_budget|intcomma}}</th>
-	    <th style="text-align:right">{{total_sum.total_release|intcomma}}</th>
+	    <th colspan="6">Local Agencies</th>
+	  </tr>
+	  {%endif%}
+	  {%for agency in local_agencies %}
+    	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.agency_name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.balance|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	        <tr>
+		  <td></td>
+		  <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
+		  <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		  <td class="decimal">{{sub_agency.balance|intcomma}}</td>
+		</tr>
+	     {%endfor%}
+	  {% endfor %}
+
+	  <tr>
+	    <th colspan="2">GRAND TOTAL</th>
+	    <th style="text-align:right">{{total_sum.total_ps|intcomma}}</th>
+	    <th style="text-align:right">{{total_sum.total_mooe|intcomma}}</th>
+	    <th style="text-align:right">{{total_sum.total_co|intcomma}}</th>
 	    <th style="text-align:right">{{total_sum.total_balance|intcomma}}</th>
 	  </tr>
 	</tbody>
