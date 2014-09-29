@@ -485,132 +485,180 @@ count = 1.0
 
 @login_required(login_url='/admin/')
 @transaction.atomic
-def agenciesBudgetSummary(request):
+def agenciesBalanceSummary(request):
     context = RequestContext(request)
     cursor = connection.cursor()
-    data = {'year'         : request.GET.get('year', time.strftime('%Y')),
-            'system_name'  : SYSTEM_NAME,
-            'allowed_tabs' :get_allowed_tabs(request.user.id)
-        }
-
-    line_agencies = []
+    year = request.GET.get('year', datetime.today().year)
+    line_agencies  = []
     local_agencies = []
-    total_budget  = 0
-    total_release = 0
-    total_balance = 0 
+    total_ps       = 0
+    total_mooe     = 0
+    total_co       = 0
+    total_balance  = 0 
     count = 1
     #line agencies
-    agencies = Agency.objects.filter(parent_key=0, a_type=2).order_by('name')
+    agencies = Agency.objects.filter(a_type=2, parent_key = 0).order_by('name')
     for agency in agencies:
         agency_balances = {}
-        agency_balances['count']     = count
+        agency_balances['count'] = count
         agency_balances['agency_id'] = agency.id
         agency_balances['agency_name'] = agency.name
+        '''
+        total budget
+        '''
+        ps_budget = getBudget(agency.id, 'PS', year)
+        ps_release = getRelease(agency, 'PS', year)
+        ps_balance = ps_budget-ps_release
 
-        #total budget
-        agency_balances['budget'] = getBudget(agency.id, 'PS', data['year']) + getBudget(agency.id, 'MOOE', data['year']) + getBudget(agency.id, 'CO', data['year'])
+        mooe_budget = getBudget(agency.id, 'MOOE', year)
+        mooe_release = getRelease(agency, 'MOOE', year)
+        mooe_balance = mooe_budget - mooe_release
 
-        #total release
-        agency_balances['release'] = getRelease(agency, 'PS', data['year']) + getRelease(agency, 'MOOE', data['year']) + getRelease(agency, 'CO', data['year'])
-        #remaining balance
-        agency_balances['balance'] = agency_balances['budget'] - agency_balances['release']
-        #update total budget, release and balance
-        total_budget  += agency_balances['budget']
-        total_release += agency_balances['release']
-        total_balance += agency_balances['balance']
+        co_budget = getBudget(agency.id, 'CO', year) 
+        co_release = getRelease(agency, 'CO', year)
+        co_balance = co_budget - co_release
 
-        #get subagencies
-        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
-        sub_count = count
+        agency_bal = ps_balance + mooe_balance + co_balance
+        
+        agency_balances['ps']    = ps_balance
+        agency_balances['mooe']  = mooe_balance
+        agency_balances['co']    = co_balance
+        agency_balances['balance'] = agency_bal
         agency_balances['sub_agencies'] = []
-
+        #sub agencies
+        sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
+        sub_count = count
         for sub_agency in sub_agencies:
             sub_count += 0.1
             sub_agency_balances = {}
             sub_agency_balances['count'] = sub_count
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
-
+            '''
+            total budget
+            '''
+            sub_ps_budget = getBudget(sub_agency.id, 'PS', year)
+            sub_ps_release = getRelease(sub_agency, 'PS', year)
+            sub_ps_balance = sub_ps_budget-sub_ps_release
             
-            #total budget
-            sub_agency_balances['budget'] = getBudget(sub_agency.id, 'PS', data['year']) + getBudget(sub_agency.id, 'MOOE', data['year']) + getBudget(sub_agency.id, 'CO', data['year'])
+            sub_mooe_budget = getBudget(sub_agency.id, 'MOOE', year)
+            sub_mooe_release = getRelease(sub_agency, 'MOOE', year)
+            sub_mooe_balance = sub_mooe_budget - sub_mooe_release
             
-            #total release
-            sub_agency_balances['release'] = getRelease(sub_agency, 'PS', data['year']) + getRelease(sub_agency, 'MOOE', data['year']) + getRelease(sub_agency, 'CO', data['year'])
-            sub_agency_balances['balance'] = sub_agency_balances['budget'] - sub_agency_balances['release']
+            sub_co_budget = getBudget(sub_agency.id, 'CO', year) 
+            sub_co_release = getRelease(sub_agency, 'CO', year)
+            sub_co_balance = sub_co_budget - sub_co_release
+            
+            suba_bal = sub_ps_balance + sub_mooe_balance + sub_co_balance
+            sub_agency_balances['ps']    = sub_ps_balance
+            sub_agency_balances['mooe']  = sub_mooe_balance
+            sub_agency_balances['co']    = sub_co_balance
+            sub_agency_balances['balance'] = suba_bal
+            
             agency_balances['sub_agencies'].append(sub_agency_balances)
+            total_ps   += sub_ps_balance
+            total_mooe += sub_mooe_balance
+            total_co   += sub_co_balance
+            total_balance += suba_bal
 
-            total_budget  += sub_agency_balances['budget']
-            total_release += sub_agency_balances['release']
-            total_balance += sub_agency_balances['balance']
-        #append to agencies balances list
+
         line_agencies.append(agency_balances)
-        #end get sub agencies
+        total_ps   += ps_balance
+        total_mooe += mooe_balance
+        total_co   += co_balance
+        total_balance += agency_bal
         count += 1
-    #end of for 
 
-    #locally funded agencies
-    agencies = Agency.objects.filter(parent_key=0, a_type=1).order_by('name')
-    count = 1
+
+    #local agencies
+    agencies = Agency.objects.filter(a_type=1, parent_key = 0).order_by('name')
     for agency in agencies:
         agency_balances = {}
-        agency_balances['count']     = count
+        agency_balances['count'] = count
         agency_balances['agency_id'] = agency.id
         agency_balances['agency_name'] = agency.name
+        '''
+        total budget
+        '''
+        ps_budget = getBudget(agency.id, 'PS', year)
+        ps_release = getRelease(agency, 'PS', year)
+        ps_balance = ps_budget-ps_release
 
-        #total budget
-        agency_balances['budget'] = getBudget(agency.id, 'PS', data['year']) + getBudget(agency.id, 'MOOE', data['year']) + getBudget(agency.id, 'CO', data['year'])
+        mooe_budget = getBudget(agency.id, 'MOOE', year)
+        mooe_release = getRelease(agency, 'MOOE', year)
+        mooe_balance = mooe_budget - mooe_release
 
-        #total release
-        agency_balances['release'] = getRelease(agency, 'PS', data['year']) + getRelease(agency, 'MOOE', data['year']) + getRelease(agency, 'CO', data['year'])
-        #remaining balance
-        agency_balances['balance'] = agency_balances['budget'] - agency_balances['release']
-        #update total budget, release and balance
-        total_budget  += agency_balances['budget']
-        total_release += agency_balances['release']
-        total_balance += agency_balances['balance']
+        co_budget = getBudget(agency.id, 'CO', year) 
+        co_release = getRelease(agency, 'CO', year)
+        co_balance = co_budget - co_release
 
-        #get subagencies
-        sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
-        sub_count = count
+        agency_bal = ps_balance + mooe_balance + co_balance
+        
+        agency_balances['ps']    = ps_balance
+        agency_balances['mooe']  = mooe_balance
+        agency_balances['co']    = co_balance
+        agency_balances['balance'] = agency_bal
         agency_balances['sub_agencies'] = []
-
+        #sub agencies
+        sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
+        sub_count = count
         for sub_agency in sub_agencies:
             sub_count += 0.1
             sub_agency_balances = {}
             sub_agency_balances['count'] = sub_count
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
-
+            '''
+            total budget
+            '''
+            sub_ps_budget = getBudget(sub_agency.id, 'PS', year)
+            sub_ps_release = getRelease(sub_agency, 'PS', year)
+            sub_ps_balance = sub_ps_budget-sub_ps_release
             
-            #total budget
-            sub_agency_balances['budget'] = getBudget(sub_agency.id, 'PS', data['year']) + getBudget(sub_agency.id, 'MOOE', data['year']) + getBudget(sub_agency.id, 'CO', data['year'])
+            sub_mooe_budget = getBudget(sub_agency.id, 'MOOE', year)
+            sub_mooe_release = getRelease(sub_agency, 'MOOE', year)
+            sub_mooe_balance = sub_mooe_budget - sub_mooe_release
             
-            #total release
-            sub_agency_balances['release'] = getRelease(sub_agency, 'PS', data['year']) + getRelease(sub_agency, 'MOOE', data['year']) + getRelease(sub_agency, 'CO', data['year'])
-            sub_agency_balances['balance'] = sub_agency_balances['budget'] - sub_agency_balances['release']
+            sub_co_budget = getBudget(sub_agency.id, 'CO', year) 
+            sub_co_release = getRelease(sub_agency, 'CO', year)
+            sub_co_balance = sub_co_budget - sub_co_release
+            
+            suba_bal = sub_ps_balance + sub_mooe_balance + sub_co_balance
+            sub_agency_balances['ps']    = sub_ps_balance
+            sub_agency_balances['mooe']  = sub_mooe_balance
+            sub_agency_balances['co']    = sub_co_balance
+            sub_agency_balances['balance'] = suba_bal
+            
             agency_balances['sub_agencies'].append(sub_agency_balances)
+            total_ps   += sub_ps_balance
+            total_mooe += sub_mooe_balance
+            total_co   += sub_co_balance
+            total_balance += suba_bal
 
-            total_budget  += sub_agency_balances['budget']
-            total_release += sub_agency_balances['release']
-            total_balance += sub_agency_balances['balance']
-        #append to agencies balances list
+
         local_agencies.append(agency_balances)
-        #end get sub agencies
+        total_ps   += ps_balance
+        total_mooe += mooe_balance
+        total_co   += co_balance
+        total_balance += agency_bal
         count += 1
-    #end of for 
 
 
     years_query = "select distinct(year) as year from wfp_data"
     cursor.execute(years_query)
-    data['years'] = dictfetchall(cursor)
-    data['line_agencies'] = line_agencies
-    data['local_agencies'] = local_agencies
-    data['total_sum'] = {'total_budget'  : total_budget,
-                         'total_release' : total_release,
-                         'total_balance' : total_balance
-    }
-    data['today'] = date.today()
+    
+    data = {'years'          : dictfetchall(cursor),
+            'line_agencies'  : line_agencies,
+            'local_agencies' : local_agencies,
+            'total_sum'      : {'total_ps'      : total_ps,
+                                'total_mooe'    : total_mooe,
+                                'total_co'      : total_co,
+                                'total_balance' : total_balance},
+            'today'          : date.today(),
+            'year'           : year,
+            'system_name'    : SYSTEM_NAME,
+            'allowed_tabs'   : get_allowed_tabs(request.user.id)}
+
     return render_to_response('./fund/running_balances.html', data, context)
 
 

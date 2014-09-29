@@ -1041,27 +1041,50 @@ def totalMonthlyReleases(request):
         year  = request.POST.get('year')
         allocation = request.POST.get('allocation')
 
-    agencies = Agency.objects.all()
+
     agency_monthly_releases = []
-    total_monthly_release = {'jan' : 0, 'feb': 0, 'mar': 0, 'apr': 0,
-                           'may' : 0, 'jun': 0, 'jul': 0, 'aug':0,
-                           'sept' : 0, 'oct': 0, 'nov': 0 ,'dec':0}
+    total_monthly_release = {'jan'  : 0, 'feb': 0, 'mar': 0, 'apr': 0,
+                             'may'  : 0, 'jun': 0, 'jul': 0, 'aug':0,
+                             'sept' : 0, 'oct': 0, 'nov': 0 ,'dec':0}
     count = 1
     grand_total = 0
+    agencies = Agency.objects.filter(parent_key=0).order_by('name')
     for agency in agencies:
         agency_release = {}
         agency_release['no'] = count
         agency_release['name'] = agency.name
+        agency_release['sub_agencies'] = []
         temp_per_agency_total = 0
-        for i in range(1, data['current_month']):
+        for i in range(1, data['current_month']+1):
             total = AllotmentReleases.objects.filter(agency=agency, month=i, year=year, allocation=allocation).aggregate(Sum('amount_release'))
             agency_release[months[i-1]] = numify(total['amount_release__sum'])
             total_monthly_release[months[i-1]] += numify(total['amount_release__sum'])
             temp_per_agency_total += numify(total['amount_release__sum'])
+
+        #sub_agencies
+        sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
+        sub_count = count
+        for sub_agency in sub_agencies:
+            sub_count += 0.1
+            sub_agency_release = {}
+            sub_agency_release['no'] = sub_count
+            sub_agency_release['name'] = sub_agency.name
+            sub_agency_total = 0
+            for i in range(1, data['current_month']+1):
+                sub_total = AllotmentReleases.objects.filter(agency=sub_agency, month=i, year=year, allocation=allocation).aggregate(Sum('amount_release'))
+                sub_agency_release[months[i-1]] = numify(sub_total['amount_release__sum'])
+                total_monthly_release[months[i-1]] += numify(sub_total['amount_release__sum'])
+                sub_agency_total += numify(sub_total['amount_release__sum'])
+            #end
+            sub_agency_release['total'] = sub_agency_total
+            agency_release['sub_agencies'].append(sub_agency_release)
+            grand_total += sub_agency_total
+            
         agency_release['total'] = temp_per_agency_total
         agency_monthly_releases.append(agency_release)
         grand_total += temp_per_agency_total
         count+=1
+
     data['agency_monthly_releases'] = agency_monthly_releases
     data['total_monthly_releases']= total_monthly_release
     data['grand_total'] = grand_total

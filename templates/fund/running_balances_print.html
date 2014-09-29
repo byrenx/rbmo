@@ -23,70 +23,69 @@
       <table class="table-normal">
 	<thead>
 	  <th class="center" colspan="2">AGENCY/OFFICE</th>
-	  <th class="center">APPROVED</th>
-	  <th class="center">RELEASE</th>
-	  <th class="center">BALANCES</th>
+	  <th class="center">PS</th>
+	  <th class="center">MOOE</th>
+	  <th class="center">CO</th>
+	  <th class="center">TOTAL</th>
 	</thead>
 	<tbody>
 	  {% load humanize %}
-	  <!----line agencies ----->
 	  {%if line_agencies%}
           <tr>
-	    <th colspan="2">Line Agencies</th>
-	    <td></td>
-	    <td></td>
-	    <td></td>
+	    <th colspan="6">Line Agencies</th>
 	  </tr>
 	  {%endif%}
 	  {%for agency in line_agencies %}
           <tr>
-	    <td>{{agency.count}}</td>
-	    <td>{{agency.agency_name}}</td>
-	    <td class="decimal">{{agency.budget|intcomma}}</td>
-	    <td class="decimal">{{agency.release|intcomma}}</td>
-	    <td class="decimal">{{agency.balance|intcomma}}</td>
+	   <td>{{agency.count}}</td>
+	   <td>{{agency.agency_name}}</td>
+	   <td class="decimal">{{agency.ps|intcomma}}</td>
+	   <td class="decimal">{{agency.mooe|intcomma}}</td>
+	   <td class="decimal">{{agency.co|intcomma}}</td>
+	   <td class="decimal">{{agency.balance|intcomma}}</td>
 	  </tr>
 	  {%for sub_agency in agency.sub_agencies%}
-	  <tr>
-	    <td></td>
-	    <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
-	    <td class="decimal">{{sub_agency.budget|intcomma}}</td>
-	    <td class="decimal">{{sub_agency.release|intcomma}}</td>
-	    <td class="decimal">{{sub_agency.balance|intcomma}}</td>
-	  </tr>
-	  {%endfor%}
-	  {% endfor %}
-	  <!----- locally funded agencies --->
-	  {%if local_agencies%}
+	   <tr>
+	     <td></td>
+	     <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
+	     <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.mooelease|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.co|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.balance|intcomma}}</td>
+	   </tr>
+	   {%endfor%}
+	   {% endfor %}
+	   <!----- locally funded agencies --->
+	   {%if local_agencies%}
           <tr>
-	    <th colspan="2">Local Agencies</th>
-	    <td></td>
-	    <td></td>
-	    <td></td>
-	  </tr>
+	    <th colspan="6">Local Agencies</th>
+	 </tr>
 	  {%endif%}
 	  {%for agency in local_agencies %}
           <tr>
 	    <td>{{agency.count}}</td>
 	    <td>{{agency.agency_name}}</td>
-	    <td class="decimal">{{agency.budget|intcomma}}</td>
-	    <td class="decimal">{{agency.release|intcomma}}</td>
+	    <td class="decimal">{{agency.ps|intcomma}}</td>
+	    <td class="decimal">{{agency.mooe|intcomma}}</td>
+	    <td class="decimal">{{agency.co|intcomma}}</td>
 	    <td class="decimal">{{agency.balance|intcomma}}</td>
 	  </tr>
 	  {%for sub_agency in agency.sub_agencies%}
 	  <tr>
-	    <td></td>
-	    <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
-	    <td class="decimal">{{sub_agency.budget|intcomma}}</td>
-	    <td class="decimal">{{sub_agency.release|intcomma}}</td>
-	    <td class="decimal">{{sub_agency.balance|intcomma}}</td>
+	     <td></td>
+	     <td>{{sub_agency.count}}&nbsp;{{sub_agency.agency_name}}</td>
+	     <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.co|intcomma}}</td>
+	     <td class="decimal">{{sub_agency.balance|intcomma}}</td>
 	  </tr>
 	  {%endfor%}
 	  {% endfor %}
 	  <tr>
 	    <th colspan="2">GRAND TOTAL</th>
-	    <th class="decimal">{{total_sum.total_budget|intcomma}}</th>
-	    <th class="decimal">{{total_sum.total_release|intcomma}}</th>
+	    <th class="decimal">{{total_sum.total_ps|intcomma}}</th>
+	    <th class="decimal">{{total_sum.total_mooe|intcomma}}</th>
+	    <th class="decimal">{{total_sum.total_co|intcomma}}</th>
 	    <th class="decimal">{{total_sum.total_balance|intcomma}}</th>
 	  </tr>
 	</tbody>

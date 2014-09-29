@@ -85,23 +85,42 @@
 	</tr>
       </thead>
       {% for agency in agency_monthly_releases%}
-      <tr>
-	<td>{{agency.no}}</td>
-	<td>{{agency.name}}</td>
-	<td class="decimal">{{agency.jan|intcomma}}</td>
-	<td class="decimal">{{agency.feb|intcomma}}</td>
-	<td class="decimal">{{agency.mar|intcomma}}</td>
-	<td class="decimal">{{agency.apr|intcomma}}</td>
-	<td class="decimal">{{agency.may|intcomma}}</td>
-	<td class="decimal">{{agency.jun|intcomma}}</td>
-	<td class="decimal"> {{agency.jul|intcomma}}</td>
-	<td class="decimal">{{agency.aug|intcomma}}</td>
-	<td class="decimal">{{agency.sept|intcomma}}</td>
-	<td class="decimal">{{agency.oct|intcomma}}</td>
-	<td class="decimal">{{agency.nov|intcomma}}</td>
-	<td class="decimal">{{agency.dec|intcomma}}</td>
-	<td class="decimal">{{agency.total|intcomma}}</td>
-      </tr>
+        <tr>
+	  <td>{{agency.no}}</td>
+	  <td>{{agency.name}}</td>
+	  <td class="decimal">{{agency.jan|intcomma}}</td>
+	  <td class="decimal">{{agency.feb|intcomma}}</td>
+	  <td class="decimal">{{agency.mar|intcomma}}</td>
+	  <td class="decimal">{{agency.apr|intcomma}}</td>
+	  <td class="decimal">{{agency.may|intcomma}}</td>
+	  <td class="decimal">{{agency.jun|intcomma}}</td>
+	  <td class="decimal">{{agency.jul|intcomma}}</td>
+	  <td class="decimal">{{agency.aug|intcomma}}</td>
+	  <td class="decimal">{{agency.sept|intcomma}}</td>
+	  <td class="decimal">{{agency.oct|intcomma}}</td>
+	  <td class="decimal">{{agency.nov|intcomma}}</td>
+	  <td class="decimal">{{agency.dec|intcomma}}</td>
+	  <td class="decimal">{{agency.total|intcomma}}</td>
+	</tr>
+	  {%for sub_agency in agency.sub_agencies%}
+	     <tr>
+	       <td></td>
+	       <td>{{sub_agency.no}}&nbsp;{{sub_agency.name}}</td>
+	       <td class="decimal">{{sub_agency.jan|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.feb|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.mar|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.apr|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.may|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.jun|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.jul|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.aug|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.sept|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.oct|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.nov|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.dec|intcomma}}</td>
+	       <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	     </tr>
+	  {%endfor%}
 	{% endfor %}
       <tr>
 	<th colspan="2">Grand Total</th>
