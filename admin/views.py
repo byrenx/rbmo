@@ -134,11 +134,11 @@ def home(request):
         agency_balances['sub_agencies'] = []
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_balances = {}
-            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['count'] = str(count)+'.'+str(sub_count)
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
             '''
@@ -208,11 +208,11 @@ def home(request):
         agency_balances['sub_agencies'] = []
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_balances = {}
-            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['count'] = str(count)+'.'+str(sub_count)
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
             '''
@@ -251,7 +251,7 @@ def home(request):
         count += 1
 
         
-    
+    print request.user.id
     data = {'year'          : year,
             'system_name'   : SYSTEM_NAME,
             'allowed_tabs'  : get_allowed_tabs(request.user.id),
@@ -848,9 +848,9 @@ def allot_releases(request):
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
         agency_release['sub_agencies'] = []
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_release = {}
             #get total ps_release
             sub_ps = AllotmentReleases.objects.filter(agency=sub_agency, allocation='PS').aggregate(Sum('amount_release'))
@@ -859,7 +859,7 @@ def allot_releases(request):
             #get total co release
             sub_co = AllotmentReleases.objects.filter(agency=sub_agency, allocation='co').aggregate(Sum('amount_release'))
             sub_total = numify(sub_ps['amount_release__sum']) + numify(sub_mooe['amount_release__sum']) + numify(sub_co['amount_release__sum'])
-            sub_agency_release['count'] = sub_count
+            sub_agency_release['count'] = str(count)+'.'+str(sub_count)
             sub_agency_release['name']  = sub_agency.name
             sub_agency_release['ps']    = numify(sub_ps['amount_release__sum'])
             sub_agency_release['mooe']  = numify(sub_mooe['amount_release__sum'])
@@ -900,9 +900,9 @@ def allot_releases(request):
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
         agency_release['sub_agencies'] = []
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_release = {}
             #get total ps_release
             sub_ps = AllotmentReleases.objects.filter(agency=sub_agency, allocation='PS').aggregate(Sum('amount_release'))
@@ -911,7 +911,7 @@ def allot_releases(request):
             #get total co release
             sub_co = AllotmentReleases.objects.filter(agency=sub_agency, allocation='co').aggregate(Sum('amount_release'))
             sub_total = numify(sub_ps['amount_release__sum']) + numify(sub_mooe['amount_release__sum']) + numify(sub_co['amount_release__sum'])
-            sub_agency_release['count'] = sub_count
+            sub_agency_release['count'] = str(count)+'.'+str(sub_count)
             sub_agency_release['name']  = sub_agency.name
             sub_agency_release['ps']    = numify(sub_ps['amount_release__sum'])
             sub_agency_release['mooe']  = numify(sub_mooe['amount_release__sum'])
@@ -1063,11 +1063,11 @@ def totalMonthlyReleases(request):
 
         #sub_agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_release = {}
-            sub_agency_release['no'] = sub_count
+            sub_agency_release['no'] = str(count)+'.'+str(sub_count)
             sub_agency_release['name'] = sub_agency.name
             sub_agency_total = 0
             for i in range(1, data['current_month']+1):
@@ -1229,14 +1229,14 @@ def approvedBudget(request):
         #get sub_agencies
         sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
         agency_budget['sub_agencies'] = []
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_budget = {}
             sub_ps   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
             sub_mooe = WFPData.objects.filter(agency=sub_agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
             sub_co   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
-            sub_agency_budget['count'] = sub_count
+            sub_agency_budget['count'] = str(count)+'.'+str(sub_count)
             sub_agency_budget['id']    = sub_agency.id
             sub_agency_budget['name']  = sub_agency.name
             sub_agency_budget['ps']    = numify(sub_ps['ps_total'])
@@ -1276,14 +1276,14 @@ def approvedBudget(request):
         #get sub_agencies
         sub_agencies = Agency.objects.filter(parent_key = agency.id).order_by('name')
         agency_budget['sub_agencies'] = []
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_budget = {}
             sub_ps   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='PS').aggregate(ps_total=Sum('total'))
             sub_mooe = WFPData.objects.filter(agency=sub_agency, year=year, allocation='MOOE').aggregate(mooe_total=Sum('total'))
             sub_co   = WFPData.objects.filter(agency=sub_agency, year=year, allocation='CO').aggregate(co_total=Sum('total'))
-            sub_agency_budget['count'] = sub_count
+            sub_agency_budget['count'] = str(count)+'.'+str(sub_count)
             sub_agency_budget['id']    = sub_agency.id
             sub_agency_budget['name']  = sub_agency.name
             sub_agency_budget['ps']    = numify(sub_ps['ps_total'])

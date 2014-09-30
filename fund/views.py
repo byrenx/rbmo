@@ -527,11 +527,11 @@ def agenciesBalanceSummary(request):
         agency_balances['sub_agencies'] = []
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_balances = {}
-            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['count'] = str(count)+'.'+str(sub_count)
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
             '''
@@ -601,11 +601,11 @@ def agenciesBalanceSummary(request):
         agency_balances['sub_agencies'] = []
         #sub agencies
         sub_agencies = Agency.objects.filter(parent_key=agency.id).order_by('name')
-        sub_count = count
+        sub_count = 0
         for sub_agency in sub_agencies:
-            sub_count += 0.1
+            sub_count += 1
             sub_agency_balances = {}
-            sub_agency_balances['count'] = sub_count
+            sub_agency_balances['count'] = str(count)+'.'+str(sub_count)
             sub_agency_balances['agency_id'] = sub_agency.id
             sub_agency_balances['agency_name'] = sub_agency.name
             '''
