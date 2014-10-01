@@ -19,7 +19,7 @@
 	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
       </div>
     </div>
-    <table border="1" class="table-normal">
+    <table border="1" class="table-normal" style="font-size: 10px;">
       	{%load humanize%}
 	<thead>
 	  <th class="center" colspan="2">AGENCY/OFFICE</th>
@@ -91,6 +91,16 @@
 	</tr>
 	</tbody>
     </table>
+    <div class="col-sm-12">
+      <span style="position: absolute;left: 10px; top: 20px;width: 250px;">
+	<strong>Processed by:</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.get_full_name}}<strong>
+      </span>
+      
+      <span style="position: absolute;left: 70%; top: 20px;width: 30%;">
+	<strong>Noted by:</strong></br>&nbsp;&nbsp;&nbsp;&nbsp;<u>Mailyn E. Macusang</u>
+	</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Executive Director
+      </span>
+    </div>
     </div>
 </div>
 

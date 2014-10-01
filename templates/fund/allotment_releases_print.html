@@ -10,7 +10,7 @@
   </div>
   
   <div class="col-sm-12">
-    <table class="table-normal">
+    <table class="table-normal" style="font-size: 10px;">
       {%load humanize%}
       <thead>
       	<tr>
@@ -85,5 +85,15 @@
         </tr>
       </tfoot>
     </table>
+    <div class="col-sm-12">
+      <span style="position: absolute;left: 10px; top: 20px;width: 250px;">
+	<strong>Processed by:</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.get_full_name}}<strong>
+      </span>
+
+      <span style="position: absolute;left: 70%; top: 20px;width: 30%;">
+	<strong>Validated by:</strong></br>&nbsp;&nbsp;&nbsp;&nbsp;___________________
+	</br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Budget Specialist
+      </span>
+    </div>
   </div>
 </div>

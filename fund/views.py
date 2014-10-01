@@ -91,7 +91,8 @@ def allotmentReleases(request, agency_id):
             'total_CO_balance'        : total_CO_balance,
             'allowed_tabs'            : get_allowed_tabs(request.user.id),
             'today'                   : date.today(),
-            'year'                    : year
+            'year'                    : year,
+            'user'                    : request.user
         }
 
         #get releases
@@ -657,7 +658,8 @@ def agenciesBalanceSummary(request):
             'today'          : date.today(),
             'year'           : year,
             'system_name'    : SYSTEM_NAME,
-            'allowed_tabs'   : get_allowed_tabs(request.user.id)}
+            'allowed_tabs'   : get_allowed_tabs(request.user.id),
+            'user'           : request.user}
 
     return render_to_response('./fund/running_balances.html', data, context)
 
