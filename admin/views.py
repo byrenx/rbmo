@@ -994,11 +994,15 @@ def yearly_fund(request):
 def fundDistribution(request):
     cursor  = connection.cursor()
     context = RequestContext(request)
-    data  = {'system_name' : SYSTEM_NAME,
-             'allowed_tabs' : get_allowed_tabs(request.user.id)
+    data  = {'system_name'  : SYSTEM_NAME,
+             'allowed_tabs' : get_allowed_tabs(request.user.id),
+             'today'        : datetime.today()  
     }
 
     year  = datetime.today().year 
+    if request.method=='POST':
+        year = request.POST.get('year')
+
     wfp = WFPData.objects.filter(year=year).aggregate(Sum('total')) 
     total = numify(wfp['total__sum'])
     query = '''
@@ -1016,7 +1020,14 @@ def fundDistribution(request):
         sector_budget_percent.append({'id'      : sector['id'],
                                       'name'    : sector['name'], 
                                       'percent' : int(round((sector['total']/total)*100))})
+
+    years_query = "select distinct(year) from wfp_data"
+    cursor.execute(years_query)
+    years = dictfetchall(cursor)
+    data['years']   = years
     data['sectors'] = sector_budget_percent
+    data['year']    = year
+    
     return render_to_response('./admin/fund_distrib.html', data, context)
 
 

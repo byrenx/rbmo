@@ -1,25 +1,31 @@
 {% extends "./admin/base.html" %}
 
 {%block right-content%}
-<div class="col-sm-12" style="background-color: white;min-height: 550px;">
-  <form class="form-inline">
+<div class="col-sm-12" style="background-color: white;min-height: 550px;padding-top:20px;">
+  <div class="col-sm-6">
+    <form action="/fund/running_balances" class="form-inline" method="post" onsubmit="return isValidYear()">
+      {%csrf_token%}
+      <div class="form-group">
+	<select class="form-control" id="year" name="year">
+	  <option value="0">---Choose a Year----</option>
+	  {% for year in years %}
+	  <option value="{{year.year}}">{{year.year}}</option>
+	  {% endfor %}
+	</select>
+      </div>
+      <button type="submit" class="btn btn-default">
+	<span class="glyphicon glyphicon-search"></span>
+      </button>
+    </form>
+  </div>
+  <div class="col-sm-6" style="text-align:right;">
     <a href="javascript:$('#running_balance_print').printArea()" class="btn btn-default">
       <span class="glyphicon glyphicon-print"></span>&nbsp;Print
     </a>
-    &nbsp;|&nbsp;
-    <div class="form-group">
-      <select class="form-control">
-	{% for year in years %}
-	<option value="{{year.year}}">{{year.year}}</option>
-	{% endfor %}
-      </select>
-    </div>
-    <button type="submit" class="btn btn-default">
-      <span class="glyphicon glyphicon-search"></span>
-    </button>
-  </form>
-  <hr/>
+  </div>
+
   <div class="col-sm-12">
+    <hr/>
     <div class="col-sm-2">
       <img src="/static/images/rbmo.jpg" width="100px" height="100px">
       </div>
@@ -120,3 +126,16 @@
 </div>
 {%include "./fund/running_balances_print.html"%}
 {%endblock%}
+
+{%block scripts%}
+<script language="javascript">
+  function isValidYear(){
+     var year = $("#year").val();
+     if (year==0){
+       return false;
+     }else{
+       return true;
+     }
+  }
+</script>
+{%endblock scripts%}
