@@ -8,17 +8,25 @@
 <div class="col-sm-9" style="min-height: 550px; background-color: white;">
   <h3>{{agency.name}}</h3>
   <hr/>
-  <h4>Request Received</h4>
+  <h3>Request Form&nbsp;<small>[{%if form_action == "add"%}Add{%else%}Edit{%endif%}]</small>&nbsp;
+    <small>
+      <a href="/agency/wfp/co_request/{{agency.id}}/" class="btn btn-link">
+	<span class="glyphicon glyphicon-backward"></span>
+	&nbsp;Back to Co Request table
+      </a>
+    </small>
+  </h3>
   {% include "msg_pane.html" %}
   <form action="" method="POST">
     {% csrf_token %}
     <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
+    <input type="hidden" id="co_id" name="co_id" value="{{co_id}}">
     <input type="hidden" id="form_action" name="form_action" value="{{form_action}}">
     <div class="form-group">
       <label>
 	Date Received
       </label>
-      <input type="date" id="date_received" name="date_received" class="form-control">
+      {{form.date_received}}
     </div>
 
     <div class="form-group">
@@ -41,6 +49,14 @@
       </label>
       {{form.status}}
     </div>
+
+    <div class="form-group">
+      <label>
+	Remarks
+      </label>
+      {{form.remarks}}
+    </div>
+
 
     <div class="form-group">
       <button type="submit" class="btn btn-primary">

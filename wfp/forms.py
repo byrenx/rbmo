@@ -74,8 +74,14 @@ class WFPForm(forms.ModelForm):
 class CORequestForm(forms.ModelForm):
     class Meta:
         model = CoRequest
-        fields = ['subject', 'action', 'status']
+        fields = ['date_received','subject', 'action', 'status', 'remarks']
         widgets = {
+            'date_received': forms.DateInput(attrs={
+                'type'     : 'date',
+                'class'    : 'form-control',
+                'required' : 'True',
+                'style'    : 'width:200px'
+            }),
             'subject' : forms.TextInput(attrs={
                 'class'    : 'form-control',
                 'required' : 'True'
@@ -87,5 +93,11 @@ class CORequestForm(forms.ModelForm):
             'status'  : forms.TextInput(attrs={
                 'class'    : 'form-control',
                 'required' : 'True'
+            }),
+            'remarks'  : forms.Textarea(attrs={
+                'class'    : 'form-control',
+                'required' : 'True',
+                'rows'     : '5',
+                'cols'     : '10'
             })
         }

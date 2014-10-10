@@ -288,6 +288,7 @@ class CoRequest(models.Model):
     subject = models.CharField(max_length=100)
     action = models.CharField(max_length=100)
     status = models.CharField(max_length=150)
+    remarks = models.CharField(max_length=250)
     user = models.ForeignKey(User)
 
     class Meta:
