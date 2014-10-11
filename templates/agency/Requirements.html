@@ -3,66 +3,79 @@
 {% block content %}
 <content>
   <div class="container">
-    {%include "./agency/side_bar.html"%}
-    <div class="col-md-10" style="background-color: white; min-height: 550px;">
-      <div class="col-sm-12">
+    <div class="row">
+      {%include "./agency/side_bar.html"%}
+      <div class="col-md-10" style="background-color: white; min-height: 550px;padding:20px">
+	<div class="col-md-12" style="text-align: right;">
+	  <form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
+	    <label class="control-label">Filter</label>
+	    <select class="form-control" name="year">
+	      {%for year in years%}
+  	        <option value="{{year}}">
+		  {{year}}
+	        </option>
+	      {%endfor%}
+	    </select>
+	    {{month_form.month}}
+	    <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
+	  </form>
+	</div> 
+	
 	<h3>{{str_month}}&nbsp;-&nbsp;{{year}} Requirement Status</h3>
-	<hr/>
-      </div>
-      <div class="col-md-12">
-	<form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
-	  <label class="control-label">2014</label>
-	  {{month_form.month}}
-	  <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
-	</form>
-	<hr/>
-      </div> 
-      <br><br><br>
-      <div class="col-md-12">
-	<div class="col-sm-6" style="border-right:1px solid rgb(204, 204, 204)">
-<!--	  <div class="panel panel-default">-->
-           <h4>Submitted Requirements</h4>
-	  {%if submitted_reqs%}
-	   <table class="table table-condensed">
-	      {%for req in submitted_reqs%}
-	      <tr>
-		<td>
-		  <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}}
-		  <p>
-		    <b>Submitted : </b> {{req.date_submitted}}
+	<div class="col-md-12">
+	  <div class="col-sm-6">
+	    <div class="panel panel-default" style="min-height:400px;">
+	      <div class="panel-heading">
+		<h4 class="panel-title">Submitted Requirements</h4>
+	      </div>
+	      {%if submitted_reqs%}
+	      <table class="table table-condensed">
+		{%for req in submitted_reqs%}
+		<tr>
+		  <td>
+		    <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}}
+		    <p>
+		      Submitted on {{req.date_submitted}}
+		    </p>
+		  </td>
+		</tr>
+		{%endfor%}
+	      </table>
+	      {%else%}
+	      <div class="panel-body">
+		<p class="alert alert-danger">
+		  Currently No Requirements Submitted
+		</p>
+	      </div>
+	      {%endif%}
+	    </div>
+	  </div>
+	  <div class="col-sm-6">
+	    <div class="panel panel-default" style="min-height:400px;">
+	      <div class="panel-heading">
+		<h4 class="panel-title">Unsubmitted Requirements</h4>
+	      </div>
+	      
+	      {%if lacking_reqs%}
+   	      <table class="table table-condensed">
+		{%for req in lacking_reqs%}
+		<tr>
+		  <td>
+		    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{req}}
+		  </td>
+		</tr>
+		{%endfor%}
+	      </table>
+	      {%else%}
+	        <div class="panel-body">
+		  <p class="alert alert-info">
+		    <span class="glyphicon glyphicon-info-sign"></span>
+		    All requirements for {{str_month}} MOOE allocation already submitted
 		  </p>
-		</td>
-	      </tr>
-	      {%endfor%}
-	    </table>
-	  {%else%}
-           <p class="alert alert-danger">
-	     Currently No Requirements Submitted
-	   </p>
-	  {%endif%}
-	<!---</div>--->
-	</div>
-	<div class="col-sm-6" style="border-left: 1px solid rgb(204,204,204);min-height: 320px">
-<!---	  <div class="panel panel-default">--->
-            <h4>Unsubmitted Requirements</h4>
-	    <hr/>
-	    {%if lacking_reqs%}
-   	    <table class="table table-condensed">
-	      {%for req in lacking_reqs%}
-	      <tr>
-		<td>
-		  <span class="glyphicon glyphicon-remove text-danger"></span>&nbsp;{{req}}
-		</td>
-	      </tr>
-	      {%endfor%}
-	    </table>
-	    {%else%}
-	      <p class="alert alert-info">
-		<span class="glyphicon glyphicon-info-sign"></span>
-		All requirements for {{str_month}} MOOE allocation already submitted
-	      </p>
-	    {%endif%}
-	<!---</div>--->
+		</div>
+	      {%endif%}
+	    </div>
+	  </div>
 	</div>
       </div>
     </div>

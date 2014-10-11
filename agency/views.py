@@ -96,6 +96,12 @@ def requirements(request):
         srs = getSubmittedReqs(agency, year, month)
         #lacking requirements
         lrs = getLackingReqs(agency, year, month)
+
+        years = []
+        while year >= 2014:
+            years.append(year)
+            year-=1
+
         data = {'system_name'    : agency.name,
                 'email'          : agency.email,
                 'month_form'     : MonthForm({'month': month}),
@@ -103,7 +109,8 @@ def requirements(request):
                 'submitted_reqs' : srs,
                 'lacking_reqs'   : lrs,
                 'page'           : 'requirements',
-                'year'           : year}
+                'year'           : year,
+                'years'          : years}
 
         return render_to_response('./agency/Requirements.html', data, context)
     else:
@@ -113,6 +120,7 @@ def requirements(request):
 @transaction.atomic        
 def balance(request):
     if "agency_id" in request.session:
+        cursor = connection.cursor()
         agency_id = request.session["agency_id"]
         agency = Agency.objects.get(id=agency_id)
         context = RequestContext(request)
@@ -147,13 +155,17 @@ def balance(request):
                      'release': numify(ps_release['amount_release__sum']) + numify(mooe_release['amount_release__sum']) + numify(co_release['amount_release__sum']),
                      'ending_bal' : ps_bal + mooe_bal + co_bal}
 
+
+        cursor.execute("select distinct(year) from wfp_data where agency_id=%s", agency.id)
+        years = dictfetchall(cursor)
         data = {'system_name' : agency.name,
                 'email'       : agency.email,
                 'balances'    : balances,
                 'total_balance': total_balance,
                 'cur_date'    : time.strftime('%B %d, %Y'),
                 'year'        : year,
-                'page'        : 'balance'
+                'page'        : 'balance',
+                'years'       : years
                }
         return render_to_response('./agency/Balances.html', data, context)
         
