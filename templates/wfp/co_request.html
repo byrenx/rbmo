@@ -56,7 +56,7 @@
 	       </a>
 	     </td>
 	     <td width="30px">
-	       <a href="" alt="Delete" title="Delete">
+	       <a href="javascript:delCoRequest({{request.id}})" alt="Delete" title="Delete" onclick="">
 		 <span class="glyphicon glyphicon-trash text-danger"></span>
 	       </a>
 	     </td>
@@ -103,5 +103,12 @@
 {% endblock %}
 
 {% block scripts %}
-
+<script language="javascript">
+  function delCoRequest(request_id){
+    var confirmation = confirm("Are you sure to delete this request?");
+    if(confirmation==1){
+       window.location = "/agency/wfp/del_co_request/"+request_id+"/";
+    }
+  }
+</script>
 {% endblock %}

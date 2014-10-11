@@ -107,3 +107,23 @@ class LoginForm(forms.ModelForm):
         fields = ['email', 'acces_key']
         widgets = {'email': forms.TextInput(attrs={'class':'form-control', 'required': 'True', 'placeholder': 'Enter Email'}),
                    'acces_key': forms.PasswordInput(attrs={'class':'form-control','required': 'True', 'placeholder': 'Enter AccessKey'})}
+
+
+
+class ChangePassForm(forms.Form):
+    agency_id = forms.IntegerField(widget = forms.HiddenInput())
+
+    current_accesskey =  forms.CharField(widget=forms.PasswordInput(attrs={
+        'class'    : 'form-control',
+        'required' : 'True'
+    }))
+
+    new_accesskey = forms.CharField(widget = forms.PasswordInput(attrs = {
+        'class'    : 'form-control',
+        'required' : 'True'
+    }))
+
+    confirm_accesskey = forms.CharField(widget = forms.PasswordInput(attrs = {
+        'class'    : 'form-control',
+        'required' : 'True'
+    }))

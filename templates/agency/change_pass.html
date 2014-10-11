@@ -1,0 +1,33 @@
+{% extends 'agentbase.html' %}
+
+{% block content %}
+<content>
+  <div class="container">
+    {%include "./agency/side_bar.html"%}
+    <div class="col-sm-9" style="background-color:white; padding-bottom:30px;">
+      <h3><span class="glyphicon glyphicon-lock"></span>&nbsp;Change Access Key</h3>
+      <form action="" method="POST">
+	{%csrf_token%}
+	{{form.agency_id}}
+	<div class="form-group">
+	  <label>Current Password</label>
+	  {{form.current_accesskey}}
+	</div>
+	
+	<div class="form-group">
+	  <label>New Access key</label>
+	  {{form.new_accesskey}}
+	</div>
+
+	<div class="form-group">
+	  <label>Confirm new Access key</label>
+	  {{form.confirm_accesskey}}
+	</div>
+	<button type="submit" class="btn btn-primary">
+	  Save Changes
+	</button>
+      </form>
+    </div>
+  </div>
+</content>
+{% endblock %}

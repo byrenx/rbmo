@@ -4,7 +4,7 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from .forms import (BudgetProposalForm, LoginForm)
+from .forms import (BudgetProposalForm, LoginForm, ChangePassForm)
 from requirements.views import (getSubmittedReqs,
                                 getLackingReqs)
 from rbmo.forms import MonthForm
@@ -18,6 +18,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import *
 from datetime import date, datetime
+import hashlib
 
 months = getMonthLookup()
 month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
@@ -28,12 +29,16 @@ month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
 
 def login(request):
     context = RequestContext(request)
+    h = hashlib.sha256()
     data = {'form' : LoginForm()}
     if request.method=="POST":
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
             email = loginform.cleaned_data['email']
-            accesskey = loginform.cleaned_data['acces_key']
+            h.update(loginform.cleaned_data['acces_key'])
+            accesskey = h.hexdigest()
+            print loginform.cleaned_data['acces_key']
+            print accesskey
             try:
                 agency = Agency.objects.get(email=email,acces_key=accesskey)
                 request.session['agency_id'] = agency.id
@@ -416,3 +421,25 @@ def logout(request):
 
     
     
+def changePass(request):
+    context = RequestContext(request)
+    h = hashlib.sha256()
+    if "agency_id" in request.session:
+        try:
+            agency = Agency.objects.get(id = request.session['agency_id'])
+            data = {'system_name' : agency.name,
+                    'email'       : agency.email,
+                    'agency' : agency,
+                    'form'   : ChangePassForm({'agency_id' : agency.id})}
+
+            if request.method=='POST':
+                pass
+            else:
+                pass
+                
+            return render_to_response("./agency/change_pass.html", data, context)
+        except:
+            return HttpRsponseRedirect('')
+    else:
+        return HttpRsponseRedirect('')
+

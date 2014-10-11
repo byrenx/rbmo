@@ -32,6 +32,7 @@ from datetime import datetime, date
 from decimal import *
 import time
 import sys
+import hashlib
 
 # Create your views here.
 SYSTEM_NAME = 'e-RBMO Data Management System'
@@ -661,12 +662,15 @@ def delSubmitReqs(request):
 
 @transaction.atomic
 def addAgency(request, agency_frm):
+    h = hashlib.sha256()
+    h.update(agency_frm.cleaned_data['email'])
+    password = h.hexdigest()
     agency = Agency(name = agency_frm.cleaned_data['name'],
                     email = agency_frm.cleaned_data['email'],
                     sector = agency_frm.cleaned_data['sector'],
-                    acces_key = str(agency_frm.cleaned_data['email'])+'_1234'
-                    #a_type = agency_frm.cleaned_data['a_type'],
-                    #pa_key = request.POST.get('head_agency')
+                    acces_key = password,
+                    a_type = agency_frm.cleaned_data['a_type'],
+                    parent_key = request.POST.get('head_agency')
                 )
     agency.save()
 

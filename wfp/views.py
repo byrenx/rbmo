@@ -213,117 +213,6 @@ def viewApprovedBudget(request):
         return render_to_response('./wfp/approved_budget.html', data, context)
 
 
-@login_required(login_url='/admin/')        
-def coRequests(request, agency_id):
-    cursor = connection.cursor()
-    context = RequestContext(request)
-
-    try:
-        agency = Agency.objects.get(id=agency_id)
-        year = 0
-        month = 0
-        co_requests = None
-        if request.method == 'POST':
-            year_month = request.POST.get('month').split('-')
-            year = int(year_month[0])
-            month = int(year_month[1])
-        else:
-            year  = int(datetime.today().year)
-            month = int(datetime.today().month)
-            #get current month and year
-        co_requests = CoRequest.objects.filter(date_received__year=year, date_received__month=month, agency=agency)
-        data = {'system_name'  : SYSTEM_NAME,
-                'allowed_tabs' : get_allowed_tabs(request.user.id),
-                'agency'       : agency,
-                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
-                'current_tab'  : "CO Requests",
-                'co_requests'  : co_requests,
-                'year'         : year,
-                'month'        : month,
-                'month_str'    : months[month-1]}
-
-        return render_to_response('./wfp/co_request.html', data, context)
-    except Agency.DoesNotExist:
-        return HttpResponseRedirect("/admin/agencies")
-
-    
-@login_required(login_url='/admin/')
-def coRequestForm(request, agency_id = None, co_id=None):
-    context = RequestContext(request)
-
-    data  = {'system_name' : SYSTEM_NAME,
-             'agency_id'   : agency_id,
-             'action'      : request.GET.get('action')             
-    }
-    
-    try:
-        data['allowed_tabs'] = get_allowed_tabs(request.user.id)
-        agency = Agency.objects.get(id=data['agency_id'])
-        data['agency'] = agency
-        data['agency_tabs'] = getAgencyTabs(request.user.id, agency.id)
-        data['current_tab'] = "CO Requests"
-        
-        if request.method == 'POST':
-            co_request_form = CORequestForm(request.POST)
-            action = request.POST.get('form_action', 'add')
-            if action == 'add' and co_request_form.is_valid():
-                agency = Agency.objects.get(id=request.POST.get('agency_id'))
-                date_rcv = request.POST.get('date_received')
-                addCORequest(co_request_form, agency, date_rcv, request)
-                data['s_msg'] = 'New request succesfully Saved'
-                data['form']  = CORequestForm()
-                return render_to_response('./wfp/co_request_form.html', data, context)
-            elif action == 'edit' and co_request_form.is_valid():#edit
-                try:
-                    co_id = request.POST.get('co_id')
-                    co_request = CoRequest.objects.get(id=co_id)
-                    co_request.date_received = co_request_form.cleaned_data['date_received']
-                    co_request.subject = co_request_form.cleaned_data['action']
-                    co_request.subject = co_request_form.cleaned_data['subject']
-                    co_request.status = co_request_form.cleaned_data['status']
-                    co_request.remarks = co_request_form.cleaned_data['remarks']
-                    co_request.save()
-                    data['co_id'] = co_request.id
-                    data['form_action'] = action
-                    data['form'] = co_request_form
-                    data['s_msg'] = 'Request Successfully updated!'
-                    return render_to_response('./wfp/co_request_form.html', data, context)
-                except CoRequest.DoesNotExist:
-                    return HttpResponse('<h3>Invalid Request</h3>')
-            else:
-                return HttpResponse(action)
-#        elif request.GET.get()
-        else:
-            action = request.GET.get('action', 'add')
-            if action=='edit':
-                co_request = CoRequest.objects.get(id=co_id)
-                form = CORequestForm({'date_received' : co_request.date_received,
-                                      'subject'       : co_request.subject,
-                                      'action'        : co_request.action,
-                                      'status'        : co_request.status,
-                                      'remarks'       : co_request.remarks})
-                data['form'] = form
-                data['co_id'] = co_request.id
-            else:
-                data['form']   = CORequestForm()
-
-            data['form_action'] = action
-            return render_to_response('./wfp/co_request_form.html', data, context)
-    except Agency.DoesNotExist:
-        return HttpResponseRedirect("/admin/agencies")
-
-def addCORequest(request_form, agency, date_rcv, request):
-    co_request = CoRequest(date_received = date_rcv,
-                           agency = agency,
-                           subject = request_form.cleaned_data['subject'],
-                           action = request_form.cleaned_data['action'],
-                           status = request_form.cleaned_data['status'],
-                           remarks = request_form.cleaned_data['remarks'],
-                           user = request.user
-                )
-    co_request.save()
-
-
 @transaction.atomic
 def updateMonthlyAmount(request):
     month  = int(request.GET.get('month'))
@@ -609,4 +498,130 @@ def getWFPTotal(agency, year):
 
     cursor.execute(query, [agency.id, year])    
     return dictfetchall(cursor)[0]
+    
+
+
+
+'''
+CO Request views
+'''
+
+@login_required(login_url='/admin/')        
+def coRequests(request, agency_id):
+    cursor = connection.cursor()
+    context = RequestContext(request)
+
+    try:
+        agency = Agency.objects.get(id=agency_id)
+        year = 0
+        month = 0
+        co_requests = None
+        if request.method == 'POST':
+            year_month = request.POST.get('month').split('-')
+            year = int(year_month[0])
+            month = int(year_month[1])
+        else:
+            year  = int(datetime.today().year)
+            month = int(datetime.today().month)
+            #get current month and year
+        co_requests = CoRequest.objects.filter(date_received__year=year, date_received__month=month, agency=agency)
+        data = {'system_name'  : SYSTEM_NAME,
+                'allowed_tabs' : get_allowed_tabs(request.user.id),
+                'agency'       : agency,
+                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
+                'current_tab'  : "CO Requests",
+                'co_requests'  : co_requests,
+                'year'         : year,
+                'month'        : month,
+                'month_str'    : months[month-1]}
+
+        return render_to_response('./wfp/co_request.html', data, context)
+    except Agency.DoesNotExist:
+        return HttpResponseRedirect("/admin/agencies")
+
+    
+@login_required(login_url='/admin/')
+def coRequestForm(request, agency_id = None, co_id=None):
+    context = RequestContext(request)
+
+    data  = {'system_name' : SYSTEM_NAME,
+             'agency_id'   : agency_id,
+             'action'      : request.GET.get('action')             
+    }
+    
+    try:
+        data['allowed_tabs'] = get_allowed_tabs(request.user.id)
+        agency = Agency.objects.get(id=data['agency_id'])
+        data['agency'] = agency
+        data['agency_tabs'] = getAgencyTabs(request.user.id, agency.id)
+        data['current_tab'] = "CO Requests"
+        
+        if request.method == 'POST':
+            co_request_form = CORequestForm(request.POST)
+            action = request.POST.get('form_action', 'add')
+            if action == 'add' and co_request_form.is_valid():
+                agency = Agency.objects.get(id=request.POST.get('agency_id'))
+                date_rcv = request.POST.get('date_received')
+                addCORequest(co_request_form, agency, date_rcv, request)
+                data['s_msg'] = 'New request succesfully Saved'
+                data['form']  = CORequestForm()
+                return render_to_response('./wfp/co_request_form.html', data, context)
+            elif action == 'edit' and co_request_form.is_valid():#edit
+                try:
+                    co_id = request.POST.get('co_id')
+                    co_request = CoRequest.objects.get(id=co_id)
+                    co_request.date_received = co_request_form.cleaned_data['date_received']
+                    co_request.subject = co_request_form.cleaned_data['action']
+                    co_request.subject = co_request_form.cleaned_data['subject']
+                    co_request.status = co_request_form.cleaned_data['status']
+                    co_request.remarks = co_request_form.cleaned_data['remarks']
+                    co_request.save()
+                    data['co_id'] = co_request.id
+                    data['form_action'] = action
+                    data['form'] = co_request_form
+                    data['s_msg'] = 'Request Successfully updated!'
+                    return render_to_response('./wfp/co_request_form.html', data, context)
+                except CoRequest.DoesNotExist:
+                    return HttpResponse('<h3>Invalid Request</h3>')
+            else:
+                return HttpResponse(action)
+#        elif request.GET.get()
+        else:
+            action = request.GET.get('action', 'add')
+            if action=='edit':
+                co_request = CoRequest.objects.get(id=co_id)
+                form = CORequestForm({'date_received' : co_request.date_received,
+                                      'subject'       : co_request.subject,
+                                      'action'        : co_request.action,
+                                      'status'        : co_request.status,
+                                      'remarks'       : co_request.remarks})
+                data['form'] = form
+                data['co_id'] = co_request.id
+            else:
+                data['form']   = CORequestForm()
+
+            data['form_action'] = action
+            return render_to_response('./wfp/co_request_form.html', data, context)
+    except Agency.DoesNotExist:
+        return HttpResponseRedirect("/admin/agencies")
+
+def addCORequest(request_form, agency, date_rcv, request):
+    co_request = CoRequest(date_received = date_rcv,
+                           agency = agency,
+                           subject = request_form.cleaned_data['subject'],
+                           action = request_form.cleaned_data['action'],
+                           status = request_form.cleaned_data['status'],
+                           remarks = request_form.cleaned_data['remarks'],
+                           user = request.user
+                )
+    co_request.save()
+
+def delCoRequest(request, co_id):
+    try:
+        co_request = CoRequest.objects.get(id=co_id)
+        agency_id = co_request.agency.id
+        co_request.delete()
+        return HttpResponseRedirect("/agency/wfp/co_request/"+str(agency_id)+"/")
+    except:
+        pass
     
