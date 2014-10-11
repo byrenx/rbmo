@@ -429,17 +429,38 @@ def changePass(request):
             agency = Agency.objects.get(id = request.session['agency_id'])
             data = {'system_name' : agency.name,
                     'email'       : agency.email,
-                    'agency' : agency,
-                    'form'   : ChangePassForm({'agency_id' : agency.id})}
-
+                    'agency'      : agency,
+                    'form'        : ChangePassForm({'agency_id' : agency.id})
+            }
+            
             if request.method=='POST':
-                pass
-            else:
-                pass
+                cp_form = ChangePassForm(request.POST)
+                if cp_form.is_valid():
+                    access_key = agency.acces_key
+                    h.update(cp_form.cleaned_data['current_accesskey'])
+                    current_key = h.hexdigest()
+                    new_key = cp_form.cleaned_data['new_accesskey']
+                    confirm_key = cp_form.cleaned_data['confirm_accesskey']
+                    if access_key!=current_key:
+                        data['e_msg']  = 'Current access key does not match'
+                        return render_to_response("./agency/change_pass.html", data, context)
+                    elif new_key != confirm_key:
+                        data['e_msg']  = 'New access key confirmation mismatch'
+                        return render_to_response("./agency/change_pass.html", data, context)
+                    elif len(new_key) < 8:
+                        data['e_msg']  = 'New access key must be at least 8 characters long'
+                        return render_to_response("./agency/change_pass.html", data, context)
+                    else:
+                        h1 = hashlib.sha256()
+                        h1.update(new_key)
+                        agency.acces_key = h1.hexdigest()
+                        agency.save()
+                        data['s_msg']  = 'Access key successfully changed'
+                        return render_to_response("./agency/change_pass.html", data, context)
                 
             return render_to_response("./agency/change_pass.html", data, context)
-        except:
-            return HttpRsponseRedirect('')
+        except Agency.DoesNotExist:
+            return HttpRsponseRedirect('/home')
     else:
-        return HttpRsponseRedirect('')
+        return HttpRsponseRedirect('/home')
 

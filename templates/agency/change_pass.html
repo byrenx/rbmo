@@ -6,16 +6,17 @@
     {%include "./agency/side_bar.html"%}
     <div class="col-sm-9" style="background-color:white; padding-bottom:30px;">
       <h3><span class="glyphicon glyphicon-lock"></span>&nbsp;Change Access Key</h3>
+      {%include "msg_pane.html"%}
       <form action="" method="POST">
 	{%csrf_token%}
 	{{form.agency_id}}
 	<div class="form-group">
-	  <label>Current Password</label>
+	  <label>Current Access key</label>
 	  {{form.current_accesskey}}
 	</div>
 	
 	<div class="form-group">
-	  <label>New Access key</label>
+	  <label>New Access key&nbsp;<small>[minimum of 8 characters]</small></label>
 	  {{form.new_accesskey}}
 	</div>
 
