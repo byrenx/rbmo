@@ -123,3 +123,57 @@ function printNOC(){
     $('#oic_letter').html(oic);
     $('#com_note').printArea();
 }
+
+
+/*monthly reports form ajax scripts*/
+$("#id_year").change(function(){
+    var data = {year    : $(this).val(),
+	       month    : $("#id_month").val(),
+	       agency_id: $("#agency_id").val()}
+
+    $.get('/agency/unreported_activities', data, function(rs){
+	$("#activity_select").html(rs);
+    });
+
+});
+
+
+$("#id_month").change(function(){
+    var data = {year    : $("#id_year").val(),
+	       month    : $(this).val(),
+	       agency_id: $("#agency_id").val()}
+
+    $.get('/agency/unreported_activities', data, function(rs){
+	$("#activity_select").html(rs);
+    });
+});
+
+function showVariance(id){
+    var target = $("#target"+id).html();
+    var acc = $("#"+id).val();
+    var diff = acc-target;
+
+    if(diff==0){
+	$("#variance"+id).html("<span>"+diff+"</span>");
+    }else if (diff > 0){
+	$("#variance"+id).html("<span class='text-success'>"+diff+"</span>");
+    }else{
+	$("#variance"+id).html("<span class='text-danger'>"+diff+"</span>");
+    }
+}
+
+function showReportBalance(){
+    var received = $("#received").val();
+    var incurred = $("#incurred").val();
+    var diff = received-incurred;
+    if (diff==0){
+	$("#remaining_bal").html("<span>"+diff+"</span>");
+    }else if(diff>0){
+	$("#remaining_bal").html("<span class='text-sucess'>"+diff+"</span>");
+    }else{
+	$("#remaining_bal").html("<span class='text-danger'>"+diff+"</span>");
+    }
+}
+
+
+

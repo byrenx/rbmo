@@ -1,0 +1,9 @@
+<label class="col-sm-3">Activity</label>
+<div class="col-sm-6">
+  <select name="activity" id="activity" class="form-control" onchange="getPerformanceTarget()">
+    <option>---------------</option>
+    {%for activity in activities%}
+    <option value="{{activity.id}}">{{activity.activity}}</option>
+    {%endfor%}
+  </select>
+</div>

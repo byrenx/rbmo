@@ -8,7 +8,7 @@
       {%include "./agency/side_bar.html"%}
       
       {%if balances %}
-      <div class="col-md-10" style="background-color: white;min-height: 550px;padding-top:20px;">
+      <div class="col-md-12" style="background-color: white;min-height: 550px;padding-top:20px;">
 	<form action="/agency/balance" method="POST" class="form-horizontal">
 	  {%csrf_token%}
 	  <div class="col-sm-4 col-sm-offset-8" style="text-align:right">
@@ -25,7 +25,8 @@
 	    </button>
 	  </div>
 	</form>
-	<h3>Remaining Balances for the Year {{year}}</h3>
+	<h3>Remaining Balances for the Year {{year}}</br><small>As of {{today}}</small></h3>
+	
 	<hr/>
 	<table class="table">{%load humanize%}
 	  <thead>

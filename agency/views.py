@@ -10,7 +10,7 @@ from requirements.views import (getSubmittedReqs,
 from rbmo.forms import MonthForm
 from rbmo.models import (UserGroup, Groups, Agency, 
                          Notification, AllotmentReleases, WFPData, 
-                         AllotmentReleases, PerformanceReport)
+                         AllotmentReleases, PerformanceReport, MPFRO)
 
 from wfp.views import getProgOverview, getWFPTotal
 from django.contrib.auth.models import User
@@ -97,11 +97,6 @@ def requirements(request):
         #lacking requirements
         lrs = getLackingReqs(agency, year, month)
 
-        years = []
-        while year >= 2014:
-            years.append(year)
-            year-=1
-
         data = {'system_name'    : agency.name,
                 'email'          : agency.email,
                 'month_form'     : MonthForm({'month': month}),
@@ -110,7 +105,7 @@ def requirements(request):
                 'lacking_reqs'   : lrs,
                 'page'           : 'requirements',
                 'year'           : year,
-                'years'          : years}
+                'year_form'      : YearFilterForm({'year': year})}
 
         return render_to_response('./agency/Requirements.html', data, context)
     else:
@@ -162,7 +157,7 @@ def balance(request):
                 'email'       : agency.email,
                 'balances'    : balances,
                 'total_balance': total_balance,
-                'cur_date'    : time.strftime('%B %d, %Y'),
+                'today'    : time.strftime('%B %d, %Y'),
                 'year'        : year,
                 'page'        : 'balance',
                 'years'       : years
@@ -301,32 +296,63 @@ def monthlyReports(request):
                 query = "select indicator, "+months[month-1]+" as target, "+month_acc_dict[month]+" as acc from performancetarget where wfp_activity_id=%s"
                 cursor.execute(query, [acc['activity_id']])
                 indicators_accs = []
-                for indicator in dictfetchall(cursor):
-                    indicators_accs.append({'indicator': indicator['indicator'],
-                                            'target'   : indicator['target'],
-                                            'acc'      : indicator['acc'],
-                                            'variance' : indicator['acc']-indicator['target']
-                                        }
-                                       )
-                monthly_acts_reports.append({'id'       : acc['id'],
-                                             'activity' : acc['activity'],
-                                             'received' : acc['received'],
-                                             'incurred' : acc['incurred'],
-                                             'remaining': numify(acc['received'])-numify(acc['incurred']),
-                                             'remarks'  : acc['remarks'],
-                                             'indicator_count' : (len(indicators_accs) + 1),
-                                             'indicators_accs' : indicators_accs
-                                         })
-            yrs_query = "select distinct(year) from performance_report"
-            cursor.execute(yrs_query)
+                indicators = dictfetchall(cursor)
+                indicator_count = 0
+                if len(indicators) > 0:
+                    for indicator in indicators:
+                        indicator_count+=1
+                        if indicator_count == 1:
+                            monthly_acts_reports.append({'id'       : acc['id'],
+                                                         'activity' : acc['activity'],
+                                                         'received' : acc['received'],
+                                                         'incurred' : acc['incurred'],
+                                                         'remaining': numify(acc['received'])-numify(acc['incurred']),
+                                                         'remarks'  : acc['remarks'],
+                                                         'indicator_count' : (len(indicators)),
+                                                         'indicator': indicator['indicator'],
+                                                         'target'   : indicator['target'],
+                                                         'acc'      : indicator['acc'],
+                                                         'variance' : indicator['acc']-indicator['target']
+                                                         
+                                                     })
+                        else:
+                            monthly_acts_reports.append({'id'       : '',
+                                                         'activity' : '',
+                                                         'received' : '',
+                                                         'incurred' : '',
+                                                         'remaining': '',
+                                                         'indicator': indicator['indicator'],
+                                                         'target'   : indicator['target'],
+                                                         'acc'      : indicator['acc'],
+                                                         'variance' : indicator['acc']-indicator['target']
+                                                         
+                                                     })
+                    
+                else:#if it has no  performance indicators
+                    monthly_acts_reports.append({'id'       : acc['id'],
+                                                 'activity' : acc['activity'],
+                                                 'received' : acc['received'],
+                                                 'incurred' : acc['incurred'],
+                                                 'remaining': numify(acc['received'])-numify(acc['incurred']),
+                                                 'remarks'  : acc['remarks'],
+                                                 'indicator_count' : (len(indicators_accs) + 1),
+                                                 'indicator': indicator['indicator'],
+                                                 'target'   : indicator['target'],
+                                                 'acc'      : indicator['acc'],
+                                                 'variance' : indicator['acc']-indicator['target']                                                         
+                                                     })
+                        
+                        
+                    
             data = {'system_name' : agency.name,
                     'email'  : agency.email,
                     'agency' : agency,
-                    'years'  : dictfetchall(cursor),
+                    'year_form': YearFilterForm({'year' : year}),
                     'monthly_acts_reports' : monthly_acts_reports,
                     'str_month' : stringify_month(month),
                     'year'   : year,
-                    'month_form' : MonthForm({'month' : month})
+                    'month_form' : MonthForm({'month' : month}),
+                    'page'   : 'report'
             }
             
             return render_to_response('./agency/monthly_reports.html', data, context)
@@ -358,20 +384,30 @@ def mpfro_form(request):
                         'month_form' : MonthForm({'month': datetime.today().month}),
                         'year'       : year,
                         'activities' : activities,
-                        'years'      : [2014]
+                        'year_form'  : YearFilterForm({'year': year}),
+                        'page'       : 'report'
                 }
 
                 return render_to_response('./agency/mpfro_form.html', data, context)
             else: #edit
+                
                 mpfro_id = request.GET.get('mpfro_id')
-                activity_info = PerformanceReport.objects.get(id = mpfro_id)
-                accs_query = "select id, indicator, "+wfp_month_lookup[activity_info.month]+" as target," + month_acc_dict[activity_info.month] + " as accomplished from performancetarget where wfp_activity_id = %s"
-                cursor.execute(accs_query, [activity_info.activity.id])
+                performance_info = PerformanceReport.objects.get(id = mpfro_id)
+                    
+                accs_query = "select id, indicator, "+months[performance_info.month]+" as target," + month_acc_dict[performance_info.month] + " as accomplished, (" +month_acc_dict[performance_info.month]+" - "+months[performance_info.month]+") as variance from performancetarget where wfp_activity_id = %s"
+                
+                cursor.execute(accs_query, [performance_info.activity.id])
                 performance_accs = dictfetchall(cursor)
-                data['activity_info'] = activity_info
-                data['performance_accs'] = performance_accs
-                data['str_month'] = stringify_month(activity_info.month)
-            return render_to_response('./admin/mpfro_form.html', data, context)
+                data = {'activity_info'    : performance_info,
+                        'performance_accs' : performance_accs,
+                        'str_month'        : stringify_month(performance_info.month),
+                        'action'           : 'edit',
+                        'page'             : 'report',
+                        'email'            : agency.email,
+                        'system_name'      : agency.name
+                }
+
+            return render_to_response('./agency/mpfro_form.html', data, context)
     except Agency.DoesNotExist and PerformanceReport.DoesNotExist:
         return HttpResponse('Page Not Found Error!')
 
@@ -392,12 +428,12 @@ def savePerformanceReport(request):
         
         #update activity
         perf_rep = PerformanceReport(activity = activity,
-                                     year = year,
-                                     month = month,
-                                     received = received,
-                                     incurred = incurred,
-                                     remarks = remarks
-                                )
+                         year = year,
+                         month = month,
+                         received = received,
+                         incurred = incurred,
+                         remarks = remarks
+        )
         perf_rep.save()
         for acc_t in accomplished_target:
             acc_target_query = "update performancetarget set "
@@ -478,4 +514,44 @@ def changePass(request):
             return HttpRsponseRedirect('/home')
     else:
         return HttpRsponseRedirect('/home')
+
+@transaction.atomic
+def getUnreportedAct(request):
+    context = RequestContext(request)
+    year = request.GET.get('year')
+    month = request.GET.get('year')
+    agency_id = request.GET.get('agency_id')
+    agency = Agency.objects.get(id=agency_id)
+
+    reported_activities = PerformanceReport.select_related('wfpdata').filter(year=year, month=month, agency=agency).values('activity')
+    unreported_activity = None
+    if month == 1:
+        unreported_activity = WFPData.objects.filter(year=year,  jan__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==2:
+        unreported_activity = WFPData.objects.filter(year=year,  feb__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==3:
+        unreported_activity = WFPData.objects.filter(year=year,  mar__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==4:
+        unreported_activity = WFPData.objects.filter(year=year,  apr__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==5:
+        unreported_activity = WFPData.objects.filter(year=year,  may__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==6:
+        unreported_activity = WFPData.objects.filter(year=year,  jun__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==7:
+        unreported_activity = WFPData.objects.filter(year=year,  jul__gt = 0).exclude(activity__in = reported_activities)
+    elif month==8:
+        unreported_activity = WFPData.objects.filter(year=year,  aug__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==9:
+        unreported_activity = WFPData.objects.filter(year=year,  sept__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==10:
+        unreported_activity = WFPData.objects.filter(year=year,  oct__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    elif month==11:
+        unreported_activity = WFPData.objects.filter(year=year,  nov__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    else:
+        unreported_activity = WFPData.objects.filter(year=year,  dec__gt = 0, agency=agency).exclude(activity__in = reported_activities)
+    data = {'activities' : unreported_activity}
+    return render_to_response('./agency/report_programs_select.html', data, context)
+
+
+    
 

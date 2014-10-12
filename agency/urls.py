@@ -13,6 +13,7 @@ urlpatterns = patterns('',
         url(r'^monthly_reports', monthlyReports),
         url(r'^monthly_report_form', mpfro_form),
         url(r'^add_performance_report', savePerformanceReport),
+        url(r'^unreported_activities', getUnreportedAct),
         url(r'^change_pass', changePass),
         url(r'^logout', logout)
 )

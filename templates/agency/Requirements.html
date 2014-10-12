@@ -5,17 +5,11 @@
   <div class="container">
     <div class="row">
       {%include "./agency/side_bar.html"%}
-      <div class="col-md-10" style="background-color: white; min-height: 550px;padding:20px">
+      <div class="col-md-12" style="background-color: white; min-height: 550px;padding:20px">
 	<div class="col-md-12" style="text-align: right;">
 	  <form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
 	    <label class="control-label">Filter</label>
-	    <select class="form-control" name="year">
-	      {%for year in years%}
-  	        <option value="{{year}}">
-		  {{year}}
-	        </option>
-	      {%endfor%}
-	    </select>
+	    {{year_form.year}}
 	    {{month_form.month}}
 	    <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
 	  </form>

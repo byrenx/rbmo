@@ -8,18 +8,18 @@
 	<div class="row" style="background-color: white;">
 	  <form action="/agency/approved" class="form-inline" role="form" method="POST">
 	    {%csrf_token%}
-	    <div class="col-sm-3" style="padding: 10px;text-align: center;">
+	    <div class="col-sm-2" style="padding: 20px;">
+	      <a href="javascript:$('#wfp_print').printArea();" class="btn btn-link">
+		<span class="glyphicon glyphicon-print"></span>
+		&nbsp;Print
+	      </a>
+	    </div>
+	    <div class="col-sm-4 col-sm-offset-6" style="padding: 20px;text-align:right;">
 	      <label> Filter by Year  </label>
 	      {{year_form.year}}
 	      <button type="submit" class="btn btn-default">
 		<span class="glyphicon glyphicon-search">
 	      </button>
-	    </div>
-	    <div class="col-sm-3 col-sm-offset-6" style="padding: 10px;text-align:right;">
-	      <a href="javascript:$('#wfp_print').printArea();" class="btn btn-link">
-		<span class="glyphicon glyphicon-print"></span>
-		&nbsp;Print
-	      </a>
 	    </div>
 	  </form>
 	</div>

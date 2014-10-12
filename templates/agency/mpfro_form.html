@@ -7,20 +7,26 @@
 <content>
   <div class="container">
     {%include "./agency/side_bar.html" %}
-    <div class="col-sm-10" style="background-color: white; min-height:580px;">
-      <h3>Monthly Physical and Financial Report of Operation</h3>
+    <div class="col-sm-12" style="background-color: white; min-height:580px;">
+      <div style="padding: 10px;">
+	<a href="/agency/monthly_reports">
+	  <span class="glyphicon glyphicon-backward"></span>
+	  &nbsp;Back
+	</a>
+      </div>
+      <h4>Monthly Physical and Financial Report of Operation</h4>
       <hr/>
       {% include "msg_pane.html" %}
       <form action="/agency/add_performance_report" method="post" class="form-horizontal">
 	{%csrf_token%}
-	<input type="hidden" name="action" value="{{action}}">
-	<input type="hidden" name="agency_id" value="{{agency.id}}">
+	<input type="hidden" id="action" name="action" value="{{action}}">
+	<input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
 	{%if action == "edit"%}
 	<input type="hidden" name="mpfro_id" value="{{activity_info.id}}">
 	{%endif%}
 	
 	<div class="form-group">
-	  <label class="col-sm-3">Month</label>
+	  <label class="col-sm-3">Month & Year</label>
 	  <div class="col-sm-3">
 	    {%if action == "add" %}
 	    {{month_form.month}}
@@ -31,23 +37,12 @@
 	  </div>
 	  <div class="col-sm-2">
 	    {%if action == "add"%}
-	    <select name="year" class="form-control">
-	      {%for yr in years%}
-	      <option value="{{yr}}">{{yr}}</option>
-	      {%endfor%}
-	    </select>
-	    {%endif%}
-	  </div>
-	  <div class="col-sm-1">
-	    {%if action == "add"%}
-	    <button type="button" class="btn btn-default">
-	      <span class="glyphicon glyphicon-search"></span>
-	    </button>
+	       {{year_form.year}}
 	    {%endif%}
 	  </div>
 	</div>
 	
-	<div class="form-group">
+	<div class="form-group" id="activity_select">
 	  <label class="col-sm-3">Activity</label>
 	  <div class="col-sm-6">
 	    {% if action == "add" %}
@@ -66,21 +61,29 @@
 	<div class="form-group">
 	  <label class="col-sm-3">Allotment Received</label>
 	  <div class="col-sm-6">
-	    <input type="number" class="form-control" name="received" required="required" {%if action == "edit"%}value="{{activity_info.received}}"{%endif%}>
+	    <input type="number" class="form-control" id="received" name="received" required="required" {%if action == "edit" %} value="{{activity_info.received}}"{%endif%} onkeyup="showReportBalance()">
 	  </div>
 	</div>
 	
 	<div class="form-group">
 	  <label class="col-sm-3">Obligation Incurred</label>
 	  <div class="col-sm-6">
-	    <input type="number" class="form-control" name="incurred" required="required" {%if action == "edit"%}value="{{activity_info.incurred}}"{%endif%}>
+	    <input type="number" class="form-control" id="incurred" name="incurred" required="required" {%if action == "edit" %} value="{{activity_info.incurred}}" {%endif%} onkeyup="showReportBalance()">
 	  </div>
 	</div>
+
+	<div class="form-group">
+	  <label class="col-sm-3">Remaining Balance</label>
+	  <div class="col-sm-6" id="remaining_bal">
+	    
+	  </div>
+	</div>
+
 	
 	<div class="form-group">
 	  <label class="col-sm-3">Remarks</label>
 	  <div class="col-sm-6">
-	    <textarea name="remarks" class="form-control">{%if action == "edit"%}{{activity_info.remarks}}{%endif%}</textarea>
+	    <textarea name="remarks" class="form-control">{%if action == "edit" %} {{activity_info.remarks}}{%endif%}</textarea>
 	  </div>
 	</div>
 	
@@ -92,16 +95,18 @@
 		<th>Indicator</th>
 		<th>Target</th>
 		<th>Accomplished</th>
+		<th style="text-align:right">Variance</th>
 	      </tr>
 	    </thead>
             {%for accomplishment in performance_accs%}
             <tr>
 	      <input type="hidden" name="pt_ids[]" value="{{accomplishment.id}}">
 	      <td>{{accomplishment.indicator}}</td>
-	      <td>{{accomplishment.target}}</td>
-	      <td>
-		<input type="text" name="{{accomplishment.id}}" value="{{accomplishment.accomplished}}">
+	      <td id="target{{accomplishment.id}}">{{accomplishment.target}}</td>
+	      <td width="20px" style="text-align: right">
+		<input type="text" id="{{accomplishment.id}}" name="{{accomplishment.id}}" style="width:60px;" required="True" onkeyup="showVariance({{accomplishment.id}})" value="{{accomplishment.accomplished}}">
 	      </td>
+	      <td id="variance{{accomplishment.id}}" style="text-align: right;">{{accomplishment.variance}}</td>
 	    </tr> 
             {%endfor%}
 	  </table>
@@ -121,5 +126,11 @@
 {%block scripts%}
   <script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
   <script type="text/javascript" src="/static/js/fund_ajax.js"></script>
+  <script language="javascript">
+    $(document).ready(function(){
+         showReportBalance();
+    });
+  </script>
+  
 {%endblock%}
   

@@ -4,27 +4,27 @@
 <content>
   <div class="container">
     {%include "./agency/side_bar.html"%}
-    <div class="col-md-10" style="background-color:white; min-height: 550px;">
-      <h3>Allotment Releases for {{year}}</h3>
-      <hr/>
+    <div class="col-md-12" style="background-color:white; min-height: 550px;">
       <form class="form-inline" action="/agency/releases" method="POST">
 	{%csrf_token%}
-	<div class="form-group">
-	  <a href="javascript:$('#releases_print').printArea()" class="btn btn-default"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
-	  &nbsp;||&nbsp;
+	<div class="col-sm-3" style="padding:20px;">
+	  <a href="javascript:$('#releases_print').printArea()" class="btn btn-link"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
 	</div>
-	<div class="form-group">
+
+	<div class="col-sm-3 col-sm-offset-6" style="text-align: right; padding: 20px;">
+	  <label>Filter</label>
 	  <select name="year" class="form-control">
 	    <option value="2014">2014</option>
 	  </select>
-	</div>
-	<div class="form-group">
-	  <button type="submit" class="btn btn-primary">
+	  <button type="submit" class="btn btn-default">
 	      <span class="glyphicon glyphicon-search"></span>
 	  </button>
 	</div>
+
       </form>
-      </br>
+
+      <h3>Allotment Releases for {{year}}</h3>
+      <hr/>
       <table class="table-normal">
 	{%load humanize%}
 	<thead>

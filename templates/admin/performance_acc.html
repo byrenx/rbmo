@@ -12,7 +12,7 @@
     <th>
       Accomplished
     </th>
-    <th>
+    <th style="text-align:right;">
       Variance
     </th>
 
@@ -22,11 +22,11 @@
   <tr>
     <input type="hidden" name="pt_ids[]" value="{{target.id}}">
     <td>{{target.indicator}}</td>
-    <td>{{target.target}}</td>
+    <td id="target{{target.id}}">{{target.target}}</td>
     <td width="20px" style="text-align: right">
-      <input type="text" name="{{target.id}}" style="width:60px;" required="True">
+      <input type="text" id="{{target.id}}" name="{{target.id}}" style="width:60px;" required="True" onkeyup="showVariance({{target.id}})">
     </td>
-    <td></td>
+    <td id="variance{{target.id}}" style="text-align: right;">{{accomplished.variance}}</td>
   </tr>
   {% endfor %}
   {% endif %}
