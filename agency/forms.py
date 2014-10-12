@@ -1,5 +1,6 @@
 from django import forms
 from rbmo.models  import BudgetProposal, Agency
+from helpers.helpers import *
 from django.contrib.auth.models import User
 
 class BudgetProposalForm(forms.ModelForm):
@@ -127,3 +128,9 @@ class ChangePassForm(forms.Form):
         'class'    : 'form-control',
         'required' : 'True'
     }))
+
+
+class YearFilterForm(forms.Form):
+    year = forms.IntegerField(widget = forms.Select(choices=getYearsChoices(), 
+                              attrs={'class'    : 'form-control'}))
+    

@@ -4,7 +4,7 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
-from .forms import (BudgetProposalForm, LoginForm, ChangePassForm)
+from .forms import (BudgetProposalForm, LoginForm, ChangePassForm, YearFilterForm)
 from requirements.views import (getSubmittedReqs,
                                 getLackingReqs)
 from rbmo.forms import MonthForm
@@ -190,7 +190,10 @@ def approved(request):
                 'pss'         : pss,
                 'mooes'       : mooes,
                 'cos'         : cos,
-                'wfp_total'   : wfp_total
+                'year'        : year,
+                'agency'      : agency,
+                'wfp_total'   : wfp_total,
+                'year_form'   : YearFilterForm({'year' : year})
         }
 
         return render_to_response('./agency/approved.html', data, context)
