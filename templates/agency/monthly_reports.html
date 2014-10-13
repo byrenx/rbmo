@@ -46,10 +46,10 @@
 	  <tr>
 	    {%if acc.activity%}
 	    <td style="width:30px;">
-	      <a href="/agency/monthly_report_form?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" class="btn btn-link" title="Edit">
+	      <a href="/agency/monthly_report_formg?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" class="btn btn-link" title="Edit">
 		<span class="glyphicon glyphicon-pencil"></span>
 	      </a>
-	      <a href="" class="btn btn-link" title="Remove">
+	      <a href="javascript:confirmDelActivityReport({{acc.id}}, '{{acc.activity}}')" class="btn btn-link" title="Remove">
 		<span class="glyphicon glyphicon-trash text-danger"></span>
 	      </a>
 	    </td>
@@ -99,3 +99,13 @@
   </div>
 </content>
 {% endblock %}
+{% block scripts%}
+<script language="javascript">
+  function confirmDelActivityReport(performance_id, report_activity){
+    var confirmation = confirm("Are you sure to delete '"+report_activity+"' from this report?");
+    if (confirmation){
+      window.location = "/agency/remove_report/"+performance_id+"/";
+    }
+  }
+</script>
+{%endblock scripts%}

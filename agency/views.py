@@ -360,7 +360,7 @@ def monthlyReports(request):
         pass
 
 
-
+@transaction.atomic
 def mpfro_form(request):
     cursor = connection.cursor()
     context = RequestContext(request)
@@ -374,16 +374,14 @@ def mpfro_form(request):
           
             if action == 'add':
                 year = datetime.today().year
-                acts_query = "select id, activity from wfp_data where agency_id=%s and year=%s and wfp_data.id not in (select activity_id from performance_report where performance_report.year=%s and performance_report.month=%s)"
-                cursor.execute(acts_query, [agency.id, year, year, datetime.today().month])
-                activities = dictfetchall(cursor)
+                month = datetime.today().month
                 data = {'system_name': agency.name,
                         'email'      : agency.email,
                         'action'     : action,
                         'agency'     : agency,
                         'month_form' : MonthForm({'month': datetime.today().month}),
                         'year'       : year,
-                        'activities' : activities,
+                        'activities' : getUnreportedActivities(year, month, agency),
                         'year_form'  : YearFilterForm({'year': year}),
                         'page'       : 'report'
                 }
@@ -515,43 +513,59 @@ def changePass(request):
     else:
         return HttpRsponseRedirect('/home')
 
-@transaction.atomic
+
+
 def getUnreportedAct(request):
     context = RequestContext(request)
     year = request.GET.get('year')
-    month = request.GET.get('year')
+    month = request.GET.get('month')
     agency_id = request.GET.get('agency_id')
     agency = Agency.objects.get(id=agency_id)
 
-    reported_activities = PerformanceReport.select_related('wfpdata').filter(year=year, month=month, agency=agency).values('activity')
-    unreported_activity = None
-    if month == 1:
-        unreported_activity = WFPData.objects.filter(year=year,  jan__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==2:
-        unreported_activity = WFPData.objects.filter(year=year,  feb__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==3:
-        unreported_activity = WFPData.objects.filter(year=year,  mar__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==4:
-        unreported_activity = WFPData.objects.filter(year=year,  apr__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==5:
-        unreported_activity = WFPData.objects.filter(year=year,  may__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==6:
-        unreported_activity = WFPData.objects.filter(year=year,  jun__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==7:
-        unreported_activity = WFPData.objects.filter(year=year,  jul__gt = 0).exclude(activity__in = reported_activities)
-    elif month==8:
-        unreported_activity = WFPData.objects.filter(year=year,  aug__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==9:
-        unreported_activity = WFPData.objects.filter(year=year,  sept__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==10:
-        unreported_activity = WFPData.objects.filter(year=year,  oct__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    elif month==11:
-        unreported_activity = WFPData.objects.filter(year=year,  nov__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    else:
-        unreported_activity = WFPData.objects.filter(year=year,  dec__gt = 0, agency=agency).exclude(activity__in = reported_activities)
-    data = {'activities' : unreported_activity}
+    data = {'activities' : getUnreportedActivities(year, month, agency)}
     return render_to_response('./agency/report_programs_select.html', data, context)
 
-
+@transaction.atomic
+def getUnreportedActivities(year, month, agency):
+    year = int(year)
+    month = int(month)
+    reported_activities = PerformanceReport.objects.filter(year=year, month=month, activity__agency=agency).values('activity')
+    unreported_activity = None
+    if month == 1:
+        unreported_activity = WFPData.objects.filter(year=year,  jan__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==2:
+        unreported_activity = WFPData.objects.filter(year=year,  feb__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==3:
+        unreported_activity = WFPData.objects.filter(year=year,  mar__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==4:
+        unreported_activity = WFPData.objects.filter(year=year,  apr__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==5:
+        unreported_activity = WFPData.objects.filter(year=year,  may__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==6:
+        unreported_activity = WFPData.objects.filter(year=year,  jun__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==7:
+        unreported_activity = WFPData.objects.filter(year=year,  jul__gt = 0).exclude(id__in = reported_activities)
+    elif month==8:
+        unreported_activity = WFPData.objects.filter(year=year,  aug__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==9:
+        unreported_activity = WFPData.objects.filter(year=year,  sept__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==10:
+        unreported_activity = WFPData.objects.filter(year=year,  oct__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    elif month==11:
+        unreported_activity = WFPData.objects.filter(year=year,  nov__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    else:
+        unreported_activity = WFPData.objects.filter(year=year,  dec__gt = 0, agency=agency).exclude(id__in = reported_activities)
+    return unreported_activity
+    
     
 
+'''
+delete monthly performance report
+'''
+def removeMonthlyReport(request, performance_id):
+    try:
+        performance = PerformanceReport.objects.get(id=performance_id)
+        performance.delete()
+        return HttpResponseRedirect("/agency/monthly_reports")
+    except PerformanceReport.DoesNotExist:
+        return HttpResponseRedirect("/agency/monthly_reports")
