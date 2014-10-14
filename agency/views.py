@@ -149,8 +149,7 @@ def balance(request):
                      'ending_bal' : ps_bal + mooe_bal + co_bal}
 
 
-        cursor.execute("select distinct(year) from wfp_data where agency_id=%s", agency.id)
-        years = dictfetchall(cursor)
+        yesrs = getYearsChoices()
         data = {'system_name' : agency.name,
                 'email'       : agency.email,
                 'balances'    : balances,
