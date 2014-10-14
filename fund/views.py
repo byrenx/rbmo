@@ -41,7 +41,7 @@ def allotmentReleases(request, agency_id):
         wfp_data_PS             = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(total_sum = Sum('total'))
         wfp_data_MOOE           = WFPData.objects.filter(agency=agency, year=year, allocation='MOOE').aggregate(total_sum = Sum('total'))
         wfp_data_CO             = WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(total_sum = Sum('total'))
-        allotment_releases      = AllotmentReleases.objects.filter(agency=agency).order_by('year', 'month')
+        allotment_releases      = AllotmentReleases.objects.filter(agency=agency, year=year).order_by('year', 'month')
         remaining_balance       = numify(wfp_data_PS['total_sum']) + numify(wfp_data_MOOE['total_sum']) + numify(wfp_data_CO['total_sum'])
         total_remaining_balance = remaining_balance
         
@@ -54,7 +54,6 @@ def allotmentReleases(request, agency_id):
                 total_CO = total_CO + allotment_release.amount_release
                 
             total_release += allotment_release.amount_release
-            print total_release
             total_remaining_balance -= allotment_release.amount_release
             allotments.append({
                 'id'                : allotment_release.id,

@@ -130,15 +130,15 @@ def balance(request):
         co_total =  WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(Sum('total'))
         co_release = AllotmentReleases.objects.filter(agency=agency, year=year, allocation='CO').aggregate(Sum('amount_release'))
         co_bal = numify(co_total['total__sum']) - numify(co_release['amount_release__sum'])
-        balances = [{'allocation': 'PS', 
+        balances = [{'allocation': 'Personnel Services', 
                      'beginning_bal': numify(ps_total['total__sum']), 
                      'release': numify(ps_release['amount_release__sum']), 
                      'ending_bal':ps_bal},
-                    {'allocation': 'MOOE', 
+                    {'allocation': 'Maintenance and Other Operating Expenses', 
                      'beginning_bal': numify(mooe_total['total__sum']), 
                      'release': numify(mooe_release['amount_release__sum']), 
                      'ending_bal':mooe_bal},
-                    {'allocation': 'CO', 
+                    {'allocation': 'Capital Outlay', 
                      'beginning_bal': numify(co_total['total__sum']), 
                      'release': numify(co_release['amount_release__sum']), 
                      'ending_bal':co_bal}                   
@@ -149,7 +149,7 @@ def balance(request):
                      'ending_bal' : ps_bal + mooe_bal + co_bal}
 
 
-        yesrs = getYearsChoices()
+        years = getYearsChoices()
         data = {'system_name' : agency.name,
                 'email'       : agency.email,
                 'balances'    : balances,
@@ -157,7 +157,7 @@ def balance(request):
                 'today'    : time.strftime('%B %d, %Y'),
                 'year'        : year,
                 'page'        : 'balance',
-                'years'       : years
+                'year_form'   : YearFilterForm({'year':year})
                }
         return render_to_response('./agency/Balances.html', data, context)
         
@@ -196,7 +196,7 @@ def approved(request):
 
 def allotmentReleases(request):
     context       = RequestContext(request)
-    allotments    = {}
+    allotments    = []
     total_release = 0
     total_PS      = 0
     total_MOOE    = 0
@@ -205,7 +205,7 @@ def allotmentReleases(request):
     
     try:
         if "agency_id" in request.session:
-            agency                  = Agency.objects.get(id=request.session['agency_id'])
+            agency = Agency.objects.get(id=request.session['agency_id'])
             wfp_data_PS             = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(total_sum = Sum('total'))
             wfp_data_MOOE           = WFPData.objects.filter(agency=agency, year=year, allocation='MOOE').aggregate(total_sum = Sum('total'))
             wfp_data_CO             = WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(total_sum = Sum('total'))
@@ -221,24 +221,23 @@ def allotmentReleases(request):
                 else:
                     total_CO = total_CO + allotment_release.amount_release
                     
-                total_release                    = total_release + allotment_release.amount_release
-                total_remaining_balance          = total_remaining_balance - allotment_release.amount_release
-                allotments[allotment_release.id] =  {
+                total_release += allotment_release.amount_release
+                total_remaining_balance -= allotment_release.amount_release
+                allotments.append({
+                    'id'                : allotment_release.id,
                     'date_release'      : allotment_release.date_release,
                     'ada_no'            : allotment_release.ada_no,
                     'particulars'       : stringify_month(allotment_release.month),
                     'total_release'     : total_release,
                     'remaining_balance' : total_remaining_balance,
-                    'allocation'        : {
-                        'name'              : allotment_release.allocation,
-                        'amount_release'    : allotment_release.amount_release,
-                    },
-                }
-        
+                    'allocation'        : {'name' : allotment_release.allocation,
+                                           'amount_release'    : allotment_release.amount_release},
+                })
+            
             total_PS_balance   = numify(wfp_data_PS['total_sum']) - total_PS
             total_MOOE_balance = numify(wfp_data_MOOE['total_sum']) - total_MOOE
             total_CO_balance   = numify(wfp_data_CO['total_sum']) - total_CO
-                
+            
             data = {
                 'system_name'             : agency.name,
                 'agency'                  : agency,
@@ -257,11 +256,11 @@ def allotmentReleases(request):
                 'total_MOOE_balance'      : total_MOOE_balance,
                 'total_CO_balance'        : total_CO_balance,
                 'allowed_tabs'            : get_allowed_tabs(request.user.id),
-                'cur_date'                : date.today(),
+                'today'                   : date.today(),
                 'year'                    : year,
                 'page'                    : 'releases'
             }
-
+            
             #get releases
             return render_to_response('./agency/allotment_releases.html', data, context)
     except Agency.DoesNotExist:
