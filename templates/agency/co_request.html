@@ -1,0 +1,76 @@
+{% extends "agentbase.html" %}
+
+{% block content %}
+<content>
+  <div class="container">
+    {%include "./agency/side_bar.html"%}
+    <div class="col-sm-12" style="background-color:white; min-height: 550px;padding-top: 20px;padding-bottom: 20px;">
+      <div class="col-sm-4 col-sm-offset-8" style="text-align:right">
+	<form action="/agency/co_request/" class="form-inline" method="POST">{% csrf_token %}
+	  <div class="form-group">
+	    <input type="hidden" name="agency_id" value="{{agency.id}}">
+	    <input type="month" name="month" class="form-control" required="True">
+	  </div>
+	  <button type="submit" class="btn btn-default">
+	    <span class="glyphicon glyphicon-search"></span>
+	  </button>
+	</form>
+      </div>
+      <h3>Request Updates <small>for {{month_str}}, {{year}}</small></h3>
+      <div class="col-sm-12" style="padding-top:20px;">
+	{% if co_requests %}
+	<table class="table table-condensed">
+	  <thead style="background-color:green;color:white">
+	    <th><span class="glyphicon glyphicon-calendar"></span>Date</th>
+	    <th>Subject</th>
+	    <th>Action Taken</th>
+	    <th>Status</th>
+	    <th>Remarks</th>
+	  </thead>
+	  <tbody>
+	    {%for request in co_requests%}
+	    <tr>
+	      <td>{{request.date_received}}</td>
+	      <td>{{request.subject}}</td>
+	      <td>{{request.action}}</td>
+	      <td>{{request.status}}</td>
+	      <td width="200px">{{request.remarks}}</td>
+	    </tr>
+	    {%endfor%}
+	  </tbody>
+	</table>
+	{% else %}
+	<div class="jumbotron col-md-12">
+	  <h3> No Request Received! <small>As of {{month_str}}, {{year}}</small><h3> 
+	</div>
+	{% endif %}
+      </div>
+      
+      <!---for printing ---->
+      <div class="col-sm-12" id="request_print" style="display:none">
+	<center><h3>Request Received</h3></center>
+	{% if co_requests %}
+	<table class="table-normal">
+	  <thead>
+	    <th>Date</th>
+	    <th>Subject</th>
+	    <th>Action Taken</th>
+	    <th>Status</th>
+	  </thead>
+	  <tbody>
+	    {%for request in co_requests%}
+	    <tr>
+	      <td>{{request.date_received}}</td>
+	      <td>{{request.subject}}</td>
+	      <td>{{request.action}}</td>
+	      <td>{{request.status}}</td>
+	    </tr>
+	    {%endfor%}
+	  </tbody>
+	</table>
+	{% endif %}
+      </div>
+    </div>
+</content>
+{% endblock %}  
+

@@ -10,7 +10,7 @@ from requirements.views import (getSubmittedReqs,
 from rbmo.forms import MonthForm
 from rbmo.models import (UserGroup, Groups, Agency, 
                          Notification, AllotmentReleases, WFPData, 
-                         AllotmentReleases, PerformanceReport, MPFRO)
+                         AllotmentReleases, PerformanceReport, MPFRO, CoRequest)
 
 from wfp.views import getProgOverview, getWFPTotal
 from django.contrib.auth.models import User
@@ -37,8 +37,6 @@ def login(request):
             email = loginform.cleaned_data['email']
             h.update(loginform.cleaned_data['acces_key'])
             accesskey = h.hexdigest()
-            print loginform.cleaned_data['acces_key']
-            print accesskey
             try:
                 agency = Agency.objects.get(email=email,acces_key=accesskey)
                 request.session['agency_id'] = agency.id
@@ -569,3 +567,34 @@ def removeMonthlyReport(request, performance_id):
         return HttpResponseRedirect("/agency/monthly_reports")
     except PerformanceReport.DoesNotExist:
         return HttpResponseRedirect("/agency/monthly_reports")
+
+
+def coRequest(request):
+    context = RequestContext(request)
+    if "agency_id" in request.session:
+        try:
+            agency = Agency.objects.get(id=request.session['agency_id'])
+            year = 0
+            month = 0
+            co_requests = None
+            if request.method == 'POST':
+                year_month = request.POST.get('month').split('-')
+                year = int(year_month[0])
+                month = int(year_month[1])
+            else:
+                year  = int(datetime.today().year)
+                month = int(datetime.today().month)
+            #get current month and year
+            co_requests = CoRequest.objects.filter(date_received__year=year, date_received__month=month, agency=agency)
+            data = {'system_name'  : agency.name,
+                    'email'        : agency.email,
+                    'agency'       : agency,
+                    'page'         : 'co_request',
+                    'co_requests'  : co_requests,
+                    'year'         : year,
+                    'month'        : month,
+                    'month_str'    : months[month]}
+            
+            return render_to_response("./agency/co_request.html", data, context)
+        except:
+            return HttpResponse('<h3>Invalid Request Error!</h3>')
