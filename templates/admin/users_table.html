@@ -2,17 +2,17 @@
 <table class="table table-condensed table-stripped table-border">
   <thead>
     <tr>
-      <th></th>
+      <th>Option</th>
       <th>Name</th>
       <th>Email</th>
-      <th>Status</th>
+      <th>Active</th>
     </tr>
   </thead>
   {% for user in users %}
     <tr>
       <td>
 	<a href="/admin/add_edit_user?action=edit&u_id={{user.id}}" title="Edit User">
-	  <span class="glyphicon glyphicon-edit"></span>
+	  <span class="glyphicon glyphicon-pencil"></span>
 	</a>&nbsp;
 	<a href="" title="Delete User">
 	  <span class="glyphicon glyphicon-remove text-danger"></span>
@@ -20,14 +20,13 @@
       </td>
       <td>{{user.first_name}}&nbsp;{{user.last_name}}</td>
       <td>{{user.email}}</td>
-      <td>
-	{%if user.is_active %}
-	<span class="glyphicon glyphicon-user text-success"></span>
-	&nbsp;Active
-	{%else%}
-	<span class="glyphicon glyphicon-user"></span>
-	&nbsp;Inactive
-	{%endif%}
+      <td id="status{{user.id}}">
+	  {%if user.is_active %}
+	     <input type="checkbox" id="{{user.id}}" onchange="changeUserStatus({{user.id}},0)" title="Uncheck to disable this account" onchange="" checked>
+	     <span class="text-success">Yes</span>
+          {%else%}
+	     <input type="checkbox" id="{{user.id}}" title="Check to enable this account" onchange="changeUserStatus({{user.id}},1)"> No	 
+	  {%endif%}
       </td>
     </tr>
   {%endfor%}

@@ -354,13 +354,24 @@ def addEditUser(request):
                                          'last_name'  : user.last_name,
                                          'group'      : u_group.group
                                      })
-                data['user_id'] = user.id
+                data['user_id'] = user.id 
                 return render_to_response('./admin/user_form.html', data, context)
             except:
                 return render_to_response('./admin/user_form.html', data, context)
         else:
             return render_to_response('./admin/user_form.html', data, context)
 
+
+def changeUserStatus(request):
+    try:
+        user_id = int(request.GET.get("user_id"))
+        status = int(request.GET.get("status"))
+        user = User.objects.get(id=user_id)
+        user.is_active = status
+        user.save()
+        return HttpResponse(status)
+    except:
+        return HttpResponse(2)
 
 @login_required(login_url='/admin/')
 @transaction.atomic
