@@ -31,7 +31,8 @@
       <span class="glyphicon glyphicon-print"></span>
       Transmittal Letter
     </a>
-    <a href="javascript:$('#smca_print').printArea()" class="btn btn-primary">
+    <a  data-toggle="modal" data-target="#signatories_modal" class="btn btn-primary">
+      <!---href="javascript:$('#smca_print').printArea()"--->
       <span class="glyphicon glyphicon-print"></span>
       SMCA
     </a>
@@ -71,6 +72,20 @@
 	     <th class="decimal">{{total|intcomma}}</th>
 	   </tr>
       </table>
+      
+      <table>
+	<tr>
+	  <td style="width:50%">
+	    <p id="approval">
+	    </p>
+	  </td>
+	  <td style="width:50%">
+	    <p>
+	    </p>
+	  </td>
+	</tr>
+      </table>
+
     {%else%}
       <div class="alert alert-info">
 	Currently no agencies qualify for this month's allocation
@@ -81,6 +96,8 @@
 </div>
 {%include "./admin/transmittal_letter.html" %}
 {%include "./admin/transmittalletter_edit_form.html" %}
+{%include "./admin/smca_signatories_modal.html" %}
+{%include "./admin/smca_print.html" %}
 {% endblock %}
 
 {%block scripts%}

@@ -371,7 +371,7 @@ def changeUserStatus(request):
         user.save()
         return HttpResponse(status)
     except:
-        return HttpResponse(2)
+        return HttpResponse(0)
 
 @login_required(login_url='/admin/')
 @transaction.atomic

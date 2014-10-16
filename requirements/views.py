@@ -112,17 +112,20 @@ def delMonthReqs(request, requirement_id):
 
 
 @login_required(login_url='/admin/')
-def delQuarterSubmittedReqs(request, requirement_id):
+def delQuarterSubmittedReqs(request):
     '''
     this function  delete the quarterly requirement submitted by
     an agency if it is mistakenly checked
     '''
     try:
-        q_req_submitted  = QuarterReqSubmission.objects.get(id = requirement_id)
+        submission_id = request.GET.get("id")
+        q_req_submitted  = QuarterReqSubmission.objects.get(id = submission_id)
         q_req_submitted.delete()
-        return HttpResponseRedirect("/admin/manage_agency_docs/"+str(q_req_submitted.agency.id)+"/")
+        return HttpResponse("done")
+        #return HttpResponseRedirect("/admin/manage_agency_docs/"+str(q_req_submitted.agency.id)+"/")
     except:
-       return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
+        return HttpResponse("failed")
+        #return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 
 @login_required(login_url='/admin/')
 def delCOSSubmitted(request, requirement_id):

@@ -23,14 +23,14 @@
 	  {% for requirement in quarterly %}
 	  <tr>
 	    <td>{{requirement.name}}</td>
-	    <td>
+	    <td id="q1{{requirement.id}}">
 	      {% if requirement.id in q1_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
 	      <input type="checkbox" name="qr[]" value="1;{{requirement.id}}"/>
 	      {% endif %}
 	    </td>
-	    <td>
+	    <td id="q2{{requirement.id}}">
 	      {% if requirement.id in q2_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
@@ -38,14 +38,14 @@
 	      {% endif %}
 	    </td>
 	    
-	    <td>
+	    <td id="q3{{requirement.id}}">
 	      {% if requirement.id in q3_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
 	      <input type="checkbox" name="qr[]" value="3;{{requirement.id}}"/>
 	      {% endif %}
 	    </td>
-	    <td>
+	    <td id="q4{{requirement.id}}">
 	      {% if requirement.id in q4_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
@@ -91,9 +91,9 @@
 	    </tr>
 	    
 	    {%for req in quarter_req_submitted%}
-	    <tr>
+	    <tr id="qreq{{req.id}}">
 	      <td>
-		<a href="/requirements/delete_quarter_sub_req/{{req.id}}/">
+		<a href="javascript:removeQReq({{req.id}}, {{req.requirement.id}}, {{req.quarter}})">
 		  <span class="glyphicon glyphicon-remove text-danger"></span>
 		</a>
 	      </td>

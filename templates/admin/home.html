@@ -15,22 +15,16 @@
 	<h3>Agencies Remaining Balances for Fiscal Year - {{year}}</h3>
 	<p>Below are the list of agencies and their remaining balances for budget allocated for the year {{year}}  </p>
       </div>
-      <table class="table">
-	<thead>
-	  <tr>
-	    <th width="25px;"></th>
-	    <th>AGENCIES/OFFICES</th>
+      <table class="table" style="font-size:12px;">
+	<tbody>
+	  {% load humanize %}
+	  {%if line_agencies%}
+	  <tr style="background-color:rgba(0,0,0,0.7);color:white">
+	    <th colspan="2">Line Agencies</th>
 	    <th class="decimal">PS</th>
 	    <th class="decimal">MOOE</th>
 	    <th class="decimal">CO</th>
 	    <th class="decimal">TOTAL</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  {% load humanize %}
-	  {%if line_agencies%}
-	  <tr>
-	    <th colspan="6">Line Agencies</th>
 	  </tr>
 	  {%endif%}
 	  {%for agency in line_agencies %}
@@ -55,8 +49,12 @@
 	  {% endfor %}
           <!----local agencies--->
 	  {%if local_agencies%}
-	  <tr>
-	    <th colspan="6">Local Agencies</th>
+	  <tr style="background-color:rgba(0,0,0,0.7);color:white">
+	    <th colspan="2">Locally Funded Agencies</th>
+	    <th class="decimal">PS</th>
+	    <th class="decimal">MOOE</th>
+	    <th class="decimal">CO</th>
+	    <th class="decimal">TOTAL</th>
 	  </tr>
 	  {%endif%}
 	  {%for agency in local_agencies %}

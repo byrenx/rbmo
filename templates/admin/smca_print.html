@@ -1,0 +1,46 @@
+<div class="col-sm-12" id="scma_print" style="display:none">
+  {%if agencies%}
+  <center>
+    <h4>Schedule of Monthly Cash Allocation</h4>
+    <h5>For the month {{str_month}}-{{year}}</h5>
+    <h5>As of {{cur_date}}</h5>
+  </center>
+  <table class="table-normal">
+    {% load humanize %}
+    <thead>
+      <tr>
+	<th colspan="2" rowspan="2" class="center">Agencies</th>
+	<th class="center">{{str_month}} {{year}}</th>
+      </tr>
+      <tr>
+	<th class="center">{{allocation}}</th>
+      </tr>
+    </thead>
+    {% for agency in agencies %}
+    <tr>
+      <td width="30px" align="center">{{agency.no}}</td>
+      <td>{{agency.agency}}</td>
+      <td class="decimal">{{agency.amount|intcomma}}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <th colspan="2">TOTAL</th>
+      <th class="decimal">{{total|intcomma}}</th>
+    </tr>
+  </table>
+  
+  <table style="margin-top:30px;width:100%">
+    <tr>
+      <td style="width:60%">
+	<p id="approval_pane">
+	</p>
+      </td>
+      <td style="width:40%;">
+	<p id="approved_pane">
+	</p>
+      </td>
+    </tr>
+  </table>
+  {%endif%}
+</div>
+  

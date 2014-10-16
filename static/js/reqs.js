@@ -26,3 +26,29 @@ function showSubmittedQReqs(){
 	$("#sqreqs").html(rs);
     });
 }
+
+
+function removeQReq(id, requirement_id, quarter){
+    var data = {id: id}
+    $.get("/requirements/delete_quarter_sub_req", data, function(rs){
+	rs = new String(rs).trim();
+	if (rs=="done"){
+	    //delete_row
+	    $("#qreq"+id).remove();
+	    removeQReqStatus(quarter, requirement_id)
+	}
+    });
+}
+
+function removeQReqStatus(quarter, requirement_id){
+    var html =  "<input type='checkbox' name='qr[]' value='"+quarter+";"+requirement_id+"'/>";
+    if(quarter==1){
+	$("#q1"+requirement_id).html(html);
+    }else if(quarter==2){
+	$("#q2"+requirement_id).html(html);
+    }else if(quarter==3){
+	$("#q3"+requirement_id).html(html);
+    }else{
+	$("#q4"+requirement_id).html(html);
+    }
+}
