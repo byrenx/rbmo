@@ -1,5 +1,5 @@
 <div class="col-sm-12" id="scma_print" style="display:none">
-  {%if agencies%}
+  {%if qualified_agencies%}
   <center>
     <h4>Schedule of Monthly Cash Allocation</h4>
     <h5>For the month {{str_month}}-{{year}}</h5>
@@ -16,12 +16,21 @@
 	<th class="center">{{allocation}}</th>
       </tr>
     </thead>
-    {% for agency in agencies %}
+    {% for agency in qualified_agencies %}
     <tr>
-      <td width="30px" align="center">{{agency.no}}</td>
-      <td>{{agency.agency}}</td>
+      <td width="30px" align="center">{{agency.count}}</td>
+      <td>
+	{{agency.name}}
+      </td>
       <td class="decimal">{{agency.amount|intcomma}}</td>
     </tr>
+       {%for sub_agency in agency.qualified_sub_agencies%}
+        <tr>
+	  <td width="30px" align="center"></td>
+	  <td>{{sub_agency.sub_count}}&nbsp;{{sub_agency.name}}</td>
+	  <td class="decimal">{{sub_agency.amount|intcomma}}</td>
+	</tr>
+	{%endfor%}
     {% endfor %}
     <tr>
       <th colspan="2">TOTAL</th>

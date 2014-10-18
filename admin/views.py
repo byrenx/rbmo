@@ -334,6 +334,11 @@ def addEditUser(request):
             user.email = user_form.cleaned_data['email']
             user.first_name = user_form.cleaned_data['first_name']
             user.last_name = user_form.cleaned_data['last_name']
+
+            u_group = UserGroup.objects.get(user = user)
+            u_group.group = user_form.cleaned_data['group']
+            u_group.save()
+
             user.save()
             data['s_msg'] = "User Succesfully updated"
             return render_to_response('./admin/user_form.html', data, context)
@@ -1347,7 +1352,7 @@ def approvedBudget(request):
     
     return render_to_response('./admin/approved_budget.html', data, context)
     
-
+"""
 def smca(request):#schedule of monthly cash allocation
     context = RequestContext(request)
     cursor = connection.cursor()
@@ -1464,7 +1469,7 @@ def smca(request):#schedule of monthly cash allocation
     data['str_month'] = stringify_month(data['month'])
     data['total'] = total
     return render_to_response('./admin/smca.html', data, context)
-
+"""
 
 def getSubAgencies(count, fetched_agencies, parent_key, sub_agencies, total):
     sub_agencies = []
@@ -1539,3 +1544,203 @@ def hasSubmittedCoS(year, agency):
         return cos_submitted > 0
     except COSSubmission.DoesNotExist:
         return False
+
+
+
+@login_required(login_url = '/admin')
+@transaction.atomic
+def smca(request):#schedule of monthly cash allocation
+    context = RequestContext(request)
+    cursor = connection.cursor()
+    data = {'system_name' : SYSTEM_NAME,
+            'allowed_tabs': get_allowed_tabs(request.user.id),
+            'search_form' : MCASearchForm({'month' : datetime.today().month}),
+            'cur_date'    : time.strftime('%B %d, %Y'),
+            'year'        : datetime.today().year,
+            'month'       : datetime.today().month,
+            'allocation'  : 'PS',
+    }
+    years = []
+    for i in range(2013, datetime.today().year+1):
+        years.append(i)
+    data['years'] = years 
+
+    if request.method=='POST':
+        data['month'] = int(request.POST.get('month'))
+        data['year']  = int(request.POST.get('year'))
+        data['allocation'] = request.POST.get('allocation')
+        data['search_form'] = MCASearchForm({'month'      : data['month'],
+                                             'allocation' : data['allocation']
+                                           })
+
+    quarter = quarterofMonth(data['month'])
+    req_year = data['year']
+    if quarter == 4:
+        req_year-=1
+        
+    qualified_agencies = []
+    agencies = Agency.objects.filter(parent_key = 0)
+    if data['allocation']=='PS':
+        count = 0
+        total = 0
+        for agency in agencies:
+            sub_agencies = Agency.objects.filter(parent_key = agency.id)
+            amount = aps_smca(agency, data['year'], data['month'])
+            sub_agency_qualified_count = 0
+            qualified_sub_agencies = []
+            for sub_agency in sub_agencies:
+                sub_amount = aps_smca(sub_agency, data['year'], data['month'])
+                if sub_amount > 0:
+                    sub_agency_qualified_count += 1
+                    qualified_sub_agencies.append({'sub_count' : str(count+1)+"."+str(sub_agency_qualified_count),
+                                                   'name'      : sub_agency.name,
+                                                   'amount'    : sub_amount})
+                    total += sub_amount
+            if sub_agency_qualified_count > 0 or amount > 0:
+                count+= 1 
+                qualified_agencies.append({'count' : count,
+                                           'name'  : agency.name,
+                                           'amount': amount,
+                                           'qualified_sub_agencies' : qualified_sub_agencies})
+                total += amount
+        data['qualified_agencies'] = qualified_agencies
+        data['total'] = total
+        return render_to_response('./admin/smca.html', data, context)
+    elif data['allocation'] == 'MOOE':
+        total = 0
+        count = 0
+        for agency in agencies:
+            sub_agencies = Agency.objects.filter(parent_key = agency.id)
+            amount = amooe_smca(agency, data['year'], data['month'])
+            sub_agency_qualified_count = 0
+            qualified_sub_agencies = []
+            for sub_agency in sub_agencies:
+                sub_amount = amooe_smca(sub_agency, data['year'], data['month'])
+                if sub_amount > 0:
+                    sub_agency_qualified_count += 1
+                    qualified_sub_agencies.append({'sub_count' : str(count+1)+"."+str(sub_agency_qualified_count),
+                                                   'name'      : sub_agency.name,
+                                                   'amount'    : sub_amount})
+                    total += sub_amount
+            if sub_agency_qualified_count > 0 or amount > 0:
+                count+= 1 
+                qualified_agencies.append({'count' : count,
+                                           'name'  : agency.name,
+                                           'amount': amount,
+                                           'qualified_sub_agencies' : qualified_sub_agencies})
+                total += amount
+        data['qualified_agencies'] = qualified_agencies
+        data['total'] = total
+        return render_to_response('./admin/smca.html', data, context)
+    else:#CO
+        total = 0
+        count = 0
+        for agency in agencies:
+            sub_agencies = Agency.objects.filter(parent_key = agency.id)
+            amount = aco_smca(agency, data['year'], data['month'])
+            sub_agency_qualified_count = 0
+            qualified_sub_agencies = []
+            for sub_agency in sub_agencies:
+                sub_amount = aco_smca(sub_agency, data['year'], data['month'])
+                if sub_amount > 0:
+                    sub_agency_qualified_count += 1
+                    qualified_sub_agencies.append({'sub_count' : str(count+1)+"."+str(sub_agency_qualified_count),
+                                                   'name'      : sub_agency.name,
+                                                   'amount'    : sub_amount})
+                    total += sub_amount
+            if sub_agency_qualified_count > 0 or amount > 0:
+                count+= 1 
+                qualified_agencies.append({'count' : count,
+                                           'name'  : agency.name,
+                                           'amount': amount,
+                                           'qualified_sub_agencies' : qualified_sub_agencies})
+                total += amount
+        data['qualified_agencies'] = qualified_agencies
+        data['total'] = total
+        return render_to_response('./admin/smca.html', data, context)
+        
+
+def aps_smca(agency, year, month, allocation = "PS"):
+    
+    budget = getAllocation(agency, allocation, year, month)
+        
+    release = AllotmentReleases.objects.filter(agency=agency, allocation=allocation, month=month, year=year).aggregate(Sum('amount_release'))
+    amount_release = release['amount_release__sum']
+        
+    contracts_submitted = COSSubmission.objects.filter(agency=agency, date_submitted__year = year)
+    if (numify(budget)-numify(amount_release)) > 0 and len(contracts_submitted) > 0:
+        return numify(budget) - numify(amount_release)
+    else:
+        return 0
+
+
+def amooe_smca(agency, year, month, allocation='MOOE'):
+    budget = getAllocation(agency, allocation, year, month)
+    release =  release = AllotmentReleases.objects.filter(agency=agency, allocation=allocation, month=month, year=year).aggregate(Sum('amount_release'))
+    amount_release = release['amount_release__sum']
+    quarter_requirements = QuarterlyReq.objects.all()
+    quarter = quarterofMonth(month)
+    quarter_req_submission = None
+    if quarter==4:
+        quarter_req_submission = QuarterReqSubmission.objects.filter(agency=agency, quarter=quarter, year=(year-1))
+        print (year-1)
+    else:
+        quarter_req_submission = QuarterReqSubmission.objects.filter(agency=agency, quarter=quarter, year=year)
+    if len(quarter_requirements)==len(quarter_req_submission) and budget-numify(amount_release) > 0:
+        return budget-numify(amount_release)
+    else:
+        return 0
+        
+def aco_smca(agency, year, month, allocation='CO'):
+    budget = getAllocation(agency, allocation, year, month)
+    release =  release = AllotmentReleases.objects.filter(agency=agency, allocation=allocation, month=month, year=year).aggregate(Sum('amount_release'))
+    amount_release = release['amount_release__sum']
+    if budget - numify(amount_release) > 0:
+        return budget - numify(amount_release)
+    else:
+        return 0
+
+
+def getAllocation(agency, allocation, year, month):
+    budget = 0
+    if month==1:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('jan'))
+        budget = allocation['jan__sum']
+    elif month==2:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('feb'))
+        budget = allocation['feb__sum']
+    elif month==3:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('mar'))
+        budget = allocation['mar__sum']
+    elif month==4:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('apr'))
+        budget = allocation['apr__sum']
+    elif month==5:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('may'))
+        budget = allocation['may__sum']
+    elif month==6:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('jun'))
+        budget = allocation['jun__sum']
+    elif month==7:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('jul'))
+        budget = allocation['jul__sum']
+    elif month==8:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('aug'))
+        budget = allocation['aug__sum']
+    elif month==9:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('sept'))
+        budget = allocation['sept__sum']
+    elif month==10:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('oct'))
+        budget = allocation['oct__sum']
+    elif month==11:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('nov'))
+        budget = allocation['nov__sum']
+    else:
+        allocation = WFPData.objects.filter(agency=agency, year = year, allocation=allocation).aggregate(Sum('dec'))
+        budget = allocation['dec__sum']
+    return numify(budget)
+            
+    
+            
+        

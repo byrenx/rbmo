@@ -26,7 +26,7 @@
       </form>
     </div>
     <div class="col-sm-6" style="text-align: right">
-      <a href="javascript:$('#fund_distrib_print').printArea()" class="btn btn-default">
+      <a href="javascript:Popup($('#fund_distrib_print').html());" class="btn btn-default">
 	<span class="glyphicon glyphicon-print"></span>
 	Print
       </a>
@@ -85,6 +85,22 @@
       loadFundDistribution(data);
   });
 
+  function Popup(data) 
+    {
+			
+     var content = "<html>";
+     content+= "<head>";
+     content+= "<link rel='stylesheet' href='/static/css/bootstrap.min.css' media='print'/>";
+     content+= "<link rel='stylesheet' href='/static/css/rbmo.css' media='print' />";
+     content+="<link rel='stylesheet' type='text/css' href='/static/jquery.jqplot.1.0.8/jquery.jqplot.css' media='print'/>"
+     content+= "</head><body>";
+
+     var mywindow = window.open("", "my div", "height=400,width=600");
+     mywindow.document.write(content);
+     mywindow.document.write(data);
+     mywindow.document.write("</body></html>");
+     mywindow.print();
+     mywindow.close();
+    }
 </script>
 {%endblock%}
-
