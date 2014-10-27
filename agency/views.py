@@ -29,6 +29,7 @@ month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
 
 def login(request):
     context = RequestContext(request)
+    default_pword = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'
     h = hashlib.sha256()
     data = {'form' : LoginForm()}
     if request.method=="POST":
@@ -40,6 +41,8 @@ def login(request):
             try:
                 agency = Agency.objects.get(email=email,acces_key=accesskey)
                 request.session['agency_id'] = agency.id
+                if accesskey == default_pword:
+                    return HttpResponseRedirect("/agency/change_password")
                 return HttpResponseRedirect('/agency/home')
             except Agency.DoesNotExist:
                 data['e_msg'] = "Invalid Email or Password"
