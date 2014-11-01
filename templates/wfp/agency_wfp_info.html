@@ -117,7 +117,9 @@
 		</a>
 	      </td>
 	      <td onclick="getWFPData({{act.id}});">
-		<span id="td{{act.id}}">{{act.activity}}</span>
+		<a href="javascript:getWFPData({{act.id}});">
+		  <span id="td{{act.id}}">{{act.activity}}</span>
+		</a>
 	      </td>
 	    </tr>
 	   {%endfor%}

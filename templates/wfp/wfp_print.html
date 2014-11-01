@@ -114,12 +114,12 @@
 	     {%endif%}
 
 	     {%if cos%}
-	        <th colspan="19">Maintenance and Other Operating Expenses</th>
+	        <th colspan="19">Capital Outlay</th>
 	        {%for co in cos%}
 	           <tr>
 		     <th colspan="19">{{co.prog}}</th>
 		   </tr>
-                   {%for act in cos.acts%}
+                   {%for act in co.acts%}
                      <tr>
 		       <td>{{act.activity}}</td>
 		       <td>{{act.indicator}}</td>
