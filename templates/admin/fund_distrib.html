@@ -11,7 +11,7 @@
       <form action="/admin/fund_distrib" method="POST" class="form-inline">
 	{%csrf_token%}
 	<div class="form-group">
-	  <select name="year" class="form-control">
+	  <select id="year" name="year" class="form-control">
 	    {%for year in years%}
 	       <option>---Select a Year-----</option>
 	       <option value="{{year.year}}">{{year.year}}</option>
@@ -26,7 +26,7 @@
       </form>
     </div>
     <div class="col-sm-6" style="text-align: right">
-      <a href="javascript:Popup($('#fund_distrib_print').html());" class="btn btn-default">
+      <a href="javascript:print_fund_distrib()" class="btn btn-default">
 	<span class="glyphicon glyphicon-print"></span>
 	Print
       </a>
@@ -34,8 +34,8 @@
     <hr/>
     <div class="col-sm-12" id="fund_distrib_print">
       <div style="text-align: center">
-	<h3>ARMM Budget Distribution for year {{year}}</h3>
-	<h4>As of {{today}}</h4>
+	<h3>{{year}} ARMM BUDGET DISTRIBUTION CHART</h3>
+	<h4>As of {{today|date:"D d M Y"}}</h4>
       </div>
 
       {% if sectors %}
@@ -84,6 +84,12 @@
       }//end of for
       loadFundDistribution(data);
   });
+
+
+  function print_fund_distrib(){
+    var year = $("#year").val();
+    window.location = "/admin/fund_distrib_print?year="+year;
+  }				 
 
   function Popup(data) 
     {

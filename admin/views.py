@@ -996,7 +996,7 @@ def yearly_fund(request):
                               sum(total)*100) as co_percentile,
                             sum(total) as total_fund
                      from wfp_data where year=%s
-                     '''
+                 '''
     cursor.execute(fund_query, [year, year, year,year, year, year, year])
     fund_rs = cursor.fetchone()
     fund = {'ps_amount'     : fund_rs[0],
@@ -1011,28 +1011,23 @@ def yearly_fund(request):
     return render_to_response('./admin/yearly_fund.html', data, context)  
 
 
-def fundDistribution(request):
+
+def fundDistribData(year):
     cursor  = connection.cursor()
-    context = RequestContext(request)
     data  = {'system_name'  : SYSTEM_NAME,
-             'allowed_tabs' : get_allowed_tabs(request.user.id),
-             'today'        : datetime.today()  
+             'today'        : datetime.today(),
     }
 
-    year  = datetime.today().year 
-    if request.method=='POST':
-        year = request.POST.get('year')
 
     wfp = WFPData.objects.filter(year=year).aggregate(Sum('total')) 
     total = numify(wfp['total__sum'])
-    query = '''
-    select sector.id, sector.name, sum(wfp_data.total) as total
+    query = '''select sector.id, sector.name, sum(wfp_data.total) as total
     from sector, agency, wfp_data 
-    where sector.id = agency.sector_id and agency.id = wfp_data.agency_id 
-    group by sector.id;
+    where sector.id = agency.sector_id and agency.id = wfp_data.agency_id
+    and wfp_data.year=%s group by sector.id;
     '''
 
-    cursor.execute(query)
+    cursor.execute(query, year)
     sectors = dictfetchall(cursor)
     sector_budget_percent = []
 
@@ -1047,8 +1042,31 @@ def fundDistribution(request):
     data['years']   = years
     data['sectors'] = sector_budget_percent
     data['year']    = year
+
+    return data
     
+    
+
+def fundDistribution(request):
+    year  = datetime.today().year 
+    context = RequestContext(request)
+    if request.method=='POST':
+        year = request.POST.get('year', datetime.today().year)
+
+    data = fundDistribData(year)
+    data['allowed_tabs'] = get_allowed_tabs(request.user.id)
+
     return render_to_response('./admin/fund_distrib.html', data, context)
+
+
+def fundDistribPrint(request):
+    context = RequestContext(request)
+    year  = request.GET.get('year') 
+    data = fundDistribData(year)
+    
+    return render_to_response('./admin/fund_distrib_print.html', data, context)
+    
+
 
 
 @login_required(login_url='/admin/')    

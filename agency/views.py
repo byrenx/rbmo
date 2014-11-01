@@ -597,5 +597,5 @@ def coRequest(request):
                     'month_str'    : months[month]}
             
             return render_to_response("./agency/co_request.html", data, context)
-        except:
+        except Agency.DoesNotExist:
             return HttpResponse('<h3>Invalid Request Error!</h3>')

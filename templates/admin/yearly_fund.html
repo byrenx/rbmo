@@ -6,10 +6,11 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-sm-12">
+  <div class="col-sm-12" style="background-color: white; min-height: 20px;padding-top: 20px;">
     <form action="/admin/yearly_fund" class="form-inline" style="margin-bottom:24px">
       <div class="form-group">
         <select id="year_choose" name="year_choose" class="form-control">
+	      <option>----Select Allocated Year----</option>
               {% for year in year_choices %}
               <option value="{{year}}">{{year}}</option>
               {% endfor %}
@@ -18,11 +19,15 @@
           <button class="btn btn-primary btn-small">Generate Report</button>
         </div>
       </div>
+      <div class="form-group pull-right">
+	<a href="#" class="btn btn-default">
+	  <span class="glyphicon glyphicon-print"></span>
+	  &nbsp;Print
+	</a>
+      </div>
     </form>
     <hr/>
-  </div>
   
-  <div class="col-sm-12">
     <center><h3>Allocation of {{cur_year}} Fund</h3></center>
     </br>
     <div class="col-sm-5 panel panel-default">
@@ -37,21 +42,21 @@
 	  <tr>
 	    <th>PS</th>
 	    <td id="ps_amount">{{fund.ps_amount|intcomma}}</td>
-	    <td id="ps_percentile">{{fund.ps_percentile}}</td>
+	    <td id="ps_percentile">{{fund.ps_percentile|floatformat}}</td>
 	  </tr>
 	  <tr>
 	    <th>MOOE</th>
 	    <td id="mooe_amount">{{fund.mooe_amount|intcomma}}</td>
-	    <td id="mooe_percentile">{{fund.mooe_percentile}}</td>
+	    <td id="mooe_percentile">{{fund.mooe_percentile|floatformat}}</td>
 	  </tr>
 	  <tr>
 	    <th>CO</th>
 	    <td id="co_amount">{{fund.co_amount|intcomma}}</td>
-	    <td id="co_percentile">{{fund.co_percentile}}</td>
+	    <td id="co_percentile">{{fund.co_percentile|floatformat}}</td>
 	  </tr>
 	  <tr>
 	    <th>Total</th>
-	    <td id="total_fund">{{fund.total_fund|intcomma}}</td>
+	    <td id="total_fund">{{fund.total_fund|intcomma|floatformat}}</td>
 	    <td>100</td>
 	  </tr>
 	</tbody>
@@ -63,12 +68,8 @@
 	<div class="form-group">
 	  <select id="chart_type" name="chart_type" class="form-control" onchange="renderChart($(this).val())">
 	    <option value="bar">Bar</option>
-	    <option value="graph">Graph</option>
 	    <option value="pie">Pie</option>
 	  </select>
-	</div>
-	<div class="form-group">
-	  <button type="submit" class="btn btn-primary">View</button>
 	</div>
       </form>
       <div class="col-sm-12" id="fund_chart" style="width:100%; height:350px;">
