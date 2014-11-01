@@ -34,7 +34,9 @@
     <hr/>
     <div class="col-sm-12" id="fund_distrib_print">
       <div style="text-align: center">
-	<h3>{{year}} ARMM BUDGET DISTRIBUTION CHART</h3>
+	<h3>{{year}} ARMM BUDGET DISTRIBUTION CHART</br>
+	  
+	</h3>
 	<h4>As of {{today|date:"D d M Y"}}</h4>
       </div>
 
@@ -43,7 +45,7 @@
       <table border="1" id="tbl" class="table-normal" style="display: none">
 	{% for sector in sectors %}
 	<tr>
-	  <td id="label{{sector.id}}">{{sector.name}}</td>
+	  <td id="label{{sector.id}}">{{sector.name}}&nbsp;({{sector.percent|floatformat}}%)</td>
 	  <td id="value{{sector.id}}">{{sector.percent}}</td>
 	</tr>
 	{% endfor %}
@@ -88,7 +90,7 @@
 
   function print_fund_distrib(){
     var year = $("#year").val();
-    window.location = "/admin/fund_distrib_print?year="+year;
+    window.open("/admin/fund_distrib_print?year="+year);
   }				 
 
   function Popup(data) 

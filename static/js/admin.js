@@ -11,7 +11,6 @@ function setContentTLetter(){
 }
 
 
-
 function printSCMA(allocation){
     var approval = "";
     var approved = "";
