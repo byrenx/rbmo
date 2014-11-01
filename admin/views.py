@@ -711,21 +711,15 @@ def reqsStats(year):
 def mpfroReports(request, agency_id):
     context = RequestContext(request)
     cursor = connection.cursor()
-    data  = {'system_name' : SYSTEM_NAME,
-             'allowed_tabs': get_allowed_tabs(request.user.id),
-             'agency_id'   : agency_id,
-             'year'        : datetime.today().year,
-             'month'       : datetime.today().month,
-             'month_form'  : MonthForm({'month': datetime.today().month})
-    }
     try:
-
+        month = datetime.today().month
+        year = datetime.today().year
         if request.method=='POST':
-            data['year'] = request.POST.get('year')
-            data['month'] = request.POST.get('month')
+            year = request.POST.get('year')
+            month = request.POST.get('month')
 
-        agency = Agency.objects.get(id=data['agency_id'])        
-        perf_accs_query = "select "+months[int(data['month'])]+" as budget, "
+        agency = Agency.objects.get(id=agency_id)        
+        perf_accs_query = "select '"+months[int(month)]+"' as budget, "
         perf_accs_query+= "wfp_data.activity, "
         perf_accs_query+= "performance_report.* "
         perf_accs_query+= "from performance_report inner join wfp_data on "
@@ -734,11 +728,11 @@ def mpfroReports(request, agency_id):
         perf_accs_query+= "and performance_report.year=%s "
         perf_accs_query+= "and performance_report.month=%s"
 
-        cursor.execute(perf_accs_query, [agency.id, data['year'], data['month']])
+        cursor.execute(perf_accs_query, [agency.id, year, month])
         perf_accs = dictfetchall(cursor)
         monthly_acts_reports = []
         for acc in perf_accs:
-            query = "select indicator, "+months[int(data['month'])-1]+" as target, "+month_acc_dict[int(data['month'])]+" as acc from performancetarget where wfp_activity_id=%s"
+            query = "select indicator, "+months[int(month)-1]+" as target, "+month_acc_dict[int(month)]+" as acc from performancetarget where wfp_activity_id=%s"
             cursor.execute(query, [acc['activity_id']])
             indicators_accs = []
             for indicator in dictfetchall(cursor):
@@ -757,16 +751,22 @@ def mpfroReports(request, agency_id):
                                          'indicator_count' : (len(indicators_accs) + 1),
                                          'indicators_accs' : indicators_accs
                                      })
-        data['agency'] = agency
-        data['agency_tabs'] = getAgencyTabs(request.user.id, agency.id)
-        data['current_tab'] = "Monthly Report of Operation"
+    
         yrs_query = "select distinct(year) from performance_report"
         cursor.execute(yrs_query)
-        data['years'] = dictfetchall(cursor)
-        data['monthly_acts_reports'] = monthly_acts_reports
-        data['str_month'] = stringify_month(int(data['month']))
+        data = {'system_name'   : SYSTEM_NAME,
+                'agency'        : agency,
+                'agency_tabs'   : getAgencyTabs(request.user.id, agency.id),
+                'current_tab'   : "Monthly Report of Operation",
+                'years'         : dictfetchall(cursor),
+                'monthly_acts_reports':monthly_acts_reports,
+                'str_month'     : stringify_month(int(month)),
+                'month_form'    : MonthForm({'month': month}),
+                'year'          : year
+            }
+        
         return render_to_response('./admin/monthly_reps.html', data, context)
-    except:
+    except Agency.DoesNotExist:
         return HttpResponseRedirect('/admin/agencies')
 
 
