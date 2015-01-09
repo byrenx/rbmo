@@ -539,6 +539,8 @@ def hasWFP(year, agency):
 @transaction.atomic
 def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     context = RequestContext(request)
+    if "year" in request.GET:
+        year = request.GET.get("year")
     try:
         current_year = datetime.today().year
         years = []
@@ -557,8 +559,8 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
         #get submitted contract of service
         cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
         #store current agency session
-#        if 'agency_id' not in request.session:
- #           request.session['admin_agency_id'] = agency_id
+        #        if 'agency_id' not in request.session:
+        #           request.session['admin_agency_id'] = agency_id
 
         data = {'system_name'  : SYSTEM_NAME,
                 'current_tab'  : "Requirements",
@@ -579,6 +581,7 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
         return render_to_response('./admin/agency_docs_recording.html', data, context)
     except: #Agency.DoesNotExist
         return HttpResponseRedirect('/admin/agencies')  
+
 
 def getSumittedQReq(year, agency, quarter):
     quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)

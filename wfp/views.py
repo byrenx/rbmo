@@ -6,11 +6,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rbmo.models import Agency, WFPData, PerformanceTarget, CoRequest, PerformanceReport
 from django.contrib.auth.models import User
-from .forms import WFPForm, CORequestForm
+from .forms import WFPForm, CORequestForm, YearSelectForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import * 
 from datetime import datetime, date
+
 
 SYSTEM_NAME = 'e-RBMO Data Management System'
 
@@ -50,13 +51,16 @@ def wfpForm(request, agency_id):
     
 @login_required(login_url='/admin/')
 @transaction.atomic
-def viewWFP(request, agency_id, year = datetime.today().year):
+def viewWFP(request, agency_id):
     context = RequestContext(request)
     cursor = connection.cursor()
-
+    year = datetime.today().year
+    if "year" in request.GET:
+        year = request.GET.get("year")
+    
     try:
         current_year = datetime.today().year
-        year = datetime.today().year
+        form_yr_sel = YearSelectForm({'year' : year})
         agency = Agency.objects.get(id = agency_id)
         data = {'system_name'  : SYSTEM_NAME,
                 'current_tab'  : 'WFP',
@@ -68,7 +72,8 @@ def viewWFP(request, agency_id, year = datetime.today().year):
                 'year'         : year,
                 'pss'          : getProgActs('PS', agency, year),
                 'mooes'        : getProgActs('MOOE', agency, year),
-                'cos'          : getProgActs('CO', agency, year)
+                'cos'          : getProgActs('CO', agency, year),
+                'form_yr_sel'  : form_yr_sel 
         }
         return render_to_response('./wfp/agency_wfp_info.html', data, context)
     except Agency.DoesNotExist:

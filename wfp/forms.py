@@ -1,5 +1,15 @@
 from django import forms
 from rbmo.models  import WFPData, CoRequest
+from helpers.helpers import getYearsChoices
+
+
+class YearSelectForm(forms.Form):
+    year = forms.ChoiceField(choices = getYearsChoices(),
+                                    widget = forms.Select(attrs = {
+                                        'class' : 'form-control'
+                                    }))
+
+
 
 class WFPForm(forms.ModelForm):
     PROG = (('General Administration and Support Services', 'General Administration and Support Services'),

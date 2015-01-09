@@ -13,7 +13,18 @@
   <hr/>
   <div class="col-sm-12">
     <h4>Allotment Releases</h4>
-    <hr/>
+    <div class="form-inline pull-right">
+      <form action="/agency/fund/allotment_releases/{{agency.id}}" method="GET">
+	<div class="form-group">
+	  {{form.year}}
+	</div>
+	<div class="form-group">
+	  <button type="submit" class="btn btn-success"><span class="glyphicon glyphicon-search"></span></button>
+	</div>
+      </form>
+      </br>
+
+    </div>
     {% include "msg_pane.html" %}
     <form class="form-inline">
       <a href="/agency/fund/fund_release/{{agency.id}}/" class="btn btn-primary">

@@ -1,7 +1,7 @@
 from django import forms
 from rbmo.models  import AllotmentReleases
 from django.contrib.auth.models import User
-
+from wfp.forms import YearSelectForm
 
 MONTHS = ((1, 'January'), (2, 'February'), (3, 'March'), (4, 'April'), 
           (5, 'May'), (6, 'June'), (7, 'July'), (8, 'August'), (9, 'September'),
@@ -13,7 +13,8 @@ ALLOCATION = (('PS', 'Personal Services'),
              )  
 
 
-class MCASearchForm(forms.Form):    
+
+class MCASearchForm(YearSelectForm):    
     month = forms.ChoiceField(choices=MONTHS,
                               widget=forms.Select(attrs={
                                   'class': 'form-control'

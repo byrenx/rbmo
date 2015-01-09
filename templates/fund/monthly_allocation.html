@@ -15,12 +15,11 @@
   {%load humanize%}
   <form action="/agency/fund/monthly_alloc/{{agency.id}}/" class="form-inline" method="POST">{%csrf_token%}
     <input type="hidden" name="agency_id" value="{{agency.id}}">
-    <label>{{c_year}}</label>
     <div class="form-group">
-      {{form.month}}
+      {{form.year}}
     </div>
     <div class="form-group">
-      <input type="hidden" name="year" value="{{c_year}}">
+      {{form.month}}
     </div>
     <div class="form-group">
       {{form.allocation}}

@@ -5,6 +5,7 @@ from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
 from .forms import *
+from wfp.forms import YearSelectForm
 from rbmo.models import (Agency, 
 WFPData,
 MonthlyReqSubmitted,
@@ -36,6 +37,8 @@ def allotmentReleases(request, agency_id):
     total_CO      = 0
     year = datetime.today().year
     
+    if "year" in request.GET:
+        year = request.GET.get("year")
     try:
         agency                  = Agency.objects.get(id=agency_id)
         wfp_data_PS             = WFPData.objects.filter(agency=agency, year=year, allocation='PS').aggregate(total_sum = Sum('total'))
@@ -70,6 +73,8 @@ def allotmentReleases(request, agency_id):
         total_MOOE_balance = numify(wfp_data_MOOE['total_sum']) - total_MOOE
         total_CO_balance   = numify(wfp_data_CO['total_sum']) - total_CO
         
+        form = YearSelectForm({'year' : year})
+        
         data = {
             'system_name'             : SYSTEM_NAME,
             'agency'                  : agency,
@@ -91,7 +96,8 @@ def allotmentReleases(request, agency_id):
             'allowed_tabs'            : get_allowed_tabs(request.user.id),
             'today'                   : date.today(),
             'year'                    : year,
-            'user'                    : request.user
+            'user'                    : request.user,
+            'form'                    : form
         }
 
         #get releases
@@ -114,6 +120,7 @@ def monthlyAlloc(request, agency_id):
         amount = 0
 
         if request.method == 'POST':
+            
             allocation = request.POST.get('allocation')
             year = int(request.POST.get('year'))
             month = int(request.POST.get('month'))
@@ -161,7 +168,7 @@ def monthlyAlloc(request, agency_id):
                 'monthly_alloc_stat': monthly_alloc_stat,
                 'agency'      : agency,
                 'allocation'  : allocation,
-                'form'        : MCASearchForm({'month': month, 'allocation' : allocation}),
+                'form'        : MCASearchForm({'year': year, 'month': month, 'allocation' : allocation}),
                 'year'        : year,
                 'month_str'   : stringify_month(month),
                 'amount'      : numify(amount)-numify(getReleaseAmount(year, month, agency, allocation)),
