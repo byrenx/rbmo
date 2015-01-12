@@ -12,11 +12,6 @@
   <link rel="stylesheet" href="/static/css/rbmo.css" media="print" />
   <link rel="stylesheet" href="/static/widgEditor/css/widgEditor.css" media="print"/>
   <link rel="stylesheet" href="/static/widgEditor/css/widgEditor.css" media="screen"/>
-  <script type="text/javascript" src="/static/js/jQuery/jquery-1.9.1.js"></script>
-  <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
-  <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="/static/js/jquery.PrintArea.js_4.js"></script>
-  <script type="text/javascript" src="/static/widgEditor/scripts/widgEditor.js"></script>
   
   {% block css %}{% endblock %}
   <title>
@@ -56,7 +51,12 @@
 	
   {%block content%}
   {%endblock%}
-  {% block scripts %}
-  {% endblock scripts %}
 </body>
+<script type="text/javascript" src="/static/js/jQuery/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.PrintArea.js_4.js"></script>
+<script type="text/javascript" src="/static/widgEditor/scripts/widgEditor.js"></script>
+{% block scripts %}
+{% endblock scripts %}
 </html>

@@ -33,6 +33,8 @@ from decimal import *
 import time
 import sys
 import hashlib
+import json
+from django.core import serializers
 
 # Create your views here.
 SYSTEM_NAME = 'e-RBMO Data Management System'
@@ -819,8 +821,28 @@ def mpfro_form(request, agency_id):
 @login_required(login_url='/admin/')
 @transaction.atomic
 def submitQuarterReq(request):
-    agency = Agency.objects.get(id=request.POST.get('agency_id'))
-    year = request.POST.get('year', time.strftime('%Y'))
+    agency = Agency.objects.get(id=request.GET.get('agency_id'))
+    year = request.GET.get("year")
+    quarter = request.GET.get("quarter")
+    action = request.GET.get("action")
+    date_submit = request.GET.get("date_submit")
+    req_id = request.GET.get("req_id")
+
+    quarter_submit = QuarterReqSubmission(year = year,
+                                          agency = agency,
+                                          requirement = QuarterlyReq.objects.get(id=req_id),
+                                          quarter = quarter,
+                                          date_submitted = date_submit,
+                                          user = request.user
+    )
+    quarter_submit.save()
+
+    qReqs_subs = QuarterReqSubmission.objects.select_related('quarterlyreq').filter(year = year, agency=agency)
+    json_response = serializers.serialize("json", qReqs_subs)
+
+    return HttpResponse(json_response, content_type="application/json")
+    
+    '''
     quarter_req_submitted = request.POST.getlist('qr[]')
     for quarter in quarter_req_submitted:
         quarter = quarter.split(';')
@@ -832,8 +854,10 @@ def submitQuarterReq(request):
                                               user = request.user
                                           )
         quarter_submit.save()
+    '''
+    
 
-    return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/'+str(year)+'/')
+    #return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/'+str(year)+'/')
 
 
 @transaction.atomic

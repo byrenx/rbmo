@@ -17,11 +17,11 @@
       <span class="glyphicon glyphicon-plus-sign"></span>
       Add Program
     </a>
+    {%endif%}
     <a href="/agency/wfp/wfp_print?agency_id={{agency.id}}&year={{year}}" class="btn btn-default" target="blank">
       <span class="glyphicon glyphicon-list-alt"></span>
       Overview
     </a>
-    {% endif %}
   </div>
   <div class="col-sm-4">
     <form action="" class="form-horizontal">{% csrf_token %}

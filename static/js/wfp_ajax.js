@@ -3,7 +3,7 @@ var pi_lists = new List();
 function getWFPData(wfp_id){
     $.get('/agency/wfp/wfpdetail', {'wfp_id':wfp_id}, function(data){
 	$("#wfp_detail").html(data);
-s    });
+    });
 }
 
 function addPhysicalTarget(){
@@ -257,4 +257,16 @@ function delActivity(){
 	     
 	 }
 	);
+}
+
+
+function getPerformanceTarget(pft_id){
+    $.ajax({
+	url : "/agency/wfp/get/performance/target",
+	data : {'target_id' : pft_id},
+	type : 'GET',
+	success: function(data){
+	    alert(data);
+	}
+    });
 }

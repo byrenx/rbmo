@@ -22,7 +22,7 @@
       {% for target in perf_targets%}
       <tr>
 	<td>
-	  <a title="Edit">
+	  <a title="Edit" href="javascript:getPerformanceTarget({{target.id}})">
 	    <span class="glyphicon glyphicon-edit"></span>
 	  </a>&nbsp;
 	  <a href="javascript:delPerfTarget({{target.id}}, {{wfp.id}});" title="Delete">

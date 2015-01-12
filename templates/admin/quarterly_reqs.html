@@ -5,9 +5,9 @@
     </h4>
   </div>
   <div id="quarterly_req" class="panel-collapse collapse">
-    <form action="/admin/submit_quarter_reqs" method="POST">{% csrf_token %}
-      <input type="hidden" name="agency_id" value="{{agency.id}}">
-      <input type="hidden" name="year" value="{{year}}">
+    <form action="#" method="POST">{% csrf_token %}
+      <input type="hidden" id="id_agency_id" name="agency_id" value="{{agency.id}}">
+      <input type="hidden" id="id_year" name="year" value="{{year}}">
       <table class="table">
 	<thead>
 	  <tr>
@@ -27,14 +27,14 @@
 	      {% if requirement.id in q1_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
-	      <input type="checkbox" name="qr[]" value="1;{{requirement.id}}"/>
+	      <input type="checkbox" name="qr[]" value="1;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
 	      {% endif %}
 	    </td>
 	    <td id="q2{{requirement.id}}">
 	      {% if requirement.id in q2_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
-	      <input type="checkbox" name="qr[]" value="2;{{requirement.id}}"/>
+	      <input type="checkbox" name="qr[]" value="2;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
 	      {% endif %}
 	    </td>
 	    
@@ -42,14 +42,14 @@
 	      {% if requirement.id in q3_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
-	      <input type="checkbox" name="qr[]" value="3;{{requirement.id}}"/>
+	      <input type="checkbox" name="qr[]" value="3;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
 	      {% endif %}
 	    </td>
 	    <td id="q4{{requirement.id}}">
 	      {% if requirement.id in q4_req_s %}
 	      <span class="glyphicon glyphicon-check text-success"></span>
 	      {%else%}
-	      <input type="checkbox" name="qr[]" value="4;{{requirement.id}}"/>
+	      <input type="checkbox" name="qr[]" value="4;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
 	      {% endif %}
 	    </td>
 	  </tr>
@@ -98,7 +98,11 @@
 		</a>
 	      </td>
 	      <td>{{req.requirement.name}}</td>
-	      <td>{{req.date_submitted}}</td>
+	      <td>
+		<a href="" data-toggle="modal" data-target="#id_reqsDateInputForm">
+		  <span class="glyphicon glyphicon-pencil"></span>
+		</a>&nbsp;{{req.date_submitted}}
+	      </td>
 	    </tr>
 	    {%endfor%}
 	  </tbody>
@@ -107,3 +111,4 @@
     </form>
   </div>
 </div>
+{%include "./admin/requirements_dateinput_form.html"%}

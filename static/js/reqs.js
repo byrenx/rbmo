@@ -52,3 +52,46 @@ function removeQReqStatus(quarter, requirement_id){
 	$("#q4"+requirement_id).html(html);
     }
 }
+
+function setQuarterSubmitReq(self){
+    q_rid = self.value.split(';');
+    quarter = q_rid[0]
+    req_id  = q_rid[1]
+    agency_id = $("#id_agency_id").val();
+
+    if (self.checked){
+	//set values to fields
+	$("#md_req_action").val("add");
+	$("#md_quarter").val(quarter);
+	$("#md_req_id").val(req_id);
+	$("#md_agency_id").val(agency_id);
+	$("#id_reqsDateInputForm").modal("show");
+    }
+
+}
+
+
+
+function submitQuarterReq(){
+    var data = {'req_id'  : $("#md_req_id").val(),
+		'quarter' : $("#md_quarter").val(),
+		'action'  : $("#md_req_action").val(),
+		'agency_id' : $("#md_agency_id").val(),
+		'date_submit' : $("#md_date").val(),
+		'year'     : $("#md_year").val()
+	       };
+
+    $.ajax({
+	url  : "/admin/submit_quarter_reqs",
+	data : data,
+	type : "GET",
+	dataType: "json",
+	success: function(json){
+	    console.log(json[0].id)
+	},
+	error: function(xhr, textStatus, errorThrown){
+	    alert(textStatus + ": " + errorThrown);
+	}
+    });
+    
+}

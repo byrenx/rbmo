@@ -630,3 +630,23 @@ def delCoRequest(request, co_id):
     except:
         pass
     
+def getProgPT(request):
+    context = ReuestContext(request)
+    prog_id = request.GET.get("prog_id")
+    performance_targets = PerformanceTarget.objects.filter(wfp_activity = prog_id)
+    pt_list = []
+    for pt in performance_targets:
+        pt_list.append({'id' : pt.id,
+                        'indicator' : pt.indicator,
+                        'q1'   : pt.jan + pt.feb + pt.mar,
+                        'q2'   : pt.apr + pt.may + pt.jun,
+                        'q3'   : pt.jul + pt.aug + pt.sept,
+                        'q4'   : pt.oct + pt.nov + pt.dec})
+    return render_to_response("./wfp/performance_targets.html", data, context)
+
+
+def getPerfTarget(request):
+    context = RequestContext(request)
+    target_id = request.GET.get("target_id")
+    pf = PerformanceTarget.objects.get(id = target_id)
+    return HttpResponse("{'id' : %s, 'indicator' : '%s', 'jan': %s, 'feb': %s}" %(pf.id, pf.indicator, pf.jan, pf.feb))

@@ -18,5 +18,7 @@ urlpatterns = patterns('',
     url(r'^co_request/(?P<agency_id>[0-9]+)/$', coRequests),
     url(r'^co_request_form/(?P<agency_id>[0-9]+)/$', coRequestForm),
     url(r'^co_request_form/(?P<agency_id>[0-9]+)/(?P<co_id>[0-9]+)/$', coRequestForm),
-    url(r'^del_co_request/(?P<co_id>[0-9]+)', delCoRequest)
+    url(r'^del_co_request/(?P<co_id>[0-9]+)', delCoRequest),
+    #new urls
+    url(r'^get/performance/target/$', getPerfTarget),
 )
