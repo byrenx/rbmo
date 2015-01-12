@@ -543,46 +543,41 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     context = RequestContext(request)
     if "year" in request.GET:
         year = request.GET.get("year")
-    try:
-        current_year = datetime.today().year
-        years = []
-        while current_year>=2013:
-            years.append(current_year)
-            current_year-=1
-        #get the agency
-        agency = Agency.objects.get(id=agency_id)
-        #year
-        monthly   = getAgencyMonthlyReq(year, agency)
-        quarterly = QuarterlyReq.objects.all()
-        q1_req_s  = getSumittedQReq(year, agency, 1) #1st quarter submitted requirements
-        q2_req_s  = getSumittedQReq(year, agency, 2) #2nd quarter submitted requirements
-        q3_req_s  = getSumittedQReq(year, agency, 3) #3rd quarter submitted requirements
-        q4_req_s  = getSumittedQReq(year, agency, 4) #4th quarter submitted requirements
-        #get submitted contract of service
-        cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
-        #store current agency session
+        #    try:
+    current_year = datetime.today().year
+    years = []
+    while current_year>=2013:
+        years.append(current_year)
+        current_year-=1
+    #get the agency
+    agency = Agency.objects.get(id=agency_id)
+    #year
+    monthly   = getAgencyMonthlyReq(year, agency)
+    quarterly = QuarterlyReq.objects.all()
+    quarter_of_month = exactQuarterofMonth(datetime.today().month)
+    q_reqs  = getSumittedQReq(year, agency, quarter_of_month) #1st quarter submitted requirements
+    #get submitted contract of service
+    cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
+    #store current agency session
         #        if 'agency_id' not in request.session:
         #           request.session['admin_agency_id'] = agency_id
 
-        data = {'system_name'  : SYSTEM_NAME,
-                'current_tab'  : "Requirements",
-                'allowed_tabs' : get_allowed_tabs(request.user.id),
-                'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
-                'agency'       : agency,
-                'years'        : years,
-                'year'         : year,
-                'monthly'      : monthly,
-                'quarterly'    : quarterly,
-                'q1_req_s'     : q1_req_s,
-                'q2_req_s'     : q2_req_s,
-                'q3_req_s'     : q3_req_s,
-                'q4_req_s'     : q4_req_s,
-                'cos_submitted': cos_submitted,
-                'quarter_req_submitted' : getSubmittedQuarterReq(year, agency, 1)}
-
-        return render_to_response('./admin/agency_docs_recording.html', data, context)
-    except: #Agency.DoesNotExist
-        return HttpResponseRedirect('/admin/agencies')  
+    data = {'system_name'  : SYSTEM_NAME,
+            'current_tab'  : "Requirements",
+            'allowed_tabs' : get_allowed_tabs(request.user.id),
+            'agency_tabs'  : getAgencyTabs(request.user.id, agency.id),
+            'agency'       : agency,
+            'years'        : years,
+            'year'         : year,
+            'monthly'      : monthly,
+            'quarterly'    : quarterly,
+            'q_reqs'       : q_reqs,
+            'cos_submitted': cos_submitted,
+            'quarter_req_submitted' : getSubmittedQuarterReq(year, agency, quarter_of_month)}
+    
+    return render_to_response('./admin/agency_docs_recording.html', data, context)
+    #except: #Agency.DoesNotExist
+    #    return HttpResponseRedirect('/admin/agencies')  
 
 
 def getSumittedQReq(year, agency, quarter):
@@ -594,15 +589,11 @@ def getSumittedQReq(year, agency, quarter):
     return quarter_submitted
 
 
-def getSubmittedQuarterReq(year, agency, quarter=0):
-    if quarter == 0:
-        quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency)
-        return quarter_req_submitted
-    else:
-        quarter_req_submitted = QuarterReqSubmission.objects.filter(year=year, agency=agency, quarter=quarter)   
-        return quarter_req_submitted
+def getSubmittedQuarterReq(year, agency, quarter):
+    query = "SELECT *, quarterly_req.id as q_id FROM quarter_req_submitted RIGHT OUTER JOIN quarterly_req ON quarter_req_submitted.year = %s AND quarter_req_submitted.quarter = %s AND agency_id = %s AND quarterly_req.id = quarter_req_submitted.requirement_id"
 
-
+    quarter_req_submitted = QuarterReqSubmission.objects.raw(query, [year, quarter, agency.id])
+    return quarter_req_submitted
 
 
 def getDisplaySubmittedQReq(request):
@@ -613,7 +604,9 @@ def getDisplaySubmittedQReq(request):
         agency = Agency.objects.get(id=agency_id)
         quarter = request.GET.get("quarter")
         submitted_req = getSubmittedQuarterReq(year, agency, quarter)
-        data = {'quarter_req_submitted' : submitted_req}
+        q_reqs = getSumittedQReq(year, agency, quarter)
+        data = {'quarter_req_submitted' : submitted_req,
+                'q_reqs'                : q_reqs}
         return render_to_response("./admin/submitted_qreqtable.html", data, context)
     except:
         return HttpResponse("</h3>Error</h3><p>Invalid Request Found</p>")
