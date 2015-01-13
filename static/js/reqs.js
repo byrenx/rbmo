@@ -13,7 +13,7 @@ function removeMonthlyReqMode(tag_id, req_sub_id){
 
 
 function showSubmittedQReqs(){
-    var quarter = $("#quarter").val();
+    var quarter = $("#id_quarter").val();
     var agency_id = $("#agency_id").val();
     var year = $("#year").val();
 
@@ -28,14 +28,17 @@ function showSubmittedQReqs(){
 }
 
 
-function removeQReq(id, requirement_id, quarter){
-    var data = {id: id}
-    $.get("/requirements/delete_quarter_sub_req", data, function(rs){
-	rs = new String(rs).trim();
-	if (rs=="done"){
-	    //delete_row
-	    $("#qreq"+id).remove();
-	    removeQReqStatus(quarter, requirement_id)
+function removeQReq(id){
+    var data = {id: id};
+    $.ajax({
+	url  : "/requirements/delete_quarter_sub_req",
+	data : data,
+	type : "GET",
+	success: function(data){
+	    showSubmittedQReqs();
+	},
+	error: function(xhr, textStatus, errorThrown){
+	    alert(textStatus + ": " + errorThrown);
 	}
     });
 }
@@ -53,15 +56,14 @@ function removeQReqStatus(quarter, requirement_id){
     }
 }
 
-function setQuarterSubmitReq(self){
-    q_rid = self.value.split(';');
-    quarter = q_rid[0]
-    req_id  = q_rid[1]
+function setQuarterSubmitReq(self, action){
+    quarter = $("#id_quarter").val();
+    req_id  = self.value;
     agency_id = $("#id_agency_id").val();
 
     if (self.checked){
 	//set values to fields
-	$("#md_req_action").val("add");
+	$("#md_req_action").val(action);
 	$("#md_quarter").val(quarter);
 	$("#md_req_id").val(req_id);
 	$("#md_agency_id").val(agency_id);
@@ -69,6 +71,19 @@ function setQuarterSubmitReq(self){
     }
 
 }
+
+//close date input modal for quarterly requirements
+$("#close_activity_modal").click(function(){
+    req_id = $("#md_req_id").val();
+    $("#qchk-"+req_id).attr("checked", false);
+});
+
+
+$(".close").click(function(){
+    req_id = $("#md_req_id").val();
+    $("#qchk-"+req_id).attr("checked", false);
+
+});
 
 
 
@@ -87,11 +102,15 @@ function submitQuarterReq(){
 	type : "GET",
 	dataType: "json",
 	success: function(json){
-	    console.log(json[0].id)
+	    console.log(json[0].id);
+	    $("#id_reqsDateInputForm").modal("hide");
+	    showSubmittedQReqs();
 	},
 	error: function(xhr, textStatus, errorThrown){
 	    alert(textStatus + ": " + errorThrown);
 	}
     });
+    //show submitted requirements
+
     
 }

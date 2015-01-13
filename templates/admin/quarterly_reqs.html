@@ -8,65 +8,6 @@
     <form action="#" method="POST">{% csrf_token %}
       <input type="hidden" id="id_agency_id" name="agency_id" value="{{agency.id}}">
       <input type="hidden" id="id_year" name="year" value="{{year}}">
-      <!---
-      <table class="table">
-	<thead>
-	  <tr>
-	    <th>Req</th>
-	    <th>Q1</th>
-	    <th>Q2</th>
-	    <th>Q3</th>
-	    <th>Q4</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  
-	  {% for requirement in quarterly %}
-	  <tr>
-	    <td>{{requirement.name}}</td>
-	    <td id="q1{{requirement.id}}">
-	      {% if requirement.id in q1_req_s %}
-	      <span class="glyphicon glyphicon-check text-success"></span>
-	      {%else%}
-	      <input type="checkbox" name="qr[]" value="1;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
-	      {% endif %}
-	    </td>
-	    <td id="q2{{requirement.id}}">
-	      {% if requirement.id in q2_req_s %}
-	      <span class="glyphicon glyphicon-check text-success"></span>
-	      {%else%}
-	      <input type="checkbox" name="qr[]" value="2;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
-	      {% endif %}
-	    </td>
-	    
-	    <td id="q3{{requirement.id}}">
-	      {% if requirement.id in q3_req_s %}
-	      <span class="glyphicon glyphicon-check text-success"></span>
-	      {%else%}
-	      <input type="checkbox" name="qr[]" value="3;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
-	      {% endif %}
-	    </td>
-	    <td id="q4{{requirement.id}}">
-	      {% if requirement.id in q4_req_s %}
-	      <span class="glyphicon glyphicon-check text-success"></span>
-	      {%else%}
-	      <input type="checkbox" name="qr[]" value="4;{{requirement.id}}" onclick="setQuarterSubmitReq(this)"/>
-	      {% endif %}
-	    </td>
-	  </tr>
-	  {% endfor %}
-	</tbody>
-      </table>
-      <div class="panel-body">
-	<!---<div class="form-group">
-	    <label>Date Submitted</label>
-	<input type="date" name="date_submitted" class="form-control">
-	</div>
-	
-	<div class="form-group">
-	  <input class="btn btn-primary" type="submit" name="" value="Submit">
-	</div>
-      </div>--->
       <div class="panel-footer" style="background-color:white">
 	<table class="table table-condensed table-striped table-bordered">
 	  <tr>
@@ -76,7 +17,7 @@
 	    <th colspan="3">
 	      <input type="hidden" id="year" name="year" value="{{year}}">
 	      <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
-	      <select id="quarter" name="quarter" class="form-control" onchange="showSubmittedQReqs()">
+	      <select id="id_quarter" name="quarter" class="form-control" onchange="showSubmittedQReqs()">
 		<option value="1">1st Quarter</option>
 		<option value="2">2nd Quarter</option>
 		<option value="3">3rd Quarter</option>
@@ -94,11 +35,11 @@
 	    <tr id="qreq{{req.id}}">
 	      <td>
 		{%if req.q_id in q_reqs%}
-		<a href="javascript:removeQReq({{req.id}}, {{req.requirement.id}}, {{req.quarter}})">
+		<a href="javascript:removeQReq({{req.id}})">
 		  <span class="glyphicon glyphicon-remove text-danger"></span>
 		</a>
 		{%else%}
-		<input type="checkbox" title="check to submit">
+		<input id="qchk-{{req.q_id}}" type="checkbox" title="check to submit" value="{{req.q_id}}" onclick="setQuarterSubmitReq(this, 'add')">
 		{%endif%}
 	      </td>
 	      <td>{{req.name}}</td>

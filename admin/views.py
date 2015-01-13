@@ -553,7 +553,6 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     agency = Agency.objects.get(id=agency_id)
     #year
     monthly   = getAgencyMonthlyReq(year, agency)
-    quarterly = QuarterlyReq.objects.all()
     quarter_of_month = exactQuarterofMonth(datetime.today().month)
     q_reqs  = getSumittedQReq(year, agency, quarter_of_month) #1st quarter submitted requirements
     #get submitted contract of service
@@ -570,7 +569,6 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
             'years'        : years,
             'year'         : year,
             'monthly'      : monthly,
-            'quarterly'    : quarterly,
             'q_reqs'       : q_reqs,
             'cos_submitted': cos_submitted,
             'quarter_req_submitted' : getSubmittedQuarterReq(year, agency, quarter_of_month)}
@@ -590,7 +588,7 @@ def getSumittedQReq(year, agency, quarter):
 
 
 def getSubmittedQuarterReq(year, agency, quarter):
-    query = "SELECT *, quarterly_req.id as q_id FROM quarter_req_submitted RIGHT OUTER JOIN quarterly_req ON quarter_req_submitted.year = %s AND quarter_req_submitted.quarter = %s AND agency_id = %s AND quarterly_req.id = quarter_req_submitted.requirement_id"
+    query = "SELECT quarter_req_submitted.*, quarterly_req.id as q_id, quarterly_req.name  FROM quarter_req_submitted RIGHT OUTER JOIN quarterly_req ON quarter_req_submitted.year = %s AND quarter_req_submitted.quarter = %s AND agency_id = %s AND quarterly_req.id = quarter_req_submitted.requirement_id"
 
     quarter_req_submitted = QuarterReqSubmission.objects.raw(query, [year, quarter, agency.id])
     return quarter_req_submitted
@@ -601,8 +599,8 @@ def getDisplaySubmittedQReq(request):
     try:
         year = request.GET.get("year")
         agency_id = request.GET.get("agency_id")
-        agency = Agency.objects.get(id=agency_id)
         quarter = request.GET.get("quarter")
+        agency = Agency.objects.get(id=agency_id)
         submitted_req = getSubmittedQuarterReq(year, agency, quarter)
         q_reqs = getSumittedQReq(year, agency, quarter)
         data = {'quarter_req_submitted' : submitted_req,
@@ -835,23 +833,6 @@ def submitQuarterReq(request):
 
     return HttpResponse(json_response, content_type="application/json")
     
-    '''
-    quarter_req_submitted = request.POST.getlist('qr[]')
-    for quarter in quarter_req_submitted:
-        quarter = quarter.split(';')
-        quarter_submit = QuarterReqSubmission(year = year,
-                                              agency = agency,
-                                              requirement = QuarterlyReq.objects.get(id=int(quarter[1])),
-                                              quarter = int(quarter[0]),
-                                              date_submitted = datetime.now(),
-                                              user = request.user
-                                          )
-        quarter_submit.save()
-    '''
-    
-
-    #return HttpResponseRedirect('/admin/manage_agency_docs/'+str(agency.id)+'/'+str(year)+'/')
-
 
 @transaction.atomic
 def allot_releases(request):

@@ -117,15 +117,11 @@ def delQuarterSubmittedReqs(request):
     this function  delete the quarterly requirement submitted by
     an agency if it is mistakenly checked
     '''
-    try:
-        submission_id = request.GET.get("id")
-        q_req_submitted  = QuarterReqSubmission.objects.get(id = submission_id)
-        q_req_submitted.delete()
-        return HttpResponse("done")
-        #return HttpResponseRedirect("/admin/manage_agency_docs/"+str(q_req_submitted.agency.id)+"/")
-    except:
-        return HttpResponse("failed")
-        #return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
+    submission_id = request.GET.get("id")
+    q_req_submitted = QuarterReqSubmission.objects.get(id = submission_id)
+    q_req_submitted.delete()
+    return HttpResponse("done")
+    
 
 @login_required(login_url='/admin/')
 def delCOSSubmitted(request, requirement_id):
