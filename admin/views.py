@@ -557,9 +557,6 @@ def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     q_reqs  = getSumittedQReq(year, agency, quarter_of_month) #1st quarter submitted requirements
     #get submitted contract of service
     cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
-    #store current agency session
-        #        if 'agency_id' not in request.session:
-        #           request.session['admin_agency_id'] = agency_id
 
     data = {'system_name'  : SYSTEM_NAME,
             'current_tab'  : "Requirements",
@@ -814,25 +811,36 @@ def mpfro_form(request, agency_id):
 def submitQuarterReq(request):
     agency = Agency.objects.get(id=request.GET.get('agency_id'))
     year = request.GET.get("year")
-    quarter = request.GET.get("quarter")
     action = request.GET.get("action")
     date_submit = request.GET.get("date_submit")
-    req_id = request.GET.get("req_id")
 
-    quarter_submit = QuarterReqSubmission(year = year,
-                                          agency = agency,
-                                          requirement = QuarterlyReq.objects.get(id=req_id),
-                                          quarter = quarter,
-                                          date_submitted = date_submit,
-                                          user = request.user
-    )
-    quarter_submit.save()
 
+
+    if action == "add":
+        req_id = request.GET.get("req_id")
+        quarter = request.GET.get("quarter")
+        quarter_submit = QuarterReqSubmission(year = year,
+                                              agency = agency,
+                                              requirement = QuarterlyReq.objects.get(id=req_id),
+                                              quarter = quarter,
+                                              date_submitted = date_submit,
+                                              user = request.user
+                                        )
+        quarter_submit.save()
+
+    if action == "edit":
+        qrs_id = request.GET.get("qrs_id")
+        quarter_submit = QuarterReqSubmission.objects.get(id=qrs_id)
+        quarter_submit.date_submitted = date_submit
+        quarter_submit.save()
+        
+    '''
     qReqs_subs = QuarterReqSubmission.objects.select_related('quarterlyreq').filter(year = year, agency=agency)
     json_response = serializers.serialize("json", qReqs_subs)
-
-    return HttpResponse(json_response, content_type="application/json")
     
+    return HttpResponse(json_response, content_type="application/json")
+    '''
+    return HttpResponse("success")
 
 @transaction.atomic
 def allot_releases(request):

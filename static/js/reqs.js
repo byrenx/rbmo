@@ -72,6 +72,17 @@ function setQuarterSubmitReq(self, action){
 
 }
 
+
+function setEditDateQRS(qrs_id, date_submit){
+    //qrs_id : submitted quarter requirement idx
+    //date_submit : current submitted date of the requirement
+    $("#md_qrs_id").val(qrs_id);
+    $("#md_date").val(date_submit);
+    $("#md_req_action").val("edit");
+    $("#md_agency_id").val($("#id_agency_id").val());
+    $("#id_reqsDateInputForm").modal("show");
+}
+
 //close date input modal for quarterly requirements
 $("#close_activity_modal").click(function(){
     req_id = $("#md_req_id").val();
@@ -93,16 +104,16 @@ function submitQuarterReq(){
 		'action'  : $("#md_req_action").val(),
 		'agency_id' : $("#md_agency_id").val(),
 		'date_submit' : $("#md_date").val(),
-		'year'     : $("#md_year").val()
+		'year'     : $("#md_year").val(),
+		'qrs_id'   : $("#md_qrs_id").val()
 	       };
 
     $.ajax({
 	url  : "/admin/submit_quarter_reqs",
 	data : data,
 	type : "GET",
-	dataType: "json",
 	success: function(json){
-	    console.log(json[0].id);
+	    //console.log(json[0].id);
 	    $("#id_reqsDateInputForm").modal("hide");
 	    showSubmittedQReqs();
 	},

@@ -11,9 +11,6 @@
       <div class="panel-footer" style="background-color:white">
 	<table class="table table-condensed table-striped table-bordered">
 	  <tr>
-	    <th colspan="3">Submitted Quarterly Requirements</th>
-	  </tr>
-	  <tr>
 	    <th colspan="3">
 	      <input type="hidden" id="year" name="year" value="{{year}}">
 	      <input type="hidden" id="agency_id" name="agency_id" value="{{agency.id}}">
@@ -45,7 +42,7 @@
 	      <td>{{req.name}}</td>
 	      <td>
 		{%if req.q_id in q_reqs%}
-		<a href="" data-toggle="modal" data-target="#id_reqsDateInputForm">
+		<a href="javascript:setEditDateQRS({{req.id}}, '{{req.date_submitted|date:'Y-m-d'}}')">
 		  <span class="glyphicon glyphicon-pencil"></span>
 		</a>
 		{%endif%}
