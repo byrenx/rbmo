@@ -22,7 +22,7 @@ STATIC_PATH   = os.path.join(BASE_DIR, 'static')
 SECRET_KEY = '*d#x#)e90lxef!jl^nk3#^rq2-#dksb91cuqtra%p2t4++tpc8'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 #DEBUG = True
 
 TEMPLATE_DEBUG = True
@@ -31,7 +31,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE=True
 
 ADMINS = ('Jofel Bayron', 'bayron.jofel@gmail.com')
 
-#ALLOWED_HOSTS = ['byrenx.pythonanywhere.com']
+ALLOWED_HOSTS = ['byrenx.pythonanywhere.com']
 
 
 # Application definition
@@ -69,7 +69,7 @@ TEMPLATE_DIRS = (TEMPLATE_PATH.replace('\\','/'),)
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 #mysql settings 
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -80,9 +80,9 @@ DATABASES = {
         'PORT': '3306',     
     }
 }
-
-#pythonanywhere settings
 '''
+#pythonanywhere settings
+
 DATABASES = {
     'default': {        
         'ENGINE': 'django.db.backends.mysql',
@@ -95,7 +95,7 @@ DATABASES = {
         'PORT': '',                   
     }
 }
-'''
+
 
 #postgre sql settings
 '''
