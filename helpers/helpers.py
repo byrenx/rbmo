@@ -104,6 +104,19 @@ def quarterofMonth(month):
     else:
         return -1
 
+def strRequiredQuarter(month, year):
+    if month>=1 and month<=3:
+        return '%s 4th quarter' %(year-1)
+    elif month>=4 and month<=6:
+        return '%s 1st quarter' %(year) 
+    elif month>=7 and month<=9:
+        return '%s 2nd' %(year)
+    elif month>=10 and month<=12:
+        return '%s 3rd' %(year)
+    else:
+        return ''
+
+
 def exactQuarterofMonth(month):
     #returns the exact quarter where the month belong
     if month>=1 and month<=3:

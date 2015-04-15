@@ -1198,29 +1198,39 @@ def agenciesIncReqList(request):
 
     agencies = Agency.objects.all()
     count = 1
+    quarterly_reqs = []
+    monthly_reqs = []
+
     for agency in agencies:
         monthly = isMRS(year, month, agency)
         quarterly = is_allQRS(year, month, agency)
-        if not monthly or not quarterly:
-            lack_reqs = lqm(year, month, agency)
-            if not monthly:
-                req_name = '%s - Monthly Physical and Financial Report' %(stringify_month(month-1))
-                lack_reqs.append({'name' : req_name})
-            agency_list.append({'count' : count,
-                                'name'  : agency.name,
-                                'reqs'  : lack_reqs
-                            })
+        if not monthly:
+            req_name = '%s-%s Monthly Physical and Financial Report' %(stringify_month(month-1), year)
+            monthly_reqs.append({'name' : req_name})
+           
             count+=1
+
+        if not quarterly:
+            quarterly_reqs = lqm(year, month, agency)
+
+        agency_list.append({'count' : count,
+                            'name'  : agency.name,
+                            'monthly_reqs'   : monthly_reqs,
+                            'quarterly_reqs' : quarterly_reqs})
+        monthly_reqs = []
+        quarter_reqs = []
+            
     
     data = {'system_name'  : SYSTEM_NAME,
             'year'         : year,
+            'quarter_required': strRequiredQuarter(month, year),
             'month'        : month,
             'month_str'    : stringify_month(month),
             'allowed_tabs' : get_allowed_tabs(request.user.id),
             'agencies'     : agency_list,
             'form'         : MonthForm({'month': month}),
-            'total'        : count-1
-    }
+            'total'        : count-1}
+
     return render_to_response('./admin/agencies_with_inc_reqs_list.html', data, context)
 
 

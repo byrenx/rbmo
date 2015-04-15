@@ -48,8 +48,11 @@
 	  <td>{{agency.name}}</td>
 	  <td>
 	    <ul>
-	      {%for req in agency.reqs%}
+	      {%for req in agency.monthly_reqs%}
 	      <li>{{req.name}}</li>
+	      {%endfor%}
+	      {%for req in agency.quarterly_reqs%}
+	      <li>{{quarter_required}} Quarter&nbsp;-&nbsp;{{req.name}}</li>
 	      {%endfor%}
 	    </ul>
 	  </td>
