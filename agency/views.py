@@ -26,9 +26,11 @@ month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
                   9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
 }
 
-
+#5c7a950c4057d3f316675b9e75ff3583a38cdefeb387bd712b82e0af2afc3e19 - armm_12345
+#69973f3169b97e74256576836ff33a88f96d77b43220f7071a888d91cb500297
 def login(request):
     context = RequestContext(request)
+    #<agency_name>_armm
     default_pword = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'
     h = hashlib.sha256()
     data = {'form' : LoginForm()}
@@ -292,7 +294,8 @@ def monthlyReports(request):
             perf_accs = dictfetchall(cursor)
             monthly_acts_reports = []
             for acc in perf_accs:
-                query = "select indicator, "+months[month-1]+" as target, "+month_acc_dict[month]+" as acc from performancetarget where wfp_activity_id=%s"
+                print acc['activity_id']
+                query = "select indicator, "+months[month]+" as target, "+month_acc_dict[month]+" as acc from performancetarget where wfp_activity_id=%s"
                 cursor.execute(query, [acc['activity_id']])
                 indicators_accs = []
                 indicators = dictfetchall(cursor)

@@ -1,0 +1,68 @@
+<!-- Modal -->
+<div class="modal fade" id="monthlyreport_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" style="width: 75%;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Monthly Report</h4>
+      </div>
+      <form>
+	<div class="modal-body">
+	  <div class="container">
+	    <div class="col-md-6">
+	      <!----style="position: relative; height: auto auto; width: 45%; float: left; margin-right: 5%; height: 400px;"---->
+	      <table class="table" style="background-color: rgba(240,240,240, .5)">
+		<tr>
+		  <td>
+		    <label>Month</label>
+		    <input type="month" class="form-control" id="month">
+		  </td>
+		</tr>
+		<tr>
+		  <td>
+		    <label>Activity</label>
+		    <select id="activity" name="activity" class="form-control" onchange="getPerformanceTarget()">
+		      <option>-----Project/Activity-----</option>
+		    </select>
+		  </td>
+		</tr>
+		<tr>
+		  <td>
+		    <label>Alotment Receive</label>
+		    <input type="number" class="form-control" id="received" name="received" required="required" {%if action == "edit" %} value="{{activity_info.received}}"{%endif%} onkeyup="showReportBalance()">
+		  </td>
+		</tr>
+		<tr>
+		  <td>
+		    <label>Obligation Incurred</label>
+		    <input type="number" class="form-control" id="incurred" name="incurred" required="required" {%if action == "edit" %} value="{{activity_info.incurred}}" {%endif%} onkeyup="showReportBalance()">
+		  </td>
+		</tr>
+		<tr>
+		  <td>
+		    <label>Unincurred Obligation</label>
+		    <input type="text" readonly="readonly" id="id_uo" class="form-control">
+		  </td>
+		</tr>
+	      </table>
+	    </div>
+	    
+	    <div class="col-md-6">
+	      <div>
+		<h1 style="text-align:center;">
+		  <span class="glyphicon glyphicon-question-sign"></span>
+		</h1>
+		<p style="text-align: center;">Please Select an Activity to show Performance Indicators</p>
+	      </div>
+	    </div>
+
+	  </div>
+	</div><!----/.modalbocy--->
+	<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+	</div>
+      </form>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

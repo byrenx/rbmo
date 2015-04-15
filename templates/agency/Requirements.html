@@ -1,77 +1,71 @@
-{% extends 'agentbase.html' %}
+{% extends './agency/base.html' %}
 
-{% block content %}
-<content>
-  <div class="container">
-    <div class="row">
-      {%include "./agency/side_bar.html"%}
-      <div class="col-md-12" style="background-color: white; min-height: 550px;padding:20px">
-	<div class="col-md-12" style="text-align: right;">
-	  <form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
-	    <label class="control-label">Filter</label>
-	    {{year_form.year}}
-	    {{month_form.month}}
-	    <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
-	  </form>
-	</div> 
-	
-	<h3>{{str_month}}&nbsp;-&nbsp;{{year}} Requirement Status</h3>
-	<div class="col-md-12">
-	  <div class="col-sm-6">
-	    <div class="panel panel-default" style="min-height:400px;">
-	      <div class="panel-heading">
-		<h4 class="panel-title">Submitted Requirements</h4>
-	      </div>
-	      {%if submitted_reqs%}
-	      <table class="table table-condensed">
-		{%for req in submitted_reqs%}
-		<tr>
-		  <td>
-		    <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}}
-		    <p>
-		      Submitted on {{req.date_submitted}}
-		    </p>
-		  </td>
-		</tr>
-		{%endfor%}
-	      </table>
-	      {%else%}
-	      <div class="panel-body">
-		<p class="alert alert-danger">
-		  Currently No Requirements Submitted
-		</p>
-	      </div>
-	      {%endif%}
-	    </div>
-	  </div>
-	  <div class="col-sm-6">
-	    <div class="panel panel-default" style="min-height:400px;">
-	      <div class="panel-heading">
-		<h4 class="panel-title">Unsubmitted Requirements</h4>
-	      </div>
-	      
-	      {%if lacking_reqs%}
-   	      <table class="table table-condensed">
-		{%for req in lacking_reqs%}
-		<tr>
-		  <td>
-		    <span class="glyphicon glyphicon-remove"></span>&nbsp;{{req}}
-		  </td>
-		</tr>
-		{%endfor%}
-	      </table>
-	      {%else%}
-	        <div class="panel-body">
-		  <p class="alert alert-info">
-		    <span class="glyphicon glyphicon-info-sign"></span>
-		    All requirements for {{str_month}} MOOE allocation already submitted
-		  </p>
-		</div>
-	      {%endif%}
-	    </div>
-	  </div>
+{% block rightcontent %}
+<div class="col-md-9" style="background-color: white; min-height: 550px;padding:20px">
+  <div class="col-md-12" style="text-align: right;">
+    <form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
+      <label class="control-label">Filter</label>
+      {{year_form.year}}
+      {{month_form.month}}
+      <button class="btn btn-default"type="submit"><span class=" glyphicon glyphicon-search"></span></button>
+    </form>
+  </div> 
+  
+  <h3>{{str_month}}&nbsp;-&nbsp;{{year}} Requirement Status</h3>
+  <div class="col-md-12">
+    <div class="col-sm-6">
+      <div class="panel panel-default" style="min-height:400px;">
+	<div class="panel-heading">
+	  <h4 class="panel-title">Submitted Requirements</h4>
 	</div>
+	{%if submitted_reqs%}
+	<table class="table table-condensed">
+	  {%for req in submitted_reqs%}
+	  <tr>
+	    <td>
+	      <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}}
+	      <p>
+		Submitted on {{req.date_submitted}}
+	      </p>
+	    </td>
+	  </tr>
+	  {%endfor%}
+	</table>
+	{%else%}
+	<div class="panel-body">
+	  <p class="alert alert-danger">
+	    Currently No Requirements Submitted
+	  </p>
+	</div>
+	{%endif%}
       </div>
     </div>
-</content>
+    <div class="col-sm-6">
+      <div class="panel panel-default" style="min-height:400px;">
+	<div class="panel-heading">
+	  <h4 class="panel-title">Unsubmitted Requirements</h4>
+	</div>
+	
+	{%if lacking_reqs%}
+   	<table class="table table-condensed">
+	  {%for req in lacking_reqs%}
+	  <tr>
+	    <td>
+	      <span class="glyphicon glyphicon-remove"></span>&nbsp;{{req}}
+	    </td>
+	  </tr>
+	  {%endfor%}
+	</table>
+	{%else%}
+	<div class="panel-body">
+	  <p class="alert alert-info">
+	    <span class="glyphicon glyphicon-info-sign"></span>
+	    All requirements for {{str_month}} MOOE allocation already submitted
+	  </p>
+	</div>
+	{%endif%}
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

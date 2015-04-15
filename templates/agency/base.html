@@ -1,0 +1,14 @@
+{%extends "agentbase.html"%}
+
+{%block content%}
+<content>
+  <div class="container">
+    <div class="row" style="padding: 0 15px; margin: 0 15px;">
+      <div class="col-md-3">
+	{%include "./agency/side_bar.html"%}
+      </div>
+      {%block rightcontent%}{%endblock%}
+    </div>
+  </div>
+</content>
+{%endblock%}

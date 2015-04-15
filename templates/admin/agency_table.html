@@ -1,14 +1,20 @@
 {% if agencies %}
 <table class="table table-condensed">
   <thead>
-    <th></th>
-    <th></th>
     <th>Agency/Office</th>
     <th>Email</th>
+    <th></th>
+    <th></th>
   </thead>
   <tbody>
     {%for agency in agencies%}
     <tr onmouseover="$(this).addClass('warning')" onmouseout="$(this).removeClass()" style="cursor: pointer">
+      <td>
+	<a href="/admin/manage_agency_docs/{{agency.id}}/">
+	  {{agency.name}}
+	</a>
+      </td>
+      <td>{{agency.email}}</td>
       <td width="30px;">
 	<a href="/admin/pm_agency?action=edit&a_id={{agency.id}}" title="Edit this Agency/Office">
 	  <span class="glyphicon glyphicon-pencil"></span>&nbsp;
@@ -19,12 +25,6 @@
 	  <span class="glyphicon glyphicon-trash text-danger"></span>&nbsp;
 	</a>
       </td>
-      <td>
-	<a href="/admin/manage_agency_docs/{{agency.id}}/">
-	  {{agency.name}}
-	</a>
-      </td>
-      <td>{{agency.email}}</td>
     </tr>
     {%endfor%}
   </tbody>
