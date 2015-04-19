@@ -47,7 +47,7 @@ function removePIRow(row_id, pi){
     $('#'+row_id).remove();
     var count = new Number($('#pi_count').val());    
     $('#pi_count').val((count-1));
-  //  pi_lists.del(pi);
+    //  pi_lists.del(pi);
 }
 
 
@@ -60,11 +60,11 @@ var count_mpfro = 0;
 
 
 function addAccTarget(){
-   var pi = $('#pi').val();
-   var pi_data = '';
-   var pt = $('#pt').val();
-   var acc = $('#acc').val();
-   var variance = acc-pt;
+    var pi = $('#pi').val();
+    var pi_data = '';
+    var pt = $('#pt').val();
+    var acc = $('#acc').val();
+    var variance = acc-pt;
 
     mpfro_list.add(pi);
     $('#pi_acc').append("<tr id='"+count_mpfro+"'><td><a href='javascript:removePIAccRow(\"" + count_mpfro + "\",\"" + pi + "\")'><span class='glyphicon glyphicon-remove text-danger'></span></td>"
@@ -78,54 +78,54 @@ function addAccTarget(){
 
 function removePIAccRow(row_id, pi){
     $('#'+row_id).remove();
-/*        
-    if ((count_mpfro-1)==0){
-	count_mpfro-=1;
-    }
-    mpfro_list.del(pi);
-*/
+    /*        
+	      if ((count_mpfro-1)==0){
+	      count_mpfro-=1;
+	      }
+	      mpfro_list.del(pi);
+    */
 }
 
 function setMonthlyTargetModal(id, month, amount){
     month_str = "";
     
     switch(month){
-	case 1:
-	  month_str = 'January';
-	  break;
-	case 2:
-	  month_str = 'February';
-	  break;
-	case 3:
-	  month_str = 'March';
-	  break;
-	case 4:
-	  month_str = 'April';
-	  break;
-	case 5:
-	  month_str = 'May';
-	  break;
-	case 6:
-	  month_str = 'June';
-	  break;
-	case 7:
-	  month_str = 'July';
-	  break;
-	case 8:
-	  month_str = 'August';
-	  break;
-	case 9:
-	  month_str = 'September';
-	  break;
-	case 10:
-	  month_str = 'October';
-	  break;
-	case 11:
-	  month_str = 'November';
-	  break;
-	case 12:
-	  month_str = 'December';
-	  break;
+    case 1:
+	month_str = 'January';
+	break;
+    case 2:
+	month_str = 'February';
+	break;
+    case 3:
+	month_str = 'March';
+	break;
+    case 4:
+	month_str = 'April';
+	break;
+    case 5:
+	month_str = 'May';
+	break;
+    case 6:
+	month_str = 'June';
+	break;
+    case 7:
+	month_str = 'July';
+	break;
+    case 8:
+	month_str = 'August';
+	break;
+    case 9:
+	month_str = 'September';
+	break;
+    case 10:
+	month_str = 'October';
+	break;
+    case 11:
+	month_str = 'November';
+	break;
+    case 12:
+	month_str = 'December';
+	break;
     }
     
     $('#id_wfp').val(id);
@@ -145,7 +145,7 @@ function updateAmount(){
 	      $('#monthlyModal').modal('hide');
 	      getWFPData(data.id_wfp);
 	  }
-    );
+	 );
 }
 
 function setActivityModal(wfp_id, major_program, allocation){
@@ -204,18 +204,11 @@ function addEditPerfTarget(){
     $.get('/agency/wfp/performance_target', 
 	  data,
 	  function(data){
+	      var msg = '';
 	      if (data.action === 'add'){
 		  console.log(data);
-		  $("#perf_target_tbody").append("<tr id='"+data.id+"'>")
-		      .append("<td>"+data.indicator+"</td>")
-		      .append("<td>"+(new Number(data.jan) + new Number(data.feb) + new Number(data.mar))+"</td>")
-		      .append("<td>"+(new Number(data.apr) + new Number(data.may) + new Number(data.jun))+"</td>")
-		      .append("<td>"+(new Number(data.jul) + new Number(data.aug) + new Number(data.sept))+"</td>")
-		      .append("<td>"+(new Number(data.oct) + new Number(data.nov) + new Number(data.dec))+"</td>")
-		      .append("<td><a href='javascript:getPerformanceTarget("+data.id+")' title='Edit'><span class='glyphicon glyphicon-edit'></span></td>")
-		      .append("<td><a href='javascript:delPerfTarget("+data.id+", "+ data.wfp_id+");' title='Delete'><span class='glyphicon glyphicon-remove text-danger'></span></a>")
-		      .append("</td>");
-		  //append row
+		  $("#perf_target_tbody").append("<tr id='"+data.id+"'><td>"+data.indicator+"</td><td>"+(new Number(data.jan) + new Number(data.feb) + new Number(data.mar))+"</td><td>"+(new Number(data.apr) + new Number(data.may) + new Number(data.jun))+"</td><td>"+(new Number(data.jul) + new Number(data.aug) + new Number(data.sept) )+"</td><td>"+(new Number(data.oct) + new Number(data.nov) + new Number(data.dec))+"</td><td><a href='javascript:getPerformanceTarget("+data.id+")' title='Edit'><span class='glyphicon glyphicon-edit'></span></a></td><td><a href='javascript:delPerfTarget("+data.id+", "+ data.wfp_id+");' title='Delete'><span class='glyphicon glyphicon-remove text-danger'></span></a></td></tr>");
+		  msg = "Successfully added new physical target";
 	      }else{
 		  console.log(data);
 		  console.log(data.id);
@@ -229,7 +222,12 @@ function addEditPerfTarget(){
 		      .append("<td><a href='javascript:delPerfTarget("+data.id+", "+ data.wfp_id+");' title='Delete'><span class='glyphicon glyphicon-remove text-danger'></span></a>")
 		      .append("</td>");
 		  //update row
+		  msg = "Successfully updated physical target";
 	      }
+	      setTimeout(function(){ 
+		  $("#pi_close_modal").click(); 
+		  alert(msg);
+	      }, 1000);
 	  }
 	 );
 }
@@ -260,7 +258,7 @@ function getPerformanceTarget(){
 		'month'    : $('#month').val()
 	       }
     $.get('/agency/wfp/get_performance_acc', data, function(rs){
-       $('#performance').html(rs);	
+	$('#performance').html(rs);	
     });
 }
 
@@ -290,14 +288,14 @@ function delActivity(){
     var activity_id = $('#activity_id').val();
     var agency_id = $('#agency_id').val();
     $.get('/agency/wfp/delete_activity'
-	 ,
-	 {'activity_id': activity_id}
-	 ,
-	 function(rs){
-	     window.location = '/agency/wfp/wfpinfo/'+ agency_id+"/";
-	     
-	 }
-	);
+	  ,
+	  {'activity_id': activity_id}
+	  ,
+	  function(rs){
+	      window.location = '/agency/wfp/wfpinfo/'+ agency_id+"/";
+	      
+	  }
+	 );
 }
 
 
