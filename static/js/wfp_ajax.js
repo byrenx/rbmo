@@ -183,32 +183,73 @@ function delPerfTarget(id, wfp_id){
 /***
     physical performance target 
 **/
-function addPerfTarget(){
-    data = {'id_wfp' : $('#id_wfp').val(),
-	    'pi' : $('#pi').val(),
-	    'jan' : ($('#jan').val()==""? 0: $('#jan').val()),
-	    'feb' : ($('#feb').val()==""? 0: $('#feb').val()),
-	    'mar' : ($('#mar').val()==""? 0: $('#mar').val()),
-	    'apr' : ($('#apr').val()==""? 0: $('#apr').val()),
-	    'may' : ($('#may').val()==""? 0: $('#may').val()),
-	    'jun' : ($('#jun').val()==""? 0: $('#jun').val()),
-	    'jul' : ($('#jul').val()==""? 0: $('#jul').val()),
-	    'aug' : ($('#aug').val()==""? 0: $('#aug').val()),
-	    'sept' : ($('#sept').val()==""? 0: $('#sept').val()),
-	    'oct' : ($('#oct').val()==""? 0: $('#oct').val()),
-	    'nov' : ($('#nov').val()==""? 0: $('#nov').val()),
-	    'dec' : ($('#dec').val()==""? 0: $('#dec').val())
-	   }
-    $.get('/agency/wfp/add_performance_target', 
+function addEditPerfTarget(){
+    var data = {'id_wfp' : $('#id_wfp').val(),
+		'action' : $('#action').val(),
+		'id_ppt' : $('#id_ppt').val(),
+		'indicator' : $('#pi').val(),
+		'jan' : ($('#jan').val()==""? 0: $('#jan').val()),
+		'feb' : ($('#feb').val()==""? 0: $('#feb').val()),
+		'mar' : ($('#mar').val()==""? 0: $('#mar').val()),
+		'apr' : ($('#apr').val()==""? 0: $('#apr').val()),
+		'may' : ($('#may').val()==""? 0: $('#may').val()),
+		'jun' : ($('#jun').val()==""? 0: $('#jun').val()),
+		'jul' : ($('#jul').val()==""? 0: $('#jul').val()),
+		'aug' : ($('#aug').val()==""? 0: $('#aug').val()),
+		'sept': ($('#sept').val()==""? 0: $('#sept').val()),
+		'oct' : ($('#oct').val()==""? 0: $('#oct').val()),
+		'nov' : ($('#nov').val()==""? 0: $('#nov').val()),
+		'dec' : ($('#dec').val()==""? 0: $('#dec').val())
+	       }
+    $.get('/agency/wfp/performance_target', 
 	  data,
-	  function(rs){
-	      rs = new String(rs).trim();
-	      if (rs=='Added'){
-		  $('#pi_close_modal').click();
-		  getWFPData(data.id_wfp);
+	  function(data){
+	      if (data.action === 'add'){
+		  console.log(data);
+		  $("#perf_target_tbody").append("<tr id='"+data.id+"'>")
+		      .append("<td>"+data.indicator+"</td>")
+		      .append("<td>"+(new Number(data.jan) + new Number(data.feb) + new Number(data.mar))+"</td>")
+		      .append("<td>"+(new Number(data.apr) + new Number(data.may) + new Number(data.jun))+"</td>")
+		      .append("<td>"+(new Number(data.jul) + new Number(data.aug) + new Number(data.sept))+"</td>")
+		      .append("<td>"+(new Number(data.oct) + new Number(data.nov) + new Number(data.dec))+"</td>")
+		      .append("<td><a href='javascript:getPerformanceTarget("+data.id+")' title='Edit'><span class='glyphicon glyphicon-edit'></span></td>")
+		      .append("<td><a href='javascript:delPerfTarget("+data.id+", "+ data.wfp_id+");' title='Delete'><span class='glyphicon glyphicon-remove text-danger'></span></a>")
+		      .append("</td>");
+		  //append row
+	      }else{
+		  console.log(data);
+		  console.log(data.id);
+		  $("#"+data.id).html("")
+		      .append("<td>"+data.indicator+"</td>")
+		      .append("<td>"+(new Number(data.jan) + new Number(data.feb) + new Number(data.mar))+"</td>")
+		      .append("<td>"+(new Number(data.apr) + new Number(data.may) + new Number(data.jun))+"</td>")
+		      .append("<td>"+(new Number(data.jul) + new Number(data.aug) + new Number(data.sept))+"</td>")
+		      .append("<td>"+(new Number(data.oct) + new Number(data.nov) + new Number(data.dec))+"</td>")
+		      .append("<td><a href='javascript:getPerformanceTarget("+data.id+")' title='Edit'><span class='glyphicon glyphicon-edit'></span></td>")
+		      .append("<td><a href='javascript:delPerfTarget("+data.id+", "+ data.wfp_id+");' title='Delete'><span class='glyphicon glyphicon-remove text-danger'></span></a>")
+		      .append("</td>");
+		  //update row
 	      }
 	  }
 	 );
+}
+
+function showAddPerfTargetForm(wfp_id){
+    $("#id_wfp").val(wfp_id);
+    $("#action").val('add');
+    $("#pi").val('');
+    $("#jan").val('');
+    $("#feb").val('');
+    $("#mar").val('');
+    $("#apr").val('');
+    $("#may").val('');
+    $("#jun").val('');
+    $("#jul").val('');
+    $("#aug").val('');
+    $("#sept").val('');
+    $("#oct").val('');
+    $("#nov").val('');
+    $("#dec").val('');
 }
 
 
@@ -266,7 +307,23 @@ function getPerformanceTarget(pft_id){
 	data : {'target_id' : pft_id},
 	type : 'GET',
 	success: function(data){
-	    alert(data);
+	    console.log(data);
+	    $("#id_ppt").val(data.id);
+	    $("#action").val('edit');
+	    $("#pi").val(data.indicator);
+	    $("#jan").val(data.jan);
+	    $("#feb").val(data.feb);
+	    $("#mar").val(data.mar);
+	    $("#apr").val(data.apr);
+	    $("#may").val(data.may);
+	    $("#jun").val(data.jun);
+	    $("#jul").val(data.jul);
+	    $("#aug").val(data.aug);
+	    $("#sept").val(data.sept);
+	    $("#oct").val(data.oct);
+	    $("#nov").val(data.nov);
+	    $("#dec").val(data.dec);
+	    $("#piModal").modal("show");
 	}
     });
 }

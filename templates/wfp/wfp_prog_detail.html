@@ -4,36 +4,39 @@
     <thead>
       <tr>
 	<th colspan="6">Physical Performance Target&nbsp;
-	  <a href="" onclick="$('#id_wfp').val({{wfp.id}})" data-toggle="modal" data-target="#piModal">
+	  <a href="" onclick="showAddPerfTargetForm({{wfp.id}})" data-toggle="modal" data-target="#piModal">
 	    <span class="glyphicon glyphicon-plus-sign"></span>
 	    Add
 	  </a>
 	</th>
       </tr>
       <tr>
-	<th colspan="2">Performance Indicator</th>
+	<th>Performance Indicator</th>
 	<th>Q1</th>
 	<th>Q2</th>
 	<th>Q3</th>
 	<th>Q4</th>
+	<th colspan="2"></td>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="perf_target_tbody">
       {% for target in perf_targets%}
-      <tr>
-	<td>
-	  <a title="Edit" href="javascript:getPerformanceTarget({{target.id}})">
-	    <span class="glyphicon glyphicon-edit"></span>
-	  </a>&nbsp;
-	  <a href="javascript:delPerfTarget({{target.id}}, {{wfp.id}});" title="Delete">
-	    <span class="glyphicon glyphicon-remove text-danger"></span>
-	  </a>
-	</td>
+      <tr id="{{target.id}}">
 	<td>{{target.indicator}}</td>
 	<td>{{target.q1}}</td>
 	<td>{{target.q2}}</td>
 	<td>{{target.q3}}</td>
 	<td>{{target.q4}}</td>
+	<td>
+	  <a title="Edit" href="javascript:getPerformanceTarget({{target.id}})">
+	    <span class="glyphicon glyphicon-edit"></span>
+	  </a>
+	</td>
+	<td>
+	  <a href="javascript:delPerfTarget({{target.id}}, {{wfp.id}});" title="Delete">
+	    <span class="glyphicon glyphicon-remove text-danger"></span>
+	  </a>
+	</td>
       </tr>
       {% endfor %}
     </tbody>

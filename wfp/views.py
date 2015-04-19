@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import * 
 from datetime import datetime, date
-
+import json
 
 SYSTEM_NAME = 'e-RBMO Data Management System'
 
@@ -298,27 +298,82 @@ def delPerfTarget(request):
     except:
         return HttpResponse('Error')
 
-def addPerfTarget(request):
+def addEditPerfTarget(request):
     try:
-        wfp_id = request.GET.get('id_wfp')
-        wfp = WFPData.objects.get(id=wfp_id)
-        perf_target = PerformanceTarget(wfp_activity  = wfp,
-                                        indicator = request.GET.get('pi'),
-                                        jan = request.GET.get('jan', 0),
-                                        feb = request.GET.get('feb', 0),
-                                        mar = request.GET.get('mar', 0),
-                                        apr = request.GET.get('apr', 0),
-                                        may = request.GET.get('may', 0),
-                                        jun = request.GET.get('jun', 0),
-                                        jul = request.GET.get('jul', 0),
-                                        aug = request.GET.get('aug', 0),
-                                        sept = request.GET.get('sept', 0),
-                                        oct = request.GET.get('oct', 0),
-                                        nov = request.GET.get('nov', 0),
-                                        dec = request.GET.get('dec', 0)
-                                    )
-        perf_target.save()
-        return HttpResponse('Added')
+        action = request.GET.get('action')
+        print action
+        if action == 'add':
+            wfp_id = request.GET.get('id_wfp')
+            wfp = WFPData.objects.get(id=wfp_id)
+            perf_target = PerformanceTarget(wfp_activity  = wfp,
+                                            indicator = request.GET.get('indicator'),
+                                            jan = request.GET.get('jan', 0),
+                                            feb = request.GET.get('feb', 0),
+                                            mar = request.GET.get('mar', 0),
+                                            apr = request.GET.get('apr', 0),
+                                            may = request.GET.get('may', 0),
+                                            jun = request.GET.get('jun', 0),
+                                            jul = request.GET.get('jul', 0),
+                                            aug = request.GET.get('aug', 0),
+                                            sept = request.GET.get('sept', 0),
+                                            oct = request.GET.get('oct', 0),
+                                            nov = request.GET.get('nov', 0),
+                                            dec = request.GET.get('dec', 0)
+                                        )
+            perf_target.save()
+            json_response = json.dumps({'action'    : 'add',
+                                        'id'        : perf_target.id,
+                                        'wfp_id'    : perf_target.wfp_activity.id,
+                                        'indicator' : perf_target.indicator,
+                                        'jan'       : perf_target.jan,
+                                        'feb'       : perf_target.feb,
+                                        'mar'       : perf_target.mar,
+                                        'apr'       : perf_target.apr,
+                                        'may'       : perf_target.may,
+                                        'jun'       : perf_target.jun,
+                                        'jul'       : perf_target.jul,
+                                        'aug'       : perf_target.aug,
+                                        'sept'      : perf_target.sept,
+                                        'oct'       : perf_target.oct,
+                                        'nov'       : perf_target.nov,
+                                        'dec'       : perf_target.dec})
+            return HttpResponse(json_response, content_type = "application/json")
+        else:#edit
+            id = request.GET['id_ppt']
+            perf_target = PerformanceTarget.objects.get(id = id)
+            perf_target.indicator = request.GET['indicator']
+            perf_target.jan = request.GET['jan']
+            perf_target.feb = request.GET['feb']
+            perf_target.mar = request.GET['mar']
+            perf_target.apr = request.GET['apr']
+            perf_target.may = request.GET['may']
+            perf_target.jun = request.GET['jun']
+            perf_target.jul = request.GET['jul']
+            perf_target.aug = request.GET['aug']
+            perf_target.sept = request.GET['sept']
+            perf_target.oct = request.GET['oct']
+            perf_target.nov = request.GET['nov']
+            perf_target.dec = request.GET['dec']
+            perf_target.save()
+
+            json_response = json.dumps({'action'    : 'edit',
+                                        'id'        : perf_target.id,
+                                        'wfp_id'    : perf_target.wfp_activity.id,
+                                        'indicator' : perf_target.indicator,
+                                        'jan'       : perf_target.jan,
+                                        'feb'       : perf_target.feb,
+                                        'mar'       : perf_target.mar,
+                                        'apr'       : perf_target.apr,
+                                        'may'       : perf_target.may,
+                                        'jun'       : perf_target.jun,
+                                        'jul'       : perf_target.jul,
+                                        'aug'       : perf_target.aug,
+                                        'sept'      : perf_target.sept,
+                                        'oct'       : perf_target.oct,
+                                        'nov'       : perf_target.nov,
+                                        'dec'       : perf_target.dec})
+            return HttpResponse(json_response, content_type = "application/json")
+        
     except WFPData.DoesNotExist:
         return HttpResponse('Error')
         
@@ -649,4 +704,18 @@ def getPerfTarget(request):
     context = RequestContext(request)
     target_id = request.GET.get("target_id")
     pf = PerformanceTarget.objects.get(id = target_id)
-    return HttpResponse("{'id' : %s, 'indicator' : '%s', 'jan': %s, 'feb': %s}" %(pf.id, pf.indicator, pf.jan, pf.feb))
+    json_response = json.dumps({'id'  : pf.id, 
+                                'indicator': pf.indicator, 
+                                'jan' : pf.jan,
+                                'feb' : pf.feb,
+                                'mar' : pf.mar,
+                                'apr' : pf.apr,
+                                'may' : pf.may,
+                                'jun' : pf.jun,
+                                'jul' : pf.jul,
+                                'aug' : pf.aug,
+                                'sept': pf.sept,
+                                'oct' : pf.oct,
+                                'nov' : pf.nov,
+                                'dec' : pf.dec})
+    return HttpResponse(json_response, content_type = 'application/json')
