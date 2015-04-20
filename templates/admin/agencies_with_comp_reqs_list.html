@@ -6,9 +6,8 @@
 
 {% block content %}
 <div class="container">
-  <div class="col-sm-8 col-sm-offset-2" style="background-color: white; padding-bottom: 10px;">
-    <h3>Agencies with Complete Requirements</h3>
-    <h3><small>{{allocation}} - {{month_str}}, {{year}}</small></h3>
+  <div class="col-sm-12" style="background-color: white; padding-bottom: 10px;">
+    <h3>Agencies with Complete Requirements for <small>{{allocation}}</small> for <small>{{month_str}}, {{year}}</small></h3>
     <hr/>
     <div class="col-sm-8">
       <form action="/admin/agencies_with_compreqs" class="form-inline" method="POST">{%csrf_token%}
@@ -29,18 +28,19 @@
       </form>
     </div>
     <div class="col-sm-4" style="text-align: right">
-      	<a href="javascript:$('#agencies_com_reqs_print').printArea()" class="btn btn-default">
+      	<a href="javascript:$('#agencies_com_reqs_print').printArea()" class="btn btn-success btn-sm">
 	  <span class="glyphicon glyphicon-print"></span>
 	  Print
 	</a>
     </div>
   </div>
-  <div class="col-sm-8 col-sm-offset-2" style="background-color: white; margin-top: 10px;min-height: 350px;"> 
+  <div class="col-sm-12" style="background-color: white; margin-top: 10px;min-height: 350px;"> 
     {%if agencies%}
-    <table class="table table-condensed">
+    <table class="table table-condensed table-striped">
       <thead>
 	<tr>
-	  <th colspan="2">Agencies</th>
+	  <th>No.</th>
+	  <th>Agencies</th>
 	</tr>
       </thead>
         {% for agency in agencies %}

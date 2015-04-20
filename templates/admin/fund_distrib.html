@@ -12,9 +12,9 @@
 	{%csrf_token%}
 	<div class="form-group">
 	  <select id="year" name="year" class="form-control">
+	    <option>-----Select a year-----</option>
 	    {%for year in years%}
-	       <option>---Select a Year-----</option>
-	       <option value="{{year.year}}">{{year.year}}</option>
+	    <option value="{{year.year}}" {%if year == year.year%} selected="selected" {%endif%}>{{year.year}}</option>
 	    {%endfor%}
 	  </select>
 	</div>
@@ -34,10 +34,9 @@
     <hr/>
     <div class="col-sm-12" id="fund_distrib_print">
       <div style="text-align: center">
-	<h3>{{year}} ARMM BUDGET DISTRIBUTION CHART</br>
-	  
-	</h3>
-	<h4>As of {{today|date:"D d M Y"}}</h4>
+	<h3>{{year}} ARMM BUDGET DISTRIBUTION CHART</h3>
+	<input type="hidden" id="year_selected" value="{{year}}">
+	<!-- <h4>As of {{today|date:"D d M Y"}}</h4> -->
       </div>
 
       {% if sectors %}
@@ -89,7 +88,7 @@
 
 
   function print_fund_distrib(){
-    var year = $("#year").val();
+    var year = $("#year_selected").val();
     window.open("/admin/fund_distrib_print?year="+year);
   }				 
 
