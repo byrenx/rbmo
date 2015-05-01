@@ -38,28 +38,28 @@
       	<td></td>
       	<td></td>
       </tr>
-      {% for key, value in allotments.items %}
+      {% for releases in allotments%}
       <tr>
-	<td>{{ value.date_release|date:"d M" }}</td>
-	<td>{{ value.ada_no }}</td>
-	<td>{{ value.particulars }}</td>
+	<td width="60px;">{{ releases.date_release|date:"d M" }}</td>
+	<td>{{ releases.ada_no }}</td>
+	<td>{{ releases.particulars }}</td>
 	
-	{% if value.allocation.name == 'PS' %}
-	<td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
+	{% if releases.allocation.name == 'PS' %}
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
 	<td></td>
 	<td></td>
-	{% elif value.allocation.name == 'MOOE' %}
+	{% elif releases.allocation.name == 'MOOE' %}
 	<td></td>
-	<td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
 	<td></td>
 	{% else %}
 	<td></td>
 	<td></td>
-	<td style="text-align:right">{{ value.allocation.amount_release|intcomma }}</td>
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
 	{% endif %}
 	
-	<td style="text-align:right">{{ value.total_release|intcomma }}</td>
-	<td style="text-align:right">{{ value.remaining_balance|intcomma }}</td>	
+	<td style="text-align:right">{{ releases.total_release|intcomma }}</td>
+	<td style="text-align:right">{{ releases.remaining_balance|intcomma }}</td>	
       </tr>
       {% endfor %}
     </tbody>

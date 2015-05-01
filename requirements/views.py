@@ -159,13 +159,17 @@ def getLackingReqs(agency, year, month):
     else:
         required_month = month-1
         
-    if not isMonthlyRepSubmitted(agency, year, required_month):
-        lacking_reqs.append(stringify_month(required_month)+ '-' + str(year) +' Performance Report of Operation')
+    for i in range(1, required_month+1):
+        if not isMonthlyRepSubmitted(agency, year, i):
+            lacking_reqs.append(stringify_month(i)+ '-' + str(year) +' Performance Report of Operation')
+
     #quarter requirements
     quarter = quarterofMonth(month)
-    quarter_reqs = getLackingQuarterReqs(agency, year, quarter)
-    for req in quarter_reqs:
-        lacking_reqs.append(str(year)+'-'+quarters[quarter]+' '+req['name'])
+    q_year_req = year-1 if month <=3 and month >= 2 else year
+    for i in range(1, quarter+1):
+        quarter_reqs = getLackingQuarterReqs(agency, q_year_req, i)
+        for req in quarter_reqs:
+            lacking_reqs.append(str(q_year_req)+'-'+quarters[i]+' '+req['name'])
     return lacking_reqs
     
 

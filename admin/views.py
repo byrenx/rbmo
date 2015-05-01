@@ -712,7 +712,7 @@ def mpfroReports(request, agency_id):
             month = request.POST.get('month')
 
         agency = Agency.objects.get(id=agency_id)        
-        perf_accs_query = "select '"+months[int(month)]+"' as budget, "
+        perf_accs_query = "select '"+months[int(month)-1]+"' as budget, "
         perf_accs_query+= "wfp_data.activity, "
         perf_accs_query+= "performance_report.* "
         perf_accs_query+= "from performance_report inner join wfp_data on "
@@ -1641,6 +1641,7 @@ def smca(request):#schedule of monthly cash allocation
                                            'qualified_sub_agencies' : qualified_sub_agencies})
                 total += amount
         data['qualified_agencies'] = qualified_agencies
+        data['str_month'] = stringify_month(int (data['month'])) 
         data['total'] = total
         return render_to_response('./admin/smca.html', data, context)
     elif data['allocation'] == 'MOOE':
@@ -1667,6 +1668,7 @@ def smca(request):#schedule of monthly cash allocation
                                            'qualified_sub_agencies' : qualified_sub_agencies})
                 total += amount
         data['qualified_agencies'] = qualified_agencies
+        data['str_month'] = stringify_month(int (data['month'])) 
         data['total'] = total
         return render_to_response('./admin/smca.html', data, context)
     else:#CO
@@ -1693,6 +1695,7 @@ def smca(request):#schedule of monthly cash allocation
                                            'qualified_sub_agencies' : qualified_sub_agencies})
                 total += amount
         data['qualified_agencies'] = qualified_agencies
+        data['str_month'] = stringify_month(int (data['month'])) 
         data['total'] = total
         return render_to_response('./admin/smca.html', data, context)
         

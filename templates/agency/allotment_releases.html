@@ -1,108 +1,103 @@
-{% extends "agentbase.html" %}
+{% extends "./agency/base.html" %}
 
-{% block content %}
-<content>
-  <div class="container">
-    {%include "./agency/side_bar.html"%}
-    <div class="col-md-12" style="background-color:white; min-height: 550px;">
-      <form class="form-inline" action="/agency/releases" method="POST">
-	{%csrf_token%}
-	<div class="col-sm-3" style="padding:20px;">
-	  <a href="javascript:$('#releases_print').printArea()" class="btn btn-link"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
-	</div>
+{% block pagecontent %}
+<div class="col-md-12" style="background-color:white; min-height: 550px;">
 
-	<div class="col-sm-3 col-sm-offset-6" style="text-align: right; padding: 20px;">
-	  <label>Filter</label>
-	  <select name="year" class="form-control">
-	    <option value="2014">2014</option>
-	  </select>
-	  <button type="submit" class="btn btn-default">
-	      <span class="glyphicon glyphicon-search"></span>
-	  </button>
-	</div>
-
-      </form>
-
-      <h3>Allotment Releases for {{year}}</h3>
-      <hr/>
-      <table class="table table-condensed tabled-bordered table-striped table-bordered">
-	{%load humanize%}
-	<thead>
-      	  <tr style="background-color: green; color:white">
-      	    <th>DATE</th>
-      	    <th>ADA NO.</th>
-      	    <th>PARTICULARS</th>
-      	    <th>PS</th>
-      	    <th>MOOE</th>
-      	    <th>CO</th>
-      	    <th>TOTAL RELEASES</th>
-      	    <th>REMAINING BALANCE</th>
-      	  </tr>
-          <tr class="alert alert-warning">
-            <th colspan="3">APPROVED APPROPRIATON</th>
-            <th style="text-align:right">{{ wfp_data_PS.total_sum|intcomma }}</th>
-            <th style="text-align:right">{{ wfp_data_MOOE.total_sum|intcomma }}</th>
-            <th style="text-align:right">{{ wfp_data_CO.total_sum|intcomma }}</th>
-            <th></th>
-            <th style="text-align:right">{{ remaining_balance|intcomma }}</th>
-          </tr>
-	</thead>
-	<tbody>
-      	  <tr style="font-weight: bold;">
-      	    <td colspan="3">ALLOTMENT RELEASES</td>
-      	    <td></td>
-      	    <td></td>
-      	    <td></td>
-      	    <td></td>
-      	    <td></td>
-      	</tr>
-          {% for releases in allotments%}
-	  <tr>
-	    <td width="60px;">{{ releases.date_release|date:"d M" }}</td>
-	    <td>{{ releases.ada_no }}</td>
-	    <td>{{ releases.particulars }}</td>
-	    
-	    {% if releases.allocation.name == 'PS' %}
-	    <td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
-	    <td></td>
-	    <td></td>
-	    {% elif releases.allocation.name == 'MOOE' %}
-	    <td></td>
-	    <td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
-	    <td></td>
-	    {% else %}
-	    <td></td>
-	    <td></td>
-	    <td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
-	    {% endif %}
-	    
-	    <td style="text-align:right">{{ releases.total_release|intcomma }}</td>
-	    <td style="text-align:right">{{ releases.remaining_balance|intcomma }}</td>	
-	  </tr>
-          {% endfor %}
-	</tbody>
-	<tfoot>
-      	  <tr style="font-weight: bold;">
-        	<td colspan="3">TOTAL RELEASES</td>
-        	<td style="text-align:right">{{ total_PS|intcomma }}</td>
-        	<td style="text-align:right">{{ total_MOOE|intcomma }}</td>
-        	<td style="text-align:right">{{ total_CO|intcomma }}</td>
-        	<td style="text-align:right">{{ total_release|intcomma }}</td>
-        	<td></td>
-        </tr>
-          <tr  style="font-weight: bold;">
-            <td colspan="3">TOTAL BALANCE</td>
-            <td style="text-align:right">{{ total_PS_balance|intcomma }}</td>
-            <td style="text-align:right">{{ total_MOOE_balance|intcomma }}</td>
-            <td style="text-align:right">{{ total_CO_balance|intcomma }}</td>
-            <td></td>
-            <td style="text-align:right">{{ total_remaining_balance|intcomma }}</td>
-          </tr>
-	</tfoot>
-      </table>
-
+  <h3>Allotment Releases for {{year}}</h3>
+  <hr>
+  <form class="form-inline" action="/agency/releases" method="POST">
+    {%csrf_token%}
+    <div class="col-sm-3" style="padding:20px;">
+      <a href="javascript:$('#releases_print').printArea()" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-print"></span>&nbsp;Print</a>
     </div>
 
-    {%include "./agency/allotment_releases_print.html"%}
-</content>
+    <div class="col-sm-3 col-sm-offset-6" style="text-align: right; padding: 20px;">
+      <label>Filter</label>
+      <select name="year" class="form-control input-sm">
+	<option value="2014">2014</option>
+      </select>
+      <button type="submit" class="btn btn-default btn-sm">
+	<span class="glyphicon glyphicon-search"></span>
+      </button>
+    </div>
+
+  </form>
+  <table class="table table-condensed tabled-bordered table-striped table-bordered">
+    {%load humanize%}
+    <thead>
+      <tr style="background-color: rgb(204, 204, 204);">
+      	<th>DATE</th>
+      	<th>ADA NO.</th>
+      	<th>PARTICULARS</th>
+      	<th style="text-align: right">PS</th>
+      	<th style="text-align: right">MOOE</th>
+      	<th style="text-align: right">CO</th>
+      	<th style="text-align: right">TOTAL RELEASES</th>
+      	<th style="text-align: right">REMAINING BALANCE</th>
+      </tr>
+      <tr>
+        <th colspan="3">APPROVED APPROPRIATON</th>
+        <th style="text-align:right">{{ wfp_data_PS.total_sum|intcomma }}</th>
+        <th style="text-align:right">{{ wfp_data_MOOE.total_sum|intcomma }}</th>
+        <th style="text-align:right">{{ wfp_data_CO.total_sum|intcomma }}</th>
+        <th></th>
+        <th style="text-align:right">{{ remaining_balance|intcomma }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="font-weight: bold;">
+      	<td colspan="3">ALLOTMENT RELEASES</td>
+      	<td></td>
+      	<td></td>
+      	<td></td>
+      	<td></td>
+      	<td></td>
+      </tr>
+      {% for releases in allotments%}
+      <tr>
+	<td width="60px;">{{ releases.date_release|date:"d M" }}</td>
+	<td>{{ releases.ada_no }}</td>
+	<td>{{ releases.particulars }}</td>
+	
+	{% if releases.allocation.name == 'PS' %}
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
+	<td></td>
+	<td></td>
+	{% elif releases.allocation.name == 'MOOE' %}
+	<td></td>
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
+	<td></td>
+	{% else %}
+	<td></td>
+	<td></td>
+	<td style="text-align:right">{{ releases.allocation.amount_release|intcomma }}</td>
+	{% endif %}
+	
+	<td style="text-align:right">{{ releases.total_release|intcomma }}</td>
+	<td style="text-align:right">{{ releases.remaining_balance|intcomma }}</td>	
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr style="font-weight: bold;">
+        <td colspan="3">TOTAL RELEASES</td>
+        <td style="text-align:right">{{ total_PS|intcomma }}</td>
+        <td style="text-align:right">{{ total_MOOE|intcomma }}</td>
+        <td style="text-align:right">{{ total_CO|intcomma }}</td>
+        <td style="text-align:right">{{ total_release|intcomma }}</td>
+        <td></td>
+      </tr>
+      <tr  style="font-weight: bold;">
+        <td colspan="3">TOTAL BALANCE</td>
+        <td style="text-align:right">{{ total_PS_balance|intcomma }}</td>
+        <td style="text-align:right">{{ total_MOOE_balance|intcomma }}</td>
+        <td style="text-align:right">{{ total_CO_balance|intcomma }}</td>
+        <td></td>
+        <td style="text-align:right">{{ total_remaining_balance|intcomma }}</td>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+
+{%include "./agency/allotment_releases_print.html"%}
 {% endblock %}

@@ -73,7 +73,7 @@ TEMPLATE_DIRS = (TEMPLATE_PATH.replace('\\','/'),)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'rbmo',                      
+        'NAME': 'byrenx$rbmo',                      
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',

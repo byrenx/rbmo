@@ -31,13 +31,16 @@ month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
 def login(request):
     context = RequestContext(request)
     #<agency_name>_armm
-    default_pword = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'
+    #default_pword = '5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'
     h = hashlib.sha256()
+    h2 = hashlib.sha256()
     data = {'form' : LoginForm()}
     if request.method=="POST":
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
             email = loginform.cleaned_data['email']
+            h2.update(email)            
+            default_pword = h2.hexdigest()
             h.update(loginform.cleaned_data['acces_key'])
             accesskey = h.hexdigest()
             try:

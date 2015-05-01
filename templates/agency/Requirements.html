@@ -1,7 +1,7 @@
 {% extends './agency/base.html' %}
 
-{% block rightcontent %}
-<div class="col-md-9" style="background-color: white; min-height: 550px;padding:20px">
+{% block pagecontent %}
+<div class="col-md-12" style="background-color: white; min-height: 550px;padding:20px">
   <div class="col-md-12" style="text-align: right;">
     <form class="form-inline" method="POST" action="/agency/requirements">{% csrf_token %}
       <label class="control-label">Filter</label>
@@ -12,60 +12,53 @@
   </div> 
   
   <h3>{{str_month}}&nbsp;-&nbsp;{{year}} Requirement Status</h3>
-  <div class="col-md-12">
-    <div class="col-sm-6">
-      <div class="panel panel-default" style="min-height:400px;">
-	<div class="panel-heading">
-	  <h4 class="panel-title">Submitted Requirements</h4>
-	</div>
-	{%if submitted_reqs%}
-	<table class="table table-condensed">
-	  {%for req in submitted_reqs%}
-	  <tr>
-	    <td>
-	      <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}}
-	      <p>
-		Submitted on {{req.date_submitted}}
-	      </p>
-	    </td>
-	  </tr>
-	  {%endfor%}
-	</table>
-	{%else%}
-	<div class="panel-body">
-	  <p class="alert alert-danger">
-	    Currently No Requirements Submitted
-	  </p>
-	</div>
-	{%endif%}
-      </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="panel panel-default" style="min-height:400px;">
-	<div class="panel-heading">
-	  <h4 class="panel-title">Unsubmitted Requirements</h4>
-	</div>
-	
-	{%if lacking_reqs%}
-   	<table class="table table-condensed">
-	  {%for req in lacking_reqs%}
-	  <tr>
-	    <td>
-	      <span class="glyphicon glyphicon-remove"></span>&nbsp;{{req}}
-	    </td>
-	  </tr>
-	  {%endfor%}
-	</table>
-	{%else%}
-	<div class="panel-body">
-	  <p class="alert alert-info">
-	    <span class="glyphicon glyphicon-info-sign"></span>
-	    All requirements for {{str_month}} MOOE allocation already submitted
-	  </p>
-	</div>
-	{%endif%}
-      </div>
-    </div>
+  <!---submitted ---->
+  <!-- <div class="col-sm-6"> -->
+  <!--   <div class="panel panel-default" style="min-height:400px;"> -->
+  <!--     <div class="panel-heading"> -->
+  <!-- 	<h4 class="panel-title">Submitted Requirements</h4> -->
+  <!--     </div> -->
+  <!--     {%if submitted_reqs%} -->
+  <!--     <table class="table table-condensed"> -->
+  <!-- 	{%for req in submitted_reqs%} -->
+  <!-- 	<tr> -->
+  <!-- 	  <td> -->
+  <!-- 	    <span class="glyphicon glyphicon-check text-success"></span>&nbsp;{{req.name}} -->
+  <!-- 	    <p> -->
+  <!-- 	      Submitted on {{req.date_submitted}} -->
+  <!-- 	    </p> -->
+  <!-- 	  </td> -->
+  <!-- 	</tr> -->
+  <!-- 	{%endfor%} -->
+  <!--     </table> -->
+  <!--     {%else%} -->
+  <!--     <div class="panel-body"> -->
+  <!-- 	<p class="alert alert-danger"> -->
+  <!-- 	  Currently No Requirements Submitted -->
+  <!-- 	</p> -->
+  <!--     </div> -->
+  <!--     {%endif%} -->
+  <!--   </div> -->
+  <!-- </div><\!---/ end of submitted --\-> -->
+  <div class="col-sm-12">
+    <hr>
+    <p>
+      <b>STATUS : </b>
+      {%if lacking_reqs%}
+      <span class="glyphicon glyphicon-stop text-danger"></span>&nbsp;INCOMPLETE 
+      {%else%} 
+      <span class="glyphicon glyphicon-ok text-success"></span>&nbsp;COMPLETE
+      {%endif%}
+    </p>
+    <hr>
+    {%if lacking_reqs%}
+    <h4>Unsubmitted Requirements for {{str_month}} {{year}}</h4>
+    <ul>
+      {%for req in lacking_reqs%}
+      <li>{{req}}</li>
+      {%endfor%}
+    </ul>
+    {%endif%}
   </div>
 </div>
 {% endblock %}

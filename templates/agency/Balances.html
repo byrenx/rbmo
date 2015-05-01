@@ -1,72 +1,64 @@
-{% extends 'agentbase.html' %}
+{% extends './agency/base.html' %}
 
-{% block content %}
-<content>
-
-  <div class="container">
-    <div class="row">
-      {%include "./agency/side_bar.html"%}
-      
-      {%if balances %}
-      <div class="col-md-12" style="background-color: white;min-height: 550px;padding-top:20px;">
-	<form action="/agency/balance" method="POST" class="form-inline">
-	  {%csrf_token%}
-	  <div class="col-sm-4 col-sm-offset-8" style="text-align:right">
-	    <label>
-	      Filter by Year
-	    </label>
-	    {{year_form.year}}
-	    <button type="submit" class="btn btn-default">
-	      <span class="glyphicon glyphicon-search"></span>
-	    </button>
-	  </div>
-	</form>
-	<h3>Remaining Balances for the Year {{year}}</br><small>As of {{today}}</small></h3>
-	
-	<hr/>
-	<table class="table table-condensed table-responsive">{%load humanize%}
-	  <thead style="background-color: green;color:white">
-	    <th>Allocation</th>
-	    <th style="text-align: right">Beginning Balance</th>
-	    <th style="text-align: right">Total Release</th>
-	    <th style="text-align: right">Ending Balance</th>
-	  </thead>
-	  <tbody>
-	    {%for bal in balances%}
-	    <tr>
-	      <th>
-		{{bal.allocation}}
-	      </th>
-	      <td style="text-align: right">
-		{{bal.beginning_bal|intcomma}}
-	      </td>
-	      <td style="text-align: right">
-		{{bal.release|intcomma}}
-	      </td>
-	      <td style="text-align: right">
-		{{bal.ending_bal|intcomma}}
-	      </td>
-	    </tr>
-	    {%endfor%}
-	    <tr>
-	      <th>Total Balance</th>
-	      <th style="text-align: right">{{total_balance.beginning_bal|intcomma}}</th>
-	      <th style="text-align: right">{{total_balance.release|intcomma}}</th>
-	    <th style="text-align: right">{{total_balance.ending_bal|intcomma}}</th>
-	    </tr>
-	  </tbody>
-	</table>
-      </div>
-      {%elif error%}
-      <div class="jumbotron col-md-10">
-	<h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
-      </div>
-      {%else%}
-      <div class="jumbotron col-md-10">
-	<h3> Records not found! <small>Please try another year</small><h3> 
-      </div>
-      {%endif%}
+{% block pagecontent %}
+{%if balances %}
+<div class="col-md-12" style="background-color: white;min-height: 550px;padding-top:20px;">
+  <form action="/agency/balance" method="POST" class="form-inline">
+    {%csrf_token%}
+    <div class="col-sm-4 col-sm-offset-8" style="text-align:right">
+      <label>
+	Filter by Year
+      </label>
+      {{year_form.year}}
+      <button type="submit" class="btn btn-default">
+	<span class="glyphicon glyphicon-search"></span>
+      </button>
     </div>
-  </div>
-</content>
+  </form>
+  <h3>Remaining Balances for the Year {{year}}</br><small>As of {{today}}</small></h3>
+  
+  <hr/>
+  <table class="table table-condensed table-responsive">{%load humanize%}
+    <thead>
+      <th>Allocation</th>
+      <th style="text-align: right">Beginning Balance</th>
+      <th style="text-align: right">Total Release</th>
+      <th style="text-align: right">Ending Balance</th>
+    </thead>
+    <tbody>
+      {%for bal in balances%}
+      <tr>
+	<th>
+	  {{bal.allocation}}
+	</th>
+	<td style="text-align: right">
+	  {{bal.beginning_bal|intcomma}}
+	</td>
+	<td style="text-align: right">
+	  {{bal.release|intcomma}}
+	</td>
+	<td style="text-align: right">
+	  {{bal.ending_bal|intcomma}}
+	</td>
+      </tr>
+      {%endfor%}
+      <tr>
+	<th>Total Balance</th>
+	<th style="text-align: right">{{total_balance.beginning_bal|intcomma}}</th>
+	<th style="text-align: right">{{total_balance.release|intcomma}}</th>
+	<th style="text-align: right">{{total_balance.ending_bal|intcomma}}</th>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{%elif error%}
+<div class="jumbotron col-md-10">
+  <h3> {{error}} <small>Please pick a year and click the search button</small><h3> 
+</div>
+{%else%}
+<div class="jumbotron col-md-10">
+  <h3> Records not found! <small>Please try another year</small><h3> 
+</div>
+{%endif%}
+</div>
 {% endblock %}
