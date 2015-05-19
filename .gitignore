@@ -9,3 +9,7 @@
 *.project
 *.gitignore~
 *.psd
+*.sql
+*.sql~
+*.sql#
+*.#sql

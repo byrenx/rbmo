@@ -1,102 +1,90 @@
 {% extends './agency/base.html' %}
 
-{% block rightcontent %}
-<div class="col-md-9" style="background-color: white; min-height: 550px;">
-  <form class="form-inline" method="POST" action="/agency/monthly_reports">{%csrf_token%}
-    <div class="col-sm-6 col-sm-offset-6" style="padding:20px; text-align: right;">
+{% block pagecontent %}
+<div class="col-md-12" style="background-color: white; min-height: 550px;">
+  <br>
+  <form class="form-inline" id="monthly_report_search_form" method="POST" action="/agency/monthly_reports">{%csrf_token%}
+    <div class="col-sm-6">
       {{year_form.year}}
       {{month_form.month}}
-      
-      <button class="btn btn-default">
-	<span class="glyphicon glyphicon-search">
-	</span>
-      </button>
-    </div>
+    </div> 
   </form>
-  
-  <h3>Performance Report for {{str_month}}&nbsp;{{year}}</h3>
-  <div class="cols-sm-12" style="text-align:right">
-    <a href="#" class="btn btn-link" data-toggle="modal" data-target="#monthlyreport_modal">
+  <div class="cols-sm-6" style="text-align:right">
+    <a href="#" class="btn btn-default" data-toggle="modal" data-target="#monthlyreport_modal">
       <span class="glyphicon glyphicon-plus-sign"></span>
       Add
     </a>
+    <a href="#" class="btn btn-default">
+      <span class="glyphicon glyphicon-print"></span>
+      Print
+    </a>
   </div>
-  {%if monthly_acts_reports%}
-  <table class="table table-condensed table-responsive table-striped table-bordered">
-    {%load humanize%}
-    <thead>
-      <tr>
-	<th>Programs</th>
-	<th>Indicators</th>
-	<th>Target</th>
-	<th>Acc.</th>
-	<th>Var</th>
-	<th class="center">Received</th>
-	<th class="center">Incurred</th>
-	<th class="center">UA</th>
-	<th style="width:250px;">Remarks</th>
-	<th colspan="2"></th>
-      </tr>
-    </thead>
-    <tbody>
+  <hr>
+  <h3>Performance Report for {{str_month}}&nbsp;{{year}}</h3>
+  <input type="hidden" id="month" value="{{month}}">
+  <input type="hidden" id="year" value="{{year}}">
+  
+  <div class="col-sm-5"><!---start of program table container--->
+    {%if monthly_acts_reports%}
+    <table class="table table-condensed table-responsive table-hover">
+      {%load humanize%}
+      <thead>
+  	<tr>
+  	  <th>Programs</th>
+  	  <th style="text-align: right;">Options</th>
+  	</tr>
+      </thead>
+      <tbody>
+  	{%for acc in monthly_acts_reports%}
+  	<tr onclick="showAccomplishedTargets({{acc.activity.id}}, this)">
+  	  <td style="width: 300px;">
+  	    {{acc.activity}}
+  	  </td>
+	  <td style="text-align: right;">
+	    <a href=""><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
+	    <a href=""><span class="glyphicon glyphicon-remove text-danger"></span></a>
+	  </td>
+	</tr>
+  	{%endfor%}
+      </tbody>
+    </table>
+    {%else%}
+    <p class="alert alert-info">
+      <span class="glyphicon glyphicon-info-sign"></span>&nbsp;
+      No performance Report Found for this Month
+    </p>
+    {%endif%}
+  </div><!--/end of programs table -->
+
+  <!---start of physical accomplishments table --->
+  <div class="col-sm-4 panel panel-default" id="performance_table" style="min-height: 400px;">
+  </div><!--/end of acoomplished target table-->
+  
+  <!---start program report info-->
+  <div class="col-sm-3" style="min-height: 400px;">
+    <div id="notify_block" style="display: block; text-align:center; padding-top: 10px;"> 
+      <i class="fa fa-question-circle fa-4x"></i><br>
+      Select Accomplished program to show other details!
+    </div>
+    <div id="id_progrepcon">
       {%for acc in monthly_acts_reports%}
-      <tr>
-	<td style="width: 300px;">
-	  {{acc.activity}}
-	</td>
-	<td style="width: 250px;">
-	  {{acc.indicator}}
-	</td>
-	<td>{{acc.target}}</td>
-	<td>{{acc.acc}}</td>
-	<td style="width:60px; text-align:center">
-	  {%if acc.variance < 0%}
-			      <span class="glyphicon glyphicon-arrow-down text-danger"></span>
-			      {{acc.variance}}
-			      {%elif acc.variance > 0%}
-	    <span class="glyphicon glyphicon-arrow-up text-success"></span>
-	    {{acc.variance}}
-	    {%else%}
-	    {{acc.variance}}
-	    {%endif%}			
-	</td>
-	
-	<td class="decimal">
-	  {{acc.received|intcomma}}
-	</td>
-	<td class="decimal">
-	  {{acc.incurred|intcomma}}
-	</td>
-	<td class="decimal">{{acc.remaining}}</td>
-	<td>{{acc.remarks}}</td>
-	<td style="width:25px;">
-	  <a href="/agency/monthly_report_formg?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" title="Edit">
-	    <span class="glyphicon glyphicon-pencil"></span>
-	  </a>
-	</td>
-	<td style="width:25px;">
-	  <a href="javascript:confirmDelActivityReport({{acc.id}}, '{{acc.activity}}')" title="Remove">
-	    <span class="glyphicon glyphicon-trash text-danger"></span>
-	  </a>
-	</td>
-      </tr>
+      <div id="acc_{{acc.activity.id}}" style="display: none;">
+	<b>RECEIVED</b> : <span>{{acc.received}}</span><br><br>
+	<b>INCURRED</b> : <span>{{acc.incurred}}</span><br><br>
+	<b>REMARKS</b> : <br><span>{{acc.remarks}}</span>
+      </div>
       {%endfor%}
-    </tbody>
-  </table>
-  {%else%}
-  <p class="alert alert-info">
-    <span class="glyphicon glyphicon-info-sign"></span>&nbsp;
-    No performance Report Found for this Month
-  </p>
-  {%endif%}
+    </div>
+  </div><!-- end of program report info -->
 </div>
 
 <!-----modals----->
 {%include "./agency/monthly_report_form.html"%}
 
-{% endblock %}
+{%endblock%}
 
 {% block scripts%}
+<script type="text/javascript" src="/static/js/agency.js"></script>
 <script language="javascript">
   function confirmDelActivityReport(performance_id, report_activity){
   var confirmation = confirm("Are you sure to delete '"+report_activity+"' from this report?");

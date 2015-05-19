@@ -719,3 +719,77 @@ def getPerfTarget(request):
                                 'nov' : pf.nov,
                                 'dec' : pf.dec})
     return HttpResponse(json_response, content_type = 'application/json')
+
+
+def getUnreportedPrograms(request):
+    #returns list of unreported programs of agency in the specified month
+    #request params: agency, year and month
+    agency = Agency.objects.get(id=request.GET.get('agency_id'))
+    year = int(request.GET.get('year'))
+    month = 5
+
+    reported_programs = PerformanceReport.objects.filter(month = month, activity__agency = agency, year = year)
+    print repr(reported_programs)
+    programs = WFPData.objects.filter(agency = agency, year = year).exclude(id__in = reported_programs.values_list("activity__id"))
+    
+    prog_list = []
+    for prog in programs:
+        prog_list.append({'id'       : prog.id,
+                          'activity' : prog.activity})
+    json_response = json.dumps(prog_list)
+    return HttpResponse(json_response, content_type="application/json");
+
+
+def getURLPhysicalTargets(request):
+    program_id = request.GET.get('program_id')
+    targets_list = getPhysicalTargets(program_id)
+    json_response = json.dumps(targets_list)
+    return HttpResponse(json_response, content_type="application/json")
+
+def getPhysicalTargets(program_id):
+    program = WFPData.objects.get(id = program_id)
+    targets = PerformanceTarget.objects.filter(wfp_activity = program)
+    targets_list = []
+    for target in targets:
+        targets_list.append({'id'         : target.id,
+                             'indicator'  : target.indicator,
+                             'jan'        : target.jan,
+                             'jan_acc'    : target.jan_acc,
+                             'feb'        : target.feb,
+                             'feb_acc'    : target.feb_acc,
+                             'mar'        : target.mar,
+                             'mar_acc'    : target.mar_acc,
+                             'apr'        : target.apr,
+                             'apr_acc'    : target.apr_acc,
+                             'may'        : target.may,
+                             'may_acc'    : target.may_acc,
+                             'jun'        : target.jun,
+                             'jun_acc'    : target.jun_acc,
+                             'jul'        : target.jul,
+                             'jul_acc'    : target.jul_acc,
+                             'aug'        : target.aug,
+                             'aug_acc'    : target.aug_acc,
+                             'sept'       : target.sept,
+                             'sept_acc'   : target.sept_acc,
+                             'oct'        : target.oct,
+                             'oct_acc'    : target.oct_acc,
+                             'nov'        : target.nov,
+                             'nov_acc'    : target.nov_acc,
+                             'dec'        : target.dec,
+                             'dec_acc'    : target.dec_acc
+                         })
+    return targets_list
+    
+
+# def getProgramRepInfo():
+#     try:
+#         req = json.loads(request.body) 
+#         prog_rep_id = req["prog_rep_id"]
+#         pfr = PerformanceReport.objects.get(id = prog_rep_id)
+#         pfr_response = {"id": pfr.id,
+#                         "month" : pfr.month,
+#                         ""}
+#     except:
+#         return 200
+    
+    
