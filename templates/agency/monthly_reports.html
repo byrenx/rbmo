@@ -24,7 +24,7 @@
   <input type="hidden" id="month" value="{{month}}">
   <input type="hidden" id="year" value="{{year}}">
   
-  <div class="col-sm-5"><!---start of program table container--->
+  <div class="col-sm-5"><!---start of program table container-->
     {%if monthly_reports%}
     <table class="table table-condensed table-responsive table-hover">
       {%load humanize%}
@@ -42,7 +42,7 @@
   	  </td>
 	  <td style="text-align: right;">
 	    <a href=""><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
-	    <a href=""><span class="glyphicon glyphicon-remove text-danger"></span></a>
+	    <a href="javascript:deleteReport({{acc.id}})"><span class="glyphicon glyphicon-remove text-danger"></span></a>
 	  </td>
 	</tr>
   	{%endfor%}
@@ -56,12 +56,13 @@
     {%endif%}
   </div><!--/end of programs table -->
 
-  <!---start of physical accomplishments table --->
+  <!--start of physical accomplishments table -->
   <div class="col-sm-4 panel panel-default" id="performance_table" style="min-height: 400px;">
   </div><!--/end of acoomplished target table-->
   
   <!---start program report info-->
   <div class="col-sm-3" style="min-height: 400px;">
+    {%load humanize%}
     <div id="notify_block" style="display: block; text-align:center; padding-top: 10px;"> 
       <i class="fa fa-question-circle fa-4x"></i><br>
       Select Accomplished program to show other details!
@@ -69,8 +70,8 @@
     <div id="id_progrepcon">
       {%for acc in monthly_reports%}
       <div id="acc_{{acc.activity.id}}" style="display: none;">
-	<b>RECEIVED</b> : <span>{{acc.received}}</span><br><br>
-	<b>INCURRED</b> : <span>{{acc.incurred}}</span><br><br>
+	<b>RECEIVED</b> : <span>{{acc.received|intcomma}}</span><br><br>
+	<b>INCURRED</b> : <span>{{acc.incurred|intcomma}}</span><br><br>
 	<b>REMARKS</b> : <br><span>{{acc.remarks}}</span>
       </div>
       {%endfor%}
@@ -78,7 +79,7 @@
   </div><!-- end of program report info -->
 </div>
 
-<!-----modals----->
+<!---modals-->
 {%include "./agency/monthly_report_form.html"%}
 
 {%endblock%}
