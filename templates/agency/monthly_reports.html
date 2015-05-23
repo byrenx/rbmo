@@ -25,7 +25,7 @@
   <input type="hidden" id="year" value="{{year}}">
   
   <div class="col-sm-5"><!---start of program table container--->
-    {%if monthly_acts_reports%}
+    {%if monthly_reports%}
     <table class="table table-condensed table-responsive table-hover">
       {%load humanize%}
       <thead>
@@ -35,8 +35,8 @@
   	</tr>
       </thead>
       <tbody>
-  	{%for acc in monthly_acts_reports%}
-  	<tr onclick="showAccomplishedTargets({{acc.activity.id}}, this)">
+  	{%for acc in monthly_reports%}
+  	<tr onclick="showAccomplishedTargets({{acc.activity.id}}, this)" id="{{acc.activity.id}}">
   	  <td style="width: 300px;">
   	    {{acc.activity}}
   	  </td>
@@ -67,7 +67,7 @@
       Select Accomplished program to show other details!
     </div>
     <div id="id_progrepcon">
-      {%for acc in monthly_acts_reports%}
+      {%for acc in monthly_reports%}
       <div id="acc_{{acc.activity.id}}" style="display: none;">
 	<b>RECEIVED</b> : <span>{{acc.received}}</span><br><br>
 	<b>INCURRED</b> : <span>{{acc.incurred}}</span><br><br>

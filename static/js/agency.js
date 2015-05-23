@@ -21,7 +21,7 @@ function getPrograms(){
 			options += "<option value='"+item.id+"'>"+item.activity+"</option>";
 			item = null;
 	    }
-		$("#activity").html(options);
+	    $("#activity").html(options);
 	    console.log(data);
 
 	});
@@ -112,6 +112,17 @@ function getPhysicalTargets(){
 }
 
 
+function selectRow(cur_row){
+    $(cur_row).addClass("alert alert-info");
+    //remove highlight to other rows
+    $("table tbody tr").each(function(){
+	//console.log();
+	if ($(cur_row).attr("id") != $(this).attr("id")){
+	    $(this).removeClass("alert alert-info");
+	}
+    });
+}
+
 function showAccomplishedTargets(program_id, row_obj){
     //get physical targets of the activity
     //params : agency and year, month
@@ -120,8 +131,9 @@ function showAccomplishedTargets(program_id, row_obj){
     var month = parseInt($("#id_month").val());
     console.log("month: " + month + " year: " + year);
     var params = {"program_id" : program_id};
+    //highlight the currently selected row
+    selectRow(row_obj);
 
-    $(row_obj).addClass("alert alert-info");
     console.log("program report id: "+program_id);
     //show specific program report info
     $("#id_progrepcon div").each(function(){
@@ -227,10 +239,12 @@ function showAccomplishedTargets(program_id, row_obj){
 function savePerformanceReport(){
     var performances = [];
     $("#accomplished_targets_table > tbody tr").each(function(){
-		var id = $(this).attr("id");
+	var id = $(this).attr("id");
 
-		performances.push({"id"   : id,
-				   		   "acc"  : $(this).find("input").val()});
+	performances.push(
+	    {"id"   : id,
+	     "acc"  : $(this).find("input").val()}
+	);
     });
 
     var month_year = new String($("#month_select").val()).split("-");
@@ -241,23 +255,25 @@ function savePerformanceReport(){
 		  "performances"   : performances ,
 		  "year"           : parseInt(month_year[0]),
 		  "month"          : parseInt(month_year[1]),
-		  "remarks"        : $("#remarks_id").text()
+		  "remarks"        : $("#remarks_id").val()
 		 }
 
+    console.log(params);
+
     $.ajax({contentType: "application/json",
-	    dataType : "json",
-	    type: "POST",
-	    processData : false,
-	    url  : "/agency/add_performance_report",
-	    data : JSON.stringify(params)
-	})
-	.done(function(data){
-	    console.log(data);
-	    window.location = "/agency/monthly_reports?year=" + year + "&month=" + month;
-	})
-	.fail(function(data){
-	    console.log(data);
-	});
+    	    dataType : "json",
+    	    type: "POST",
+    	    processData : false,
+    	    url  : "/agency/add_performance_report",
+    	    data : JSON.stringify(params)
+    	   })
+    	.done(function(data){
+    	    console.log(data);
+    	    window.location = "/agency/monthly_reports?year=" + params.year + "&month=" + params.month;
+    	})
+    	.fail(function(data){
+    	    console.log(data);
+    	});
 }
 
 

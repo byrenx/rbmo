@@ -307,7 +307,7 @@ def monthlyReports(request):
                     'email'  : agency.email,
                     'agency' : agency,
                     'year_form': YearFilterForm({'year' : year}),
-                    'monthly_acts_reports' : performance_reports,
+                    'monthly_reports' : performance_reports,
                     'str_month' : stringify_month(month),
                     'year'   : year,
                     'month_form' : MonthForm({'month' : month}),
