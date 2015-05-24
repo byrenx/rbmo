@@ -543,34 +543,35 @@ def removeMonthlyReport(request):
         year = performance.year
         month = performance.month
         #reset accomplished target to 0
-        '''
-        perf_target = PerformanceTarget.objects.get(wfp_activity = performance__activity)
-        if month==1:
-            perf_target.jan_acc = 0
-        elif month==2:
-            perf_target.feb_acc = 0
-        elif month==3:
-            perf_target.mar_acc = 0
-        elif month==4:
-            perf_target.apr_acc = 0
-        elif month==5:
-            perf_target.may_acc = 0
-        elif month==6:
-            perf_target.jun_acc = 0
-        elif month==7:
-            perf_target.jul_acc = 0
-        elif month==8:
-            perf_target.aug_acc = 0
-        elif month==9:
-            perf_target.sept_acc = 0
-        elif month==10:
-            perf_target.oct_acc = 0
-        elif month==11:
-            perf_target.nov_acc = 0
-        else:
-            perf_target.dec_acc = 0
+
+        perf_targets = PerformanceTarget.objects.filter(wfp_activity = performance.activity)
+        for perf_target in perf_targets:
+            if month==1:
+                perf_target.jan_acc = 0
+            elif month==2:
+                perf_target.feb_acc = 0
+            elif month==3:
+                perf_target.mar_acc = 0
+            elif month==4:
+                perf_target.apr_acc = 0
+            elif month==5:
+                perf_target.may_acc = 0
+            elif month==6:
+                perf_target.jun_acc = 0
+            elif month==7:
+                perf_target.jul_acc = 0
+            elif month==8:
+                perf_target.aug_acc = 0
+            elif month==9:
+                perf_target.sept_acc = 0
+            elif month==10:
+                perf_target.oct_acc = 0
+            elif month==11:
+                perf_target.nov_acc = 0
+            else:
+                perf_target.dec_acc = 0
+
         perf_target.save()
-        '''
         performance.delete()
         response = json.dumps({'status': 'success', 'year': year, 'month': month})
         return HttpResponse(response, content_type="application/json")

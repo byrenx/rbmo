@@ -293,7 +293,7 @@ function deleteReport(report_id){
 		}
 	    })
 	    .fail(function(data){
-		
+		console.log(data.responseText)
 	    });
 
     }
