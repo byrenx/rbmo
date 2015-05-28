@@ -661,3 +661,23 @@ def saveMonthlyReport(request):
         return HttpResponse(json.dumps(response), content_type="application/json")
     
     
+def getPerformanceReport(report_id):
+    perf_report = PerformanceReport.objects.get(id = report_id)
+    perf_acc_targets = PerformanceTargets.objects.filter(wfp_acitivy = perf_report.activity)
+    acc_taget_dicts = []
+    for acc in perf_acc_targets:
+        acc_target_dicts.append({'id' : acc.id,
+                                 'indicator' : acc.indicator,
+                             })
+        
+    perf_rep_dict = {'id' : perf_report.id,
+                     'activity' : perf_report.activity.name,
+                     'received' : perf_report.received,
+                     'incurred' : perf_report.incurred,
+                     'remarks'  : perf_report.remarks,
+                     'acc_targets' : acc_target_dicts}
+
+    return perf_rep_dict
+
+
+    
