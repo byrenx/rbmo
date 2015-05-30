@@ -746,6 +746,97 @@ def getURLPhysicalTargets(request):
     json_response = json.dumps(targets_list)
     return HttpResponse(json_response, content_type="application/json")
 
+
+def updateAccTarget(request):
+    request_body = json.loads(request.body)
+    indicator = PeroformanceTarget.objects.get(id=request_body['indicator_id']);
+    month = request_body['month']
+    if month == 1:
+        indicator.jan_acc = request_body['acc']
+    elif month == 2:
+        indicator.feb_acc = request_body['acc']
+    elif month == 3:
+        indicator.mar_acc = request_body['acc']
+    elif month == 4:
+        indicator.apr_acc = request_body['acc']
+    elif month == 5:
+        indicator.may_acc = request_body['acc']
+    elif month == 6:
+        indicator.jun_acc = request_body['acc']
+    elif month == 7:
+        indicator.jul_acc = request_body['acc']
+    elif month == 8:
+        indicator.aug_acc = request_body['acc']
+    elif month == 9:
+        indicator.sept_acc = request_body['acc']
+    elif month == 10:
+        indicator.oct_acc = request_body['acc']
+    elif month == 11:
+        indicator.nov_acc = request_body['acc']
+    elif month == 12:
+        indicator.dec_acc = request_body['acc']
+    indicator.save()
+
+    json_response = json.dumps({'id': indicator.id,
+                                'indicator': indicator.indicator,
+                                'jan': indicator.jan,
+                                'jan_acc': indicator.jan_acc,
+                                'feb': indicator.feb,
+                                'feb_acc': indicator.feb_acc,
+                                'mar': indicator.mar,
+                                'mar_acc': indicator.mar_acc,
+                                'apr': indicator.apr,
+                                'apr_acc': indicator.apr_acc,
+                                'may': indicator.may,
+                                'may_acc': indicator.may_acc,
+                                'jun': indicator.jun,
+                                'jun_acc': indicator.jun_acc,
+                                'jul': indicator.jul,
+                                'jul_acc': indicator.jul_acc,
+                                'aug': indicator.aug,
+                                'aug_acc': indicator.aug_acc,
+                                'sept': indicator.sept,
+                                'sept_acc': indicator.sept_acc,
+                                'oct' : indicator.oct,
+                                'oct_acc': indicator.oct_acc,
+                                'nov' : indicator.nov,
+                                'nov_acc': indicator.nov_acc,
+                                'dec': indicator.dec,
+                                'dec_acc': indicator.dec_acc})
+
+    return HttpResponse(status=200)
+
+def getPerformanceIndicator():
+    request_body = json.loads(request.body)
+    indicator = PerformanceTarget.objects.get(id = request_body['indicator_id'])
+    json_response = json.dumps({'id': indicator.id,
+                                'indicator': indicator.indicator,
+                                'jan': indicator.jan,
+                                'jan_acc': indicator.jan_acc,
+                                'feb': indicator.feb,
+                                'feb_acc': indicator.feb_acc,
+                                'mar': indicator.mar,
+                                'mar_acc': indicator.mar_acc,
+                                'apr': indicator.apr,
+                                'apr_acc': indicator.apr_acc,
+                                'may': indicator.may,
+                                'may_acc': indicator.may_acc,
+                                'jun': indicator.jun,
+                                'jun_acc': indicator.jun_acc,
+                                'jul': indicator.jul,
+                                'jul_acc': indicator.jul_acc,
+                                'aug': indicator.aug,
+                                'aug_acc': indicator.aug_acc,
+                                'sept': indicator.sept,
+                                'sept_acc': indicator.sept_acc,
+                                'oct' : indicator.oct,
+                                'oct_acc': indicator.oct_acc,
+                                'nov' : indicator.nov,
+                                'nov_acc': indicator.nov_acc,
+                                'dec': indicator.dec,
+                                'dec_acc': indicator.dec_acc})
+    return HttpResponse(json_response, content_type='application/json')
+
 def getPhysicalTargets(program_id):
     program = WFPData.objects.get(id = program_id)
     targets = PerformanceTarget.objects.filter(wfp_activity = program)
@@ -780,16 +871,33 @@ def getPhysicalTargets(program_id):
                          })
     return targets_list
     
+def getPerformanceReport(request):
+    request_body = json.loads(request.body)
+    report = PerformanceReport.objects.get(id = request_body['id'])
+    json_response = json.dumps({'id' : report.id,
+                                'month': report.month,
+                                'year': report.year,
+                                'received': report.received,
+                                'incurred': report.incurred,
+                                'remarks': report.remarks})
+    return HttpResponse(json_response, content_type='application/json')
 
-# def getProgramRepInfo():
-#     try:
-#         req = json.loads(request.body) 
-#         prog_rep_id = req["prog_rep_id"]
-#         pfr = PerformanceReport.objects.get(id = prog_rep_id)
-#         pfr_response = {"id": pfr.id,
-#                         "month" : pfr.month,
-#                         ""}
-#     except:
-#         return 200
+
+def updatePerformanceReport(request):
+    request_body = json.loads(request.body)
+    report = PerformanceReport(id = request_body['id'])
+    report.received = float(request_body['receied'])
+    report.incurred = float(request_body['incurred'])
+    report.remarks = request_body['remarks']
+    report.save()
     
+    data = json.dumps({'id' : report.id,
+                       'received': report.received,
+                       'incurred': report.incurred,
+                       'remarks' : report.remarks})
+    return HttpResponse(data, content_type='application/json')
+    
+
+    
+
     
