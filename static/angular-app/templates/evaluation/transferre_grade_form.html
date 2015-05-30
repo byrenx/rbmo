@@ -1,0 +1,96 @@
+<div class="modal-header">
+  <h4 class="modal-title">Grade Entry Form</h4>
+</div>
+<div class="modal-body" ng-if="adding_state">
+  <div class="form-group">
+    <label ng-bind="year_level_desc"></label>
+  </div>
+  <div id="type-school" class="form-group">
+    <input type="text" id="school" popover="Plese specify a school" popover-trigger="focus" placeholder="School Name" class="form-control input-sm" ng-model="year_grades.school" class="school" ng-keyup="autocomplete()" >
+  </div>
+  <div class="form-group">
+    <input type="number" placeholder="School Year" id="school_year_from" style="width:60px;" ng-model="school_year.from" maxlength="5" onkeydown="return allNumbers()" popover="Plese specify a school year" popover-trigger="focus">&nbsp;-&nbsp;<span ng-bind="school_year.from+1"></span>
+  </div>
+  <hr>
+  <table class="table table-condensed table-bordered">
+    <tr>
+      <th>Subject</th>
+      <th>Q1</th>
+      <th>Q2</th>
+      <th>Q3</th>
+      <th>Q4</th>
+      <th>Final</th>
+      <th>Units</th>
+      <th></th>
+    </tr>
+    <tr>
+      <td>
+	  <input type="text" id="subject" ng-model="grade.subject" class="form-control input-sm" typeahead="subject as subject for subject in subjects | filter:$viewValue | limitTo:8">
+      </td>
+      <td style="width: 60px;"><input type="text" id="q1" ng-model="grade.q1" class="form-control input-sm" maxlength="2" onkeydown="return allNumbers()"></td>
+      <td style="width: 60px;"><input type="text" id="q2" ng-model="grade.q2" class="form-control input-sm" maxlength="2" onkeydown="return allNumbers()"></td>
+      <td style="width: 60px;"><input type="text" id="q3" ng-model="grade.q3" class="form-control input-sm" maxlength="2" onkeydown="return allNumbers()"></td>
+      <td style="width: 60px;"><input type="text" id="q4" ng-model="grade.q4" class="form-control input-sm" maxlength="2" onkeydown="return allNumbers()"></td>
+      <td style="width: 60px;"><input type="text" id="final" ng-model="grade.final" class="form-control input-sm" maxlength="2" onkeydown="return allNumbers()"></td>
+      <td style="width: 60px;"><input type="text" id="units" ng-model="grade.units" class="form-control  input-sm" maxlength="4" onkeydown="return Decimals(this)" onkeyup="return Decimals(this)"></td>
+      <td style="width: 50px;">
+	<button ng-click="add_subject()" class="btn btn-success btn-sm">
+	  <span class="glyphicon glyphicon-plus-sign"></span>&nbsp;
+	</button>
+      </td>
+    </tr>
+  </table>
+  </br>
+  <table class="table table-condensed table-bordered">
+    <thead>
+      <tr class="navbar-default">
+	<th>Subject</th>
+	<th>Q1</th>
+	<th>Q2</th>
+	<th>Q3</th>
+	<th>Q4</th>
+	<th>Final</th>
+	<th>Units</th>
+	<th style="text-align:right"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="grade_row in grades_entered">
+	<td ng-bind="grade_row.subject"></td>
+	<td ng-bind="grade_row.q1" style="width: 60px;"></td>
+	<td ng-bind="grade_row.q2" style="width: 60px;"></td>
+	<td ng-bind="grade_row.q3" style="width: 60px;"></td>
+	<td ng-bind="grade_row.q4" style="width: 60px;"></td>
+	<td ng-bind="grade_row.final" style="width: 60px;"></td>
+	<td ng-bind="grade_row.units" style="width: 60px;"></td>
+	<td align="right" style="width: 150px;">
+	  <button class="btn btn-default btn-xs" ng-click="editSubject(grade_row)">
+	    <span class="glyphicon glyphicon-pencil"></span>&nbsp;Edit
+	  </button>&nbsp;
+	  <button class="btn btn-danger btn-xs" ng-click="deleteSubject(grade_row)">
+	    <span class="glyphicon glyphicon-remove text-danger"></span>&nbsp;Delete
+	  </button>
+	</td>
+      </tr>
+    </tbody>
+  </table>
+  <hr>
+  <div class="form-group">
+    <label>Average</label>
+    <input type="text" id="average" class="form-control input-sm" ng-model="year_grades.average" placeholder="Average" maxlength="5" style="width:100px;" onkeydown="return Decimals(this)" popover="Plese Enter Averge grade" popover-trigger="focus">
+  </div>
+</div>
+<div class="modal-footer" ng-if="adding_state">
+  <button class="btn btn-primary" id="save_grade_id" ng-click="save()">Save</button>
+  <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+</div>
+
+<!----message panel---->
+<div class="modal-body" ng-if="adding_done">
+  <p style="text-align:center;">
+    <i class="fa fa-check-circle fa-2x text-success"></i>&nbsp;Grades Succefully Saved!
+  </p>
+</div>
+<div class="modal-footer" ng-if="adding_done">
+  <button class="btn btn-warning" ng-click="cancel()">Close</button>
+</div>

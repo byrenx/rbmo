@@ -57,6 +57,7 @@ function getPhysicalTargets(){
 		switch(month){
 		case 1: content += "<td>" + data[i].jan + "</td>";
 		    content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].jan_acc+"'></td>";
+		    content += "";
 
 		    break;
 		case 2: content += "<td>" + data[i].feb + "</td>";
@@ -158,6 +159,7 @@ function showAccomplishedTargets(program_id, row_obj){
             content += "<th style='text-align: right;'>Target</th>";
             content += "<th style='text-align: right;'>Accomplished</th>";
             content += "<th style='text-align: right;'>Variance</th>";
+	    content += "<th></th>";
 	    content += "</tr>";
             content += "</thead>";
 	    content += "<tbody>";
@@ -169,16 +171,19 @@ function showAccomplishedTargets(program_id, row_obj){
 		case 1: content += "<td style='text-align: right;'>" + data[i].jan + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].jan_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].jan_acc - data[i].jan)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 
 		    break;
 		case 2: content += "<td style='text-align: right;'>" + data[i].feb + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].feb_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].feb_acc - data[i].feb)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 
 		    break;
 		case 3: content += "<td style='text-align: right;'>" + data[i].mar + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].mar_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].mar_acc - data[i].mar)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 4: content += "<td style='text-align: right;'>" + data[i].apr + "</td>";
@@ -189,41 +194,49 @@ function showAccomplishedTargets(program_id, row_obj){
 		case 5: content += "<td style='text-align: right;'>" + data[i].may + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].may_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].may_acc - data[i].may)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 6: content += "<td style='text-align: right;'>" + data[i].jun + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].jun_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].jun_acc - data[i].jun)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 7: content += "<td style='text-align: right;'>" + data[i].jul + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].jul_acc+"</td>";
 		    content += "<td>"+(data[i].jul_acc - data[i].jul)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 8: content += "<td style='text-align: right;'>" + data[i].aug + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].aug+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].aug_acc - data[i].aug)+"></td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 9: content += "<td style='text-align: right;'>" + data[i].sept + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].sept_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].sept - data[i].sept_acc)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 10: content += "<td style='text-align: right;'>" + data[i].oct + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].oct_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].oct_acc - data[i].oct)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 11: content += "<td style='text-align: right;'>" + data[i].nov + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].nov_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].nov_acc - data[i].nov)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 
 		case 12: content += "<td style='text-align: right;'>" + data[i].dec + "</td>";
 		    content += "<td style='text-align: right;'>"+data[i].dec_acc+"</td>";
 		    content += "<td style='text-align: right;'>"+(data[i].dec_acc - data[i].dec)+"</td>";
+		    content += "<td style='text-align: center'><a href='' class='glyphicon glyphicon-pencil'></a></td>";
 		    break;
 		}
 	    }
