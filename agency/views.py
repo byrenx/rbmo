@@ -26,6 +26,7 @@ from wfp.views import getProgOverview, getWFPTotal
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from helpers.helpers import *
 from datetime import date, datetime

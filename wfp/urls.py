@@ -24,4 +24,8 @@ urlpatterns = patterns('',
                        #get Programs jax call
                        url(r'^get/unreportedprograms/$', getUnreportedPrograms),
                        url(r'^get/program/physicaltargets/$', getURLPhysicalTargets),
+                       url(r'^get/performance_indicator/(?P<indicator_id>[0-9]+)$', getPerformanceIndicator),
+                       url(r'^get/performance_report/(?P<report_id>[0-9]+)$', getPerformanceReport),
+                       url(r'^update/performance_report/(?P<report_id>[0-9]+)$', updatePerformanceReport),                       
+                       url(r'^update/accomplished_targets$', updateAccTarget),                       
 )

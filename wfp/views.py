@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from .forms import WFPForm, CORequestForm, YearSelectForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.http import require_http_methods
 from helpers.helpers import * 
 from datetime import datetime, date
 import json
@@ -747,6 +748,7 @@ def getURLPhysicalTargets(request):
     return HttpResponse(json_response, content_type="application/json")
 
 
+@require_http_methods(["POST"])
 def updateAccTarget(request):
     request_body = json.loads(request.body)
     indicator = PeroformanceTarget.objects.get(id=request_body['indicator_id']);
@@ -806,9 +808,9 @@ def updateAccTarget(request):
 
     return HttpResponse(status=200)
 
-def getPerformanceIndicator():
-    request_body = json.loads(request.body)
-    indicator = PerformanceTarget.objects.get(id = request_body['indicator_id'])
+@require_http_methods(["GET"])
+def getPerformanceIndicator(request, indicator_id):
+    indicator = PerformanceTarget.objects.get(id = target_id)
     json_response = json.dumps({'id': indicator.id,
                                 'indicator': indicator.indicator,
                                 'jan': indicator.jan,
@@ -837,6 +839,7 @@ def getPerformanceIndicator():
                                 'dec_acc': indicator.dec_acc})
     return HttpResponse(json_response, content_type='application/json')
 
+@require_http_methods(["GET"])
 def getPhysicalTargets(program_id):
     program = WFPData.objects.get(id = program_id)
     targets = PerformanceTarget.objects.filter(wfp_activity = program)
@@ -871,9 +874,10 @@ def getPhysicalTargets(program_id):
                          })
     return targets_list
     
-def getPerformanceReport(request):
-    request_body = json.loads(request.body)
-    report = PerformanceReport.objects.get(id = request_body['id'])
+
+@require_http_methods(["GET"])
+def getPerformanceReport(request, report_id):
+    report = PerformanceReport.objects.get(id = report_id)
     json_response = json.dumps({'id' : report.id,
                                 'month': report.month,
                                 'year': report.year,
@@ -883,6 +887,7 @@ def getPerformanceReport(request):
     return HttpResponse(json_response, content_type='application/json')
 
 
+@require_http_methods(["POST"])
 def updatePerformanceReport(request):
     request_body = json.loads(request.body)
     report = PerformanceReport(id = request_body['id'])
