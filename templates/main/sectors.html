@@ -1,0 +1,13 @@
+<h4>Sectors</h4>
+<hr/>
+<form action="/admin/agencies_by_sector" method="POST">{%csrf_token%}
+{%for sector in sectors%}
+  <div class="checkbox">
+    <label>
+      <input type="checkbox" name="sector[]" id="sector" value="{{sector.id}}" onclick="$('#submit').click()" {%if sector.id in sectors_selected%} checked="checked" {%endif%}>
+      {{sector.name}}
+    </label>
+    <input type="submit" id="submit" style="display: none">
+  </div>
+{%endfor%}
+</form>

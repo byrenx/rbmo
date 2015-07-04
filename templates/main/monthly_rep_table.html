@@ -1,0 +1,79 @@
+
+{%if monthly_acts_reports%}
+  <div class="col-sm-12" style="text-align:center">
+    <h4>Monthly Physical and Financial Report of Operation</h4>
+    <h5>For the month {{str_month}} - {{year}}</h5>
+  </div>
+
+  <table class="table table-bordered table-condensed">
+    {%load humanize%}
+    <thead>
+      <tr>
+	<th colspan="3">Programs</th>
+	<th>Indicators</th>
+	<th>Target</th>
+	<th>Acc.</th>
+	<th>Var</th>
+	<th class="center">Received</th>
+	<th class="center">Incurred</th>
+	<th class="center">UA</th>
+	<th>Remarks</th>
+    </tr>
+    </thead>
+    <tbody>
+      {%for acc in monthly_acts_reports%}
+      <tr>
+	<td rowspan="{{acc.indicator_count}}" width="30px">
+	  <a href="/admin/monthly_reports_form?agency_id={{agency.id}}&action=edit&mpfro_id={{acc.id}}" class="btn btn-link" title="Edit">
+	    <span class="glyphicon glyphicon-edit"></span>
+	  </a>
+	</td>
+	<td rowspan="{{acc.indicator_count}}" width="30px;">
+	  <a href="#" class="btn btn-link" title="Remove">
+	    <span class="glyphicon glyphicon-remove text-danger"></span>
+	  </a>
+	 </td>
+	<td rowspan="{{acc.indicator_count}}">{{acc.activity}}</td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td></td>
+	<td class="decimal">
+	  {{acc.received|intcomma}}
+	</td>
+	<td class="decimal">
+	   {{acc.incurred|intcomma}}
+	</td>
+	<td class="decimal">{{acc.remaining}}</td>
+	<td rowspan="{{acc.indicator_count}}">{{acc.remarks}}</td>
+      </tr>
+      {%for indicator in acc.indicators_accs%}
+      <tr>
+	<td>{{indicator.indicator}}</td>
+	<td>{{indicator.target}}</td>
+	<td>{{indicator.acc}}</td>
+	    <td width="45px;">
+	      {%if indicator.variance < 0%}
+		<span class="glyphicon glyphicon-arrow-down text-danger"></span>
+		{{indicator.variance}}
+	      {%elif indicator.variance > 0%}
+		<span class="glyphicon glyphicon-arrow-up text-success"></span>
+		{{indicator.variance}}
+	      {%else%}
+		{{indicator.variance}}
+	      {%endif%}			
+	    </td>
+	<td></td>
+	<td></td>
+	<td></td>
+      </tr>
+      {%endfor%}
+    {%endfor%}
+  </tbody>
+</table>
+{%else%}
+  <div class="alert alert-info">
+    <span class="glyphicon glyphicon-info"></span>
+    Currently no Reports have been encoded for the month of <b>{{str_month}} - {{year}}</b>
+  </div>
+{%endif%}

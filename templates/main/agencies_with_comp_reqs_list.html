@@ -1,0 +1,66 @@
+{% extends "./main/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="col-sm-12" style="background-color: white; padding-bottom: 10px;">
+    <h3>Agencies with Complete Requirements for <small>{{allocation}}</small> for <small>{{month_str}}, {{year}}</small></h3>
+    <hr/>
+    <div class="col-sm-8">
+      <form action="/admin/agencies_with_compreqs" class="form-inline" method="POST">{%csrf_token%}
+	<div class="form-group">
+	  {{form.allocation}}
+	</div>
+	<div class="form-group">
+	  {{form.month}}
+	</div>
+	<div class="form-group">
+	  {{form.year}}
+	</div>
+	<div class="form-group">
+	  <button type="submit" class="btn btn-default">
+	    <span class="glyphicon glyphicon-search"></span>
+	  </button>
+	</div>
+      </form>
+    </div>
+    <div class="col-sm-4" style="text-align: right">
+      	<a href="javascript:$('#agencies_com_reqs_print').printArea()" class="btn btn-success btn-sm">
+	  <span class="glyphicon glyphicon-print"></span>
+	  Print
+	</a>
+    </div>
+  </div>
+  <div class="col-sm-12" style="background-color: white; margin-top: 10px;min-height: 350px;"> 
+    {%if agencies%}
+    <table class="table table-condensed table-striped">
+      <thead>
+	<tr>
+	  <th>No.</th>
+	  <th>Agencies</th>
+	</tr>
+      </thead>
+        {% for agency in agencies %}
+      <tr>
+	<td width="30px" align="center">{{agency.count}}</td>
+	<td>{{agency.name}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {%else%}
+      <div class="alert alert-info" style="margin-top: 10px;">
+	Currently No Agencies have completed the requirements yet for <b>{{allocation}} - {{month_str}}, {{year}}</b>
+      </div>
+  </div>
+  {%endif%}
+</div>
+</div>
+{%include "./admin/agencies_with_comp_reqs_print.html"%}
+{% endblock %}
+
+{%block scripts%}
+{%endblock%}
+

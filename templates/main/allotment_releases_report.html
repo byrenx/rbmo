@@ -1,0 +1,102 @@
+{% extends "./main/base.html" %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="col-sm-12" style="background-color: white; min-height: 550px;">
+    <h3>TOTAL FUND RELEASE&nbsp;<small>As of {{today}}</small></h3>
+    <hr/>
+    <div class="col-sm-12">
+      <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
+	<span class="glyphicon glyphicon-print"></span>
+	Print
+      </a>
+    </div>
+    </br></br>
+    <div class="col-sm-12">
+      <div class="col-sm-12">
+	<table border="1" class="table-normal">
+	  {%load humanize%}
+	  <thead>
+	    <tr>
+	      <th colspan="2" class="center">Agency/Office</th>
+	      <th class="center">PS</th>
+	      <th class="center">MOOE</th>
+	      <th class="center">CO</th>
+	      <th class="center">TOTAL</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  {%if line_agencies%}
+	    <tr>
+	      <th colspan="6">Line Agencies</th>
+	    </tr>
+	  {%endif%}
+	  {% for agency in line_agencies%}
+	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.total|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	       <tr>
+		 <td></td>
+		 <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+		 <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	       </tr>
+	     {%endfor%}
+	  {% endfor %}
+          <!----local agencies ---->
+	  {%if local_agencies%}
+	    <tr>
+	      <th colspan="6">Local Agencies</th>
+	    </tr>
+	  {%endif%}
+	  {% for agency in local_agencies%}
+	     <tr>
+	       <td>{{agency.count}}</td>
+	       <td>{{agency.name}}</td>
+	       <td class="decimal">{{agency.ps|intcomma}}</td>
+	       <td class="decimal">{{agency.mooe|intcomma}}</td>
+	       <td class="decimal">{{agency.co|intcomma}}</td>
+	       <td class="decimal">{{agency.total|intcomma}}</td>
+	     </tr>
+	     {%for sub_agency in agency.sub_agencies%}
+	       <tr>
+		 <td></td>
+		 <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+		 <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.co|intcomma}}</td>
+		 <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	       </tr>
+	     {%endfor%}
+	  {% endfor %}
+
+	  <tr>
+	    <th colspan="2">Grand Total</th>
+	    <th class="decimal">{{grand_total.ps|intcomma}}</th>
+	    <th class="decimal">{{grand_total.mooe|intcomma}}</th>
+	    <th class="decimal">{{grand_total.co|intcomma}}</th>
+	    <th class="decimal">{{grand_total.total|intcomma}}</th>
+	  </tr>
+	</table>
+        </br></br>
+      </div>
+    </div>
+  </div>
+</div>
+    {%include "./admin/allotment_releases_print.html"%}
+    {% endblock %}
+    {%block scripts%}
+    {%endblock%}
+    

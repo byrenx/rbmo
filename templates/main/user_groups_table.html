@@ -1,0 +1,20 @@
+{% if users %}
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  {% for user in users %}
+    <tr>
+      <td>{{user.first_name}}&nbsp;{{user.last_name}}</td>
+      <td>{{user.email}}</td>
+    </tr>
+  {%endfor%}
+</table>
+{%else%}
+<div class="alert alert-warning">
+  <strong>No User Group Found</strong>
+</div>
+{%endif%}

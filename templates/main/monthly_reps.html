@@ -1,0 +1,42 @@
+{% extends "./main/base.html" %}
+
+{% block left-content %}
+  {% include "./admin/agency_tabs.html" %}
+{% endblock %}
+
+{% block right-content %}
+<div class="col-sm-9" style="min-height:500px;background-color: white;">
+  <h3>{{agency.name}}</h3>
+  <hr/>
+  {% include "msg_pane.html" %}
+  <div class="col-sm-12">
+    <form action="/admin/monthly_reports/{{agency.id}}/" method="POST" class="form-inline">
+      {%csrf_token%}
+      <input type="hidden" name="agency_id" value="{{agency.id}}">
+      <div class="form-group">
+	{{month_form.month}}
+      </div>
+      <div class="form-group">
+	<select name="year" class="form-control">
+	  {%for year in years%}
+	  <option value="{{year.year}}">{{year.year}}</option>
+	  {%endfor%}
+	</select>
+      </div>
+      <div class="form-group">
+	<button class="btn btn-default">
+	  <span class="glyphicon glyphicon-search"></span>
+	</button>
+      </div>
+    </form>
+  </div>
+  </br></br></br>
+
+  {% include "./admin/monthly_rep_table.html"%}
+
+</div>
+{% endblock %}
+{%block scripts%}
+<script type="text/javascript" src="/static/js/wfp_ajax.js"></script>
+{%endblock%}
+

@@ -1,0 +1,41 @@
+{%extends "./main/base.html"%}
+
+
+{% block css %}{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="col-sm-6 col-sm-offset-3">
+    <h3>Change Password</h3>
+    {%include "msg_pane.html"%}
+    <hr/>
+    <form action="/admin/change_password" method="POST">{%csrf_token%}
+      <div class="form-group">
+	<label>Current Password</label>
+	{{form.current_password}}
+      </div>
+      <div class="form-group">
+	<label>New Password</label>
+	{{form.new_password}}
+      </div>
+      <div class="form-group">
+	<label>Confirm Password</label>
+	{{form.confirm_password}}
+      </div>
+      <div class="form-group">
+	<button type="submit" class="btn btn-primary">Confirm New Password</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{%block scripts%}
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/jquery.jqplot.min.js"></script>
+<script language="javascript" type="text/javascript" src="/static/jquery.jqplot.1.0.8/plugins/jqplot.pieRenderer.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/static/jquery.jqplot.1.0.8/jquery.jqplot.css" />
+<script language="javascript" type="text/javascript" src="/static/js/reportcharts.js" ></script>
+</script>
+{%endblock%}
+
+

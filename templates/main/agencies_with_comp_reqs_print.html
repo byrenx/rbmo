@@ -1,0 +1,43 @@
+<div class="col-sm-12" id="agencies_com_reqs_print" style="display:none">
+    <div style="position:relative; width: 100%; height: 200px;">
+      <div style="position:absolute;left: 30px; top:0px; width: 150px;">
+	<img src="/static/images/rbmo.jpg" width="100px" height="100px">
+      </div>
+      <div style="position: absolute; left: 180px; top:0px; width:330px;text-align:center">
+	  <p>
+	    Republic of the Philippines</br>
+	    <b>Autonomous Region in Muslim Mindanao</b></br>
+	    <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
+	    <i>Regional Budget Management Office</i></br>
+	    ARMM Compound Cotabato City
+	  </br>
+	  <b>List of Agencies with Complete Requirements</b></br>
+	  For {{allocation}}-{{str_month}}, {{year}}</br>
+	  </p>
+      </div>
+      <div style="position: absolute; top:0px; left: 550px; width:150px;">
+	<img src="/static/images/rbmo_logo.png" width="100px" height="100px">
+      </div>
+    </div>  
+    
+    {%if agencies%}
+    <table class="table table-condensed">
+      <thead>
+	<tr>
+	  <th colspan="2">Agencies</th>
+	</tr>
+      </thead>
+        {% for agency in agencies %}
+      <tr>
+	<td width="30px" align="center">{{agency.count}}</td>
+	<td>{{agency.name}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {%else%}
+      <div class="alert alert-info" style="margin-top: 10px;">
+	Currently No Agencies have completed the requirements yet for <b>{{allocation}} - {{month_str}}, {{year}}</b>
+      </div>
+  </div>
+  {%endif%}
+</div>
