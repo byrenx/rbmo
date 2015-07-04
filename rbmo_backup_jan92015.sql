@@ -980,7 +980,7 @@ USE `byrenx$rbmo`;
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`byrenx`@`%` SQL SECURITY DEFINER */
+/*!50013 DEFINER=`root`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `user_permissions` AS select `auth_user`.`id` AS `id`,`auth_user`.`username` AS `username`,`groups`.`name` AS `name`,`permissions`.`action` AS `action`,`permissions`.`target` AS `target` from ((((`auth_user` join `user_group` on((`user_group`.`user_id` = `auth_user`.`id`))) join `groups` on((`groups`.`id` = `user_group`.`group_id`))) join `group_perm` on((`group_perm`.`group_id` = `groups`.`id`))) join `permissions` on((`permissions`.`id` = `group_perm`.`permission_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;

@@ -11,38 +11,38 @@ def has_permission(user_id, action, target):
     return cursor.fetchone()>0
 
 def get_allowed_tabs(user_id):
-    tabs=[{'tag' : 'Home', 'link': '/admin/home'}]
+    tabs=[{'tag' : 'Home', 'link': '/main/home'}]
     if has_permission(user_id, 'record', 'user'):
-        tabs.append({'tag': 'Users', 'link': '/admin/users'})
+        tabs.append({'tag': 'Users', 'link': '/main/users'})
     if has_permission(user_id, 'view', 'agency'):
-        tabs.append({'tag': 'Agency/Office', 'link': '/admin/agencies'})
+        tabs.append({'tag': 'Agency/Office', 'link': '/main/agencies'})
     if has_permission(user_id, 'view', 'transaction history'):
         tabs.append({'tag': 'Transaction History', 'link': ''})
     if has_permission(user_id, 'process', 'monthly cash allocation'):
-        tabs.append({'tag': 'SMCA', 'link': '/admin/smca'})
+        tabs.append({'tag': 'SMCA', 'link': '/main/smca'})
     if has_permission(user_id, 'print', 'transaction history'):
         tabs.append({'tag': 'Transaction Summary', 'link': '/history/summary'})
  
 
     reports = []
     if has_permission(user_id, 'print', 'total releases'):
-        reports.append({'tag': 'Total Fund Release', 'link': '/admin/allot_releases'})
-        reports.append({'tag': 'Total Monthly Release', 'link': '/admin/total_monthly_release'})
-        reports.append({'tag': 'Yearly Local Fund', 'link': '/admin/yearly_fund'})
+        reports.append({'tag': 'Total Fund Release', 'link': '/main/allot_releases'})
+        reports.append({'tag': 'Total Monthly Release', 'link': '/main/total_monthly_release'})
+        reports.append({'tag': 'Yearly Local Fund', 'link': '/main/yearly_fund'})
     if has_permission(user_id, 'print', "running balances"):
         reports.append({'tag': 'Running Balances', 'link': '/agency/fund/running_balances'})
-        reports.append({'tag': 'Approved Budget', 'link': '/admin/approved_budget'})
+        reports.append({'tag': 'Approved Budget', 'link': '/main/approved_budget'})
         
     if has_permission(user_id, 'view', "analysis report"):
         pass
     if has_permission(user_id, 'print', "fund distribution"):
-        reports.append({'tag': 'Local Fund Distribution', 'link': '/admin/fund_distrib'})
+        reports.append({'tag': 'Local Fund Distribution', 'link': '/main/fund_distrib'})
     if has_permission(user_id, 'view', "quarterly reports"):
        pass
     if has_permission(user_id, 'print', 'agencies with complete requirements'):
-        reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/admin/agencies_with_compreqs'})
+        reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/main/agencies_with_compreqs'})
     if has_permission(user_id, 'print', 'agencies with incomplete requirements'):
-        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/admin/agencies_with_increqs'})
+        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/amin/agencies_with_increqs'})
     tabs.append({'tag':'Reports', 'menus':reports})
     return tabs
 
@@ -50,13 +50,13 @@ def get_allowed_tabs(user_id):
 def getAgencyTabs(user_id, agency_id):
     tabs = []
     if has_permission(user_id, 'record', 'agency submitted requirements'):
-        tabs.append({'tag' : "Requirements", 'link': '/admin/manage_agency_docs/'+str(agency_id)+'/'})
+        tabs.append({'tag' : "Requirements", 'link': '/main/manage_agency_docs/'+str(agency_id)+'/'})
     if has_permission(user_id, 'record', 'wfp'):
         tabs.append({'tag' : 'WFP', 'link': '/agency/wfp/wfpinfo/'+str(agency_id)+'/'})
     if has_permission(user_id, 'process', 'monthly cash allocation'):
         tabs.append({'tag' : 'Monthly Cash Allocation', 'link': '/agency/fund/monthly_alloc/'+str(agency_id)+'/'})
     if has_permission(user_id, 'print', 'comprehensive performance report'):
-        tabs.append({'tag' : 'Monthly Report of Operation', 'link': '/admin/monthly_reports/'+str(agency_id)+'/'})
+        tabs.append({'tag' : 'Monthly Report of Operation', 'link': '/main/monthly_reports/'+str(agency_id)+'/'})
     if has_permission(user_id, 'record', 'allotment releases'):
         tabs.append({'tag' : 'Allotment Releases', 'link': '/agency/fund/allotment_releases/'+str(agency_id)+'/'})
     if has_permission(user_id, 'record', 'request received'):

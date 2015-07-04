@@ -46,7 +46,6 @@ INSTALLED_APPS = (
     'django.contrib.auth.hashers',
     'django.contrib.humanize',
     'rbmo',
-    'admin',
     'fund',
     'wfp',
 )
@@ -90,7 +89,7 @@ DATABASES = {
         # The following settings are not used with sqlite3:
         'USER': 'byrenx',
 
-        'PASSWORD': 'byREnX++0789',
+        'PASSWORD': 'root',
         'HOST': 'mysql.server',                      
         'PORT': '',                   
     }

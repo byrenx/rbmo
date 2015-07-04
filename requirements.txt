@@ -1,0 +1,6 @@
+Django == 1.7.8
+#before installing these mysqldb requires you to install python-dev
+# to install type in the terminal apt-get install python-dev
+MySQL-python
+Psycopg == 2.6
+
