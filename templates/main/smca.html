@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container" style="background-color: white;padding-top: 20px;min-height: 550px;">
   <div class="col-sm-8">
-    <form action="/admin/smca" class="form-inline" method="POST">
+    <form action="/main/smca" class="form-inline" method="POST">
       {%csrf_token%}
       <div class="form-group">
 	{{search_form.allocation}}
