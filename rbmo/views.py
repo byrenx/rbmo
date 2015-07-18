@@ -511,8 +511,8 @@ def addEditAgency(request):
 def deleteAgency(request, agency_id):
     #try:
         context = RequestContext(request)
-        agency = Agency.objects.get(id=agency_id)
-        a_name = agency.name
+        agency  = Agency.objects.get(id=agency_id)
+        a_name  = agency.name
         data = {'system_name'   : SYSTEM_NAME,
                 'allowed_tabs'  : get_allowed_tabs(request.user.id),
 
