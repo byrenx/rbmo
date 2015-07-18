@@ -5,11 +5,11 @@
 <div class="col-sm-6 col-sm-offset-3" style="background-color: white">
   <h2>{{page_title}}&nbsp;
     <small>
-      <a href="/admin/users/">Show Registered Users</a>
+      <a href="/main/users/">Show Registered Users</a>
     </small>
   </h2>
   <hr/>
-  <form action="/admin/add_edit_user" method="POST">{%csrf_token%}
+  <form action="/main/add_edit_user" method="POST">{%csrf_token%}
     {%include "msg_pane.html"%}
     <input type="hidden" id="action" name="action" value="{{action}}">
     <input type="hidden" id="user_id" name="user_id" value="{{user_id}}">

@@ -25,7 +25,7 @@ import sys
 
 SYSTEM_NAME = 'e-RBMO Data Management System'
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 @transaction.atomic
 def summary(request):
     context = RequestContext(request)

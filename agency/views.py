@@ -1,16 +1,26 @@
+import hashlib
+import json
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.db import transaction, connection
 from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+from helpers.helpers import *
+from datetime import date, datetime
+from rbmo.forms import MonthForm
+from wfp.views import getProgOverview, getWFPTotal
+from requirements.views import (getSubmittedReqs,
+                                getLackingReqs)
 from .forms import (BudgetProposalForm, 
                     LoginForm,
                     ChangePassForm,
                     YearFilterForm)
-from requirements.views import (getSubmittedReqs,
-                                getLackingReqs)
-from rbmo.forms import MonthForm
 from rbmo.models import (UserGroup, 
                          Groups,
                          Agency, 
@@ -22,16 +32,7 @@ from rbmo.models import (UserGroup,
                          PerformanceReport,
                          MPFRO,
                          CoRequest)
-from wfp.views import getProgOverview, getWFPTotal
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required, permission_required
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
-from helpers.helpers import *
-from datetime import date, datetime
-import hashlib
-import json
+
 
 months = getMonthLookup()
 month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',

@@ -1,11 +1,11 @@
 {% extends "./main/base.html" %}
 
 {%block right-content%}
-<div class="col-sm-10 col-sm-offset-1" style="background-color: white;min-height: 600px;">
+<div class="col-sm-10 col-sm-offset-1" style="background-color: white;min-height: 600px;padding-top: 20px;">
+  {%include "./main/user_search_form.html"%}
+  <hr>
   <h2>{{page_title}}</h2>
-  <hr/>
-  {%include "./admin/user_search_form.html"%}
-  {%include "./admin/users_table.html"%}
+  {%include "./main/users_table.html"%}
 </div>
 {%endblock%}
 
@@ -14,7 +14,7 @@
     function changeUserStatus(user_id, status){
        var data = {user_id : user_id,
                    status  : status}
-       $.get("/admin/change_status", data, function(rs){
+       $.get("/main/change_status", data, function(rs){
            var html = "";
            rs = new String(rs).trim()
            if (rs=="1"){

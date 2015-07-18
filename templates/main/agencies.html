@@ -5,12 +5,12 @@
   <h2> List of Agencies/Offices </h2>
   <hr/>
   <div class="col-sm-4" style=" min-height:450px;">
-    {%include "./admin/sectors.html"%}
+    {%include "./main/sectors.html"%}
   </div>
 
   <div class="col-sm-8" style="border-left: 1px solid rgb(204,204,204);min-height: 450px;">
     <div class="col-sm-8" style="text-align:left">
-      <form method="POST" id='srch_stud' action="/admin/agencies" class="form-search">
+      <form method="POST" id='srch_stud' action="/main/agencies" class="form-search">
 	{%csrf_token%}
 	<div class="input-group">
 	  <input name="agency" value="" id="search_agency" type="text" class="form-control" placeholder="Search......">
@@ -20,7 +20,7 @@
 	    </button>
 	  </span>
 	</div><!-- /btn-group -->
-	<a href="/admin/agencies" class="btn btn-link">
+	<a href="/main/agencies" class="btn btn-link">
 	  <span class="glyphicon glyphicon-list"></span>
 	  Show All
 	</a>
@@ -29,7 +29,7 @@
     
     {% if has_add %}
     <div class="col-sm-4" style="text-align:right;">
-      <a href="/admin/pm_agency" class="btn btn-primary">
+      <a href="/main/pm_agency" class="btn btn-primary">
 	<span class="glyphicon glyphicon-plus-sign"></span>
 	&nbsp;Add
       </a>
@@ -38,7 +38,7 @@
     <div class="col-sm-12 div">
       <hr/>
       <!---agency table-->
-      {% include "./admin/agency_table.html" %}
+      {% include "./main/agency_table.html" %}
     </div>
   </div>
 </div>

@@ -10,7 +10,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 #models
-from rbmo.models import (UserGroup,
+from rbmo.models import (User,
+                         UserGroup,
                          Groups,
                          Agency,
                          Sector,
