@@ -5,11 +5,11 @@
   <div class="col-sm-12">
     <h2>Agency/Office Form 
       <small> 
-	<a href="/admin/agencies">Show List of Agencies/Officies</a>
+	<a href="/main/agencies">Show List of Agencies/Officies</a>
       </small>
     </h2>
     <hr/>
-    <form action="/admin/pm_agency" class="form" method="POST">{% csrf_token %}
+    <form action="/main/pm_agency" class="form" method="POST">{% csrf_token %}
       {%include "msg_pane.html"%}
       <input type="hidden" name="action" value="{{action}}">
       <input type="hidden" name="id" value="{{agency_id}}">
