@@ -8,13 +8,13 @@
 <div class="container">
   <div class="col-sm-12" style="background-color:white;padding-top:20px;">
     <div class="col-sm-6">
-      <form action="/admin/fund_distrib" method="POST" class="form-inline">
+      <form action="/main/fund_distrib" method="POST" class="form-inline">
 	{%csrf_token%}
 	<div class="form-group">
 	  <select id="year" name="year" class="form-control">
 	    <option>-----Select a year-----</option>
-	    {%for year in years%}
-	    <option value="{{year.year}}" {%if year == year.year%} selected="selected" {%endif%}>{{year.year}}</option>
+	    {%for yr in years%}
+	    <option value="{{yr}}" {%if yr == year%} selected="selected" {%endif%}>{{yr}}</option>
 	    {%endfor%}
 	  </select>
 	</div>
