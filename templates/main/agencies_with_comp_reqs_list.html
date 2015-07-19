@@ -10,7 +10,7 @@
     <h3>Agencies with Complete Requirements for <small>{{allocation}}</small> for <small>{{month_str}}, {{year}}</small></h3>
     <hr/>
     <div class="col-sm-8">
-      <form action="/admin/agencies_with_compreqs" class="form-inline" method="POST">{%csrf_token%}
+      <form action="/main/agencies_with_compreqs" class="form-inline" method="POST">{%csrf_token%}
 	<div class="form-group">
 	  {{form.allocation}}
 	</div>
@@ -58,7 +58,7 @@
   {%endif%}
 </div>
 </div>
-{%include "./admin/agencies_with_comp_reqs_print.html"%}
+{%include "./main/agencies_with_comp_reqs_print.html"%}
 {% endblock %}
 
 {%block scripts%}
