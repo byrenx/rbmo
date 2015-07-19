@@ -3,7 +3,7 @@
 {%block right-content%}
 <div class="col-sm-12" style="background-color: white;min-height: 550px;padding-top:20px;">
   <div class="col-sm-6">
-    <form action="/fund/running_balances" class="form-inline" method="post" onsubmit="return isValidYear()">
+    <form action="/agency/fund/running_balances" class="form-inline" method="POST" onsubmit="return isValidYear()">
       {%csrf_token%}
       <div class="form-group">
 	<select class="form-control" id="year" name="year">
@@ -26,27 +26,16 @@
 
   <div class="col-sm-12">
     <hr/>
-    <div class="col-sm-2">
-      <img src="/static/images/rbmo.jpg" width="100px" height="100px">
-      </div>
-    <div class="col-sm-6 col-sm-offset-1">
-      <center>
-	<p>
-	  Republic of the Philippines</br>
-	  <b>Autonomous Region in Muslim Mindanao</b></br>
-	  <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
-	  <i>Regional Budget Management Office</i></br>
-	  ARMM Compound Cotabato City
-	  </br></br>
-	  <b>BALANCES</b></br>
-	  As of {{today}}</br>
-	</p>
-	</center>
-      
+    <!-- <div class="col-sm-2"> -->
+    <!--   <img src="/static/images/rbmo.jpg" width="100px" height="100px"> -->
+    <!-- </div> -->
+    <div class="col-sm-12 col-xs-12 col-md-12">
+      <h3>Remaining Balances for {{year}}</h3>
+      <h4>As of {{today}}</h4>
     </div>
-    <div class="col-sm-2 col-sm-offset-1">
-      <img src="/static/images/rbmo_logo.png" width="100px" height="100px">
-    </div>
+    <!-- <div class="col-sm-2 col-sm-offset-1"> -->
+    <!--   <img src="/static/images/rbmo_logo.png" width="100px" height="100px"> -->
+    <!-- </div> -->
   </div>
 
   <table class="table-normal">

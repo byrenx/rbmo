@@ -495,7 +495,8 @@ count = 1.0
 def agenciesBalanceSummary(request):
     context = RequestContext(request)
     cursor = connection.cursor()
-    year = request.GET.get('year', datetime.today().year)
+    year = request.POST.get('year', datetime.today().year)
+    cur_year = datetime.today().year
     line_agencies  = []
     local_agencies = []
     total_ps       = 0
@@ -650,11 +651,7 @@ def agenciesBalanceSummary(request):
         total_balance += agency_bal
         count += 1
 
-
-    years_query = "select distinct(year) as year from wfp_data"
-    cursor.execute(years_query)
-    
-    data = {'years'          : [x for x in range(2014, year+1)],
+    data = {'years'          : [x for x in range(2014, cur_year+1)],
             'line_agencies'  : line_agencies,
             'local_agencies' : local_agencies,
             'total_sum'      : {'total_ps'      : total_ps,
