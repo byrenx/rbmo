@@ -1,4 +1,4 @@
-{% extends "./admin/base.html" %}
+{% extends "./main/base.html" %}
 
 {%block right-content%}
 <div class="col-sm-12" style="background-color: white;min-height: 550px;padding-top:20px;">
@@ -9,7 +9,7 @@
 	<select class="form-control" id="year" name="year">
 	  <option value="0">---Choose a Year----</option>
 	  {% for year in years %}
-	  <option value="{{year.year}}">{{year.year}}</option>
+	  <option value="{{year}}">{{year}}</option>
 	  {% endfor %}
 	</select>
       </div>

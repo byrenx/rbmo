@@ -42,7 +42,7 @@ def get_allowed_tabs(user_id):
     if has_permission(user_id, 'print', 'agencies with complete requirements'):
         reports.append({'tag': 'Agencies w/ Complete Requirements', 'link': '/main/agencies_with_compreqs'})
     if has_permission(user_id, 'print', 'agencies with incomplete requirements'):
-        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/amin/agencies_with_increqs'})
+        reports.append({'tag': 'Agencies w/ Incomplete Requirements', 'link': '/main/agencies_with_increqs'})
     tabs.append({'tag':'Reports', 'menus':reports})
     return tabs
 

@@ -7,9 +7,10 @@
 {% block content %}
 <div class="container">
   <div class="col-sm-12" style="background-color: white; min-height: 20px;padding-top: 20px;">
-    <form action="/admin/yearly_fund" class="form-inline" style="margin-bottom:24px">
+    <form action="/main/yearly_fund" class="form-inline" style="margin-bottom:24px" method="POST">
+      {%csrf_token%}
       <div class="form-group">
-        <select id="year_choose" name="year_choose" class="form-control">
+        <select id="year" name="year" class="form-control">
 	      <option>----Select Allocated Year----</option>
               {% for year in year_choices %}
               <option value="{{year}}">{{year}}</option>
@@ -28,7 +29,7 @@
     </form>
     <hr/>
   
-    <center><h3>Allocation of {{cur_year}} Fund</h3></center>
+    <center><h3>Allocation of {{year}} Fund</h3></center>
     </br>
     <div class="col-sm-5 panel panel-default">
       <table class="table table-condensed">

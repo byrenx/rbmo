@@ -990,19 +990,16 @@ def yearly_fund(request):
     data = {
             'system_name'  : SYSTEM_NAME,
             'allowed_tabs' : get_allowed_tabs(request.user.id),
-            'cur_year'     : datetime.today().year
+            'year'     : datetime.today().year
            }
     year = date.today().year 
     year_list = []
     
-    yrs_query = "select distinct(year) as year from wfp_data"
-    cursor.execute(yrs_query)
-    for yr in dictfetchall(cursor):
-        year_list.append(yr['year'])
-
-    data['year_choices'] = year_list
-    if request.method=="POS":
-        pass
+    data['year_choices'] = [x for x in range(2014, year+1)]
+    if request.method=="POST":
+        year = int(request.POST.get('year'))
+        data['year'] = year
+        
     fund_query = '''select (select sum(total) from wfp_data
                             where year=%s and allocation='PS') 
                             as ps_amount,
@@ -1107,7 +1104,7 @@ def totalMonthlyReleases(request):
     data = {'system_name'  : SYSTEM_NAME,
             'year'         : year,
             'allocation'   : allocation,
-            'years'        : dictfetchall(cursor),
+            'years'        : [x for x in range(2014, int(year) + 1)],
             'allowed_tabs' : get_allowed_tabs(request.user.id),
             'today'        : datetime.today(),
             'current_month': datetime.today().month
@@ -1116,6 +1113,8 @@ def totalMonthlyReleases(request):
     if request.method=='POST':
         year  = request.POST.get('year')
         allocation = request.POST.get('allocation')
+        data['year'] = year
+        data['allocation'] = allocation
 
 
     agency_monthly_releases = []

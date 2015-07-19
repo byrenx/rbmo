@@ -654,7 +654,7 @@ def agenciesBalanceSummary(request):
     years_query = "select distinct(year) as year from wfp_data"
     cursor.execute(years_query)
     
-    data = {'years'          : dictfetchall(cursor),
+    data = {'years'          : [x for x in range(2014, year+1)],
             'line_agencies'  : line_agencies,
             'local_agencies' : local_agencies,
             'total_sum'      : {'total_ps'      : total_ps,

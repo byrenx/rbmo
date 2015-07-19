@@ -8,7 +8,7 @@
 <div class="container">
   <div class="col-sm-12" style="background-color: white; min-height: 550px;">
     </br></br>
-    <form class="form-inline" action="/admin/total_monthly_release" method="POST">
+    <form class="form-inline" action="/main/total_monthly_release" method="POST">
       {% csrf_token %}
       <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
 	<span class="glyphicon glyphicon-print"></span>
@@ -28,8 +28,8 @@
 	&nbsp;CO
       </label>&nbsp;
       <select name="year" class="form-control">
-	{%for year in years%}
-	  <option value="{{year.year}}">{{year.year}}</option>
+	{%for yr in years%}
+	  <option value="{{yr}}" {%if year == yr %}selected="selected" {%endif%}>{{yr}}</option>
 	{%endfor%}
       </select>
       <button class="btn btn-default">
@@ -144,7 +144,7 @@
     </div>
   </div>
 </div>
-{%include "./admin/total_monthly_release_print.html"%}
+{%include "./main/total_monthly_release_print.html"%}
 {% endblock %}
 {%block scripts%}
 {%endblock%}
