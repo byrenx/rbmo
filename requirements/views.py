@@ -31,7 +31,7 @@ month_lookup = getMonthLookup()
 quarters = {1: '1st Quarter', 2: '2nd Quarter', 3: '3rd Quarter', 4: 'Last Quarter'}
 
 
-@login_required(login_url = '/admin/')
+@login_required(login_url = '/main/')
 @transaction.atomic
 def manageAgencyDocs(request):
     context = RequestContext(request)
@@ -77,12 +77,12 @@ def manageAgencyDocs(request):
                 'q4_req_s'     : q4_req_s,
                 'cos_submitted': cos_submitted}
 
-        return render_to_response('./admin/agency_docs_recording.html', data, context)
+        return render_to_response('./main/agency_docs_recording.html', data, context)
     except: #Agency.DoesNotExist
-        return HttpResponseRedirect('/admin/agencies')  
+        return HttpResponseRedirect('/main/agencies')  
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def submitMPFR(request):
     agency_id = request.POST.get('agency_id')
     year = request.POST.get('year')
@@ -97,21 +97,21 @@ def submitMPFR(request):
                                                  user = request.user
         )
         monthly_req_submit.save()
-    return HttpResponseRedirect('/admin/manage_agency_docs?agency_id='+str(agency.id))
+    return HttpResponseRedirect('/main/manage_agency_docs?agency_id='+str(agency.id))
 
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def delMonthReqs(request, requirement_id):
     try:
         month_req_submitted = MonthlyReqSubmitted.objects.get(id=requirement_id)
         month_req_submitted.delete()
-        return HttpResponseRedirect("/admin/manage_agency_docs/"+str(month_req_submitted.agency.id)+"/")
+        return HttpResponseRedirect("/main/manage_agency_docs/"+str(month_req_submitted.agency.id)+"/")
     except:
        return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def delQuarterSubmittedReqs(request):
     '''
     this function  delete the quarterly requirement submitted by
@@ -123,12 +123,12 @@ def delQuarterSubmittedReqs(request):
     return HttpResponse("done")
     
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def delCOSSubmitted(request, requirement_id):
     try:
         cos = COSSubmission.objects.get(id=requirement_id)
         cos.delete()
-        return HttpResponseRedirect("/admin/manage_agency_docs/"+str(cos.agency.id)+"/")
+        return HttpResponseRedirect("/main/manage_agency_docs/"+str(cos.agency.id)+"/")
     except:
        return HttpResponse("<h3>Error</h3><p>Invalid Request Found.</p>")
 

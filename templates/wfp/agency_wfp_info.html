@@ -1,9 +1,9 @@
-{%extends "./admin/base.html" %}
+{%extends "./main/base.html" %}
 
 {%block css%}{%endblock%}
 
 {% block left-content %}
-  {% include "./admin/agency_tabs.html" %}
+  {% include "./main/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
@@ -95,7 +95,7 @@
 	{%endfor%}
 	{% endfor %}
     {% endif %}
-	  
+
     {%if cos%}
 	  <tr><th colspan="2" style="text-align:center" class="alert alert-warning">Capital Outlay</th></tr>
 	{% for co in cos %}
@@ -126,7 +126,7 @@
   </div>
   <!-- wfp row details -->
   <div class="col-sm-6" id="wfp_detail">
-    
+
   </div>
 </div>
 

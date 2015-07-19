@@ -11,7 +11,7 @@
 	Check the month if <b>{{agency.name}}</b> already submitted the <b>Monthly Physical and Financial Reports</b> for that month
       </p>
     </div>
-    <form action="/admin/submit_monthly_mpfr" class="form-horizontal" method="POST">{% csrf_token %}
+    <form action="/main/submit_monthly_mpfr" class="form-horizontal" method="POST">{% csrf_token %}
       <input type="hidden" name="year" value="{{year}}">
       <input type="hidden" name="agency_id" value="{{agency.id}}">
       <table class="table">
