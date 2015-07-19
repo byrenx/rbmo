@@ -7,47 +7,44 @@
 {% block content %}
 <div class="container">
   <div class="col-sm-12" style="background-color: white;min-height: 20px;">
-    </br></br>
-    <form class="form-inline" action="/admin/approved_budget" method="POST">
-      {% csrf_token %}
-      <a href="javascript:$('#allot_print').printArea()" class="btn btn-default">
-	<span class="glyphicon glyphicon-print"></span>
-	Print
-      </a>
-      &nbsp;|&nbsp;
-      <select name="year" class="form-control">
-	{%for year in years%}
-	  <option value="{{year.year}}">{{year.year}}</option>
-	{%endfor%}
-      </select>
-      <button class="btn btn-default">
-	<span class="glyphicon glyphicon-search"></span>
-      </button>
-    </form>
-    <hr/>
-    <div class="col-sm-12">
-      <div class="col-sm-12">
-	<div class="col-sm-2">
-	  <img src="/static/images/rbmo.jpg" width="100px" height="100px">
-	</div>
-	<div class="col-sm-6 col-sm-offset-1">
-	  <center>
-	    <p>
-	      Republic of the Philippines</br>
-	      <b>Autonomous Region in Muslim Mindanao</b></br>
-	      <b>OFFICE OF THE REGIONAL GOVERNOR</b></br>
-	      <i>Regional Budget Management Office</i></br>
-	      ARMM Compound Cotabato City
-	  </br></br>
-	  <b>RLA APPROVED BUDGET</b></br>
-	  CY {{year}}
-	    </p>
-	  </center>
-	</div>
-	<div class="col-sm-2 col-sm-offset-1">
-	  <img src="/static/images/rbmo_logo.png" width="100px" height="100px">
-	</div>
+    </br>
+    <div class="navbar navbar-default">
+      <div class="container-fluid">
+	<form class="navbar-form navbar-left" role="search" action="/main/approved_budget" method="POST">
+	  {% csrf_token %}
+	  <div class="form-group">
+	    <select name="year" class="form-control">
+	      {%for year in years%}
+	      <option value="{{year}}">{{year}}</option>
+	      {%endfor%}
+	    </select>
+	  </div>
+	  <button class="btn btn-default">
+	    <span class="glyphicon glyphicon-search"></span>
+	  </button>
+	</form>
+	<ul class="nav navbar-nav navbar-right">
+	  <li>
+	    <a href="javascript:$('#allot_print').printArea()">
+	      <span class="glyphicon glyphicon-print"></span>
+	      Print
+	    </a>
+	  </li>
+	</ul>
       </div>
+    </div>
+    <div class="col-sm-12">
+      <!-- <div class="col-sm-12"> -->
+      <!-- <div class="col-sm-2"> -->
+      <!--   <img src="/static/images/rbmo.jpg" width="100px" height="100px"> -->
+      <!-- </div> -->
+      <div class="col-sm-12 col-sm-xs col-md-12">
+	<h3>RLA APPROVED BUDGET <small>CY {{year}}</small></h3>
+      </div>
+      <!-- <div class="col-sm-2 col-sm-offset-1"> -->
+      <!--   <img src="/static/images/rbmo_logo.png" width="100px" height="100px"> -->
+      <!-- </div> -->
+      <!-- </div> -->
       
       <table border="1" class="table-normal">
 	{%load humanize%}
@@ -59,13 +56,13 @@
 	  <th class="decimal">Total</th>
 	</thead>
 	<tbody>
-	<!----line agencies---->	    
-	{% if line_agencies %}
+	  <!----line agencies---->	    
+	  {% if line_agencies %}
 	  <tr>
 	    <th colspan="6">Line Agencies</th>
 	  </tr>
-	{%endif%}
-	{% for agency in line_agencies%}
+	  {%endif%}
+	  {% for agency in line_agencies%}
 	  <tr>
 	    <td>{{agency.count}}</td>
 	    <td>{{agency.name}}</td>
@@ -75,57 +72,57 @@
 	    <td class="decimal">{{agency.total|intcomma}}</td>
 	  </tr>
 	  {%for sub_agency in agency.sub_agencies%}
-	    <tr>
-	      <td></td>
-	      <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
-	      <td class="decimal">{{sub_agency.ps|intcomma}}</td>
-	      <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
-	      <td class="decimal">{{sub_agency.co|intcomma}}</td>
-	      <td class="decimal">{{sub_agency.total|intcomma}}</td>
-	    </tr>
+	  <tr>
+	    <td></td>
+	    <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+	    <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.co|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	  </tr>
 	  {%endfor%}
-	{% endfor %}
-	<!----local agencies---->	    
-	{%if local_agencies%}
-	    <tr>
-	      <th colspan="6">Local Agencies</th>
-	    </tr>
-	{%endif%}
-	{%for agency in local_agencies%}
-	    <tr>
-	      <td>{{agency.count}}</td>
-	      <td>{{agency.name}}</td>
-	      <td class="decimal">{{agency.ps|intcomma}}</td>
-	      <td class="decimal">{{agency.mooe|intcomma}}</td>
-	      <td class="decimal">{{agency.co|intcomma}}</td>
-	      <td class="decimal">{{agency.total|intcomma}}</td>
-	    </tr>
-	    {%for sub_agency in agency.sub_agencies%}
-	       <tr>
-		 <td></td>
-		 <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
-		 <td class="decimal">{{sub_agency.ps|intcomma}}</td>
-		 <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
-		 <td class="decimal">{{sub_agency.co|intcomma}}</td>
-		 <td class="decimal">{{sub_agency.total|intcomma}}</td>
-	       </tr>
-	    {%endfor%}
-	{%endfor%}
-        <!---total --->	       
-	<tr>
-	  <th colspan="2">Grand Total</th>
-	  <th class="decimal">{{total_budget.total_ps|intcomma}}</th>
-	  <th class="decimal">{{total_budget.total_mooe|intcomma}}</th>
-	  <th class="decimal">{{total_budget.total_co|intcomma}}</th>
-	  <th class="decimal">{{total_budget.grand_total|intcomma}}</th>
-	</tr>
+	  {% endfor %}
+	  <!----local agencies---->	    
+	  {%if local_agencies%}
+	  <tr>
+	    <th colspan="6">Local Agencies</th>
+	  </tr>
+	  {%endif%}
+	  {%for agency in local_agencies%}
+	  <tr>
+	    <td>{{agency.count}}</td>
+	    <td>{{agency.name}}</td>
+	    <td class="decimal">{{agency.ps|intcomma}}</td>
+	    <td class="decimal">{{agency.mooe|intcomma}}</td>
+	    <td class="decimal">{{agency.co|intcomma}}</td>
+	    <td class="decimal">{{agency.total|intcomma}}</td>
+	  </tr>
+	  {%for sub_agency in agency.sub_agencies%}
+	  <tr>
+	    <td></td>
+	    <td>{{sub_agency.count}}&nbsp;{{sub_agency.name}}</td>
+	    <td class="decimal">{{sub_agency.ps|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.mooe|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.co|intcomma}}</td>
+	    <td class="decimal">{{sub_agency.total|intcomma}}</td>
+	  </tr>
+	  {%endfor%}
+	  {%endfor%}
+          <!---total --->	       
+	  <tr>
+	    <th colspan="2">Grand Total</th>
+	    <th class="decimal">{{total_budget.total_ps|intcomma}}</th>
+	    <th class="decimal">{{total_budget.total_mooe|intcomma}}</th>
+	    <th class="decimal">{{total_budget.total_co|intcomma}}</th>
+	    <th class="decimal">{{total_budget.grand_total|intcomma}}</th>
+	  </tr>
 	</tbody>
       </table>
       </br></br>
     </div>
   </div>
 </div>
-{%include "./admin/approved_budget_print.html"%}
+{%include "./main/approved_budget_print.html"%}
 {% endblock %}
 {%block scripts%}
 {%endblock%}

@@ -1293,9 +1293,8 @@ def approvedBudget(request):
     total_co    = 0
     grand_total = 0
     count = 1
-    year = datetime.today().year
-    if request.method=="POST":
-        year = request.POST.get('year')
+    year = request.POST.get('year', datetime.today().year)
+    cur_year = datetime.today().year
 
     #line agencies
     agencies = Agency.objects.filter(a_type = 2, parent_key = 0).order_by('name')
@@ -1387,9 +1386,6 @@ def approvedBudget(request):
         total_co   += numify(co['co_total'])
         count += 1
 
-    cursor.execute("select distinct(year) from wfp_data")
-    years = dictfetchall(cursor)
-
     total_budget = {'total_ps'   : total_ps,
                     'total_mooe' : total_mooe,
                     'total_co'   : total_co,
@@ -1401,7 +1397,7 @@ def approvedBudget(request):
            'system_name'    : SYSTEM_NAME,
            'allowed_tabs'   : get_allowed_tabs(request.user.id),
            'total_budget'   : total_budget,
-           'years'          : years}
+           'years'          : [x for x in range(2014, cur_year + 1)]}
 
     
     return render_to_response('./main/approved_budget.html', data, context)
