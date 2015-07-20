@@ -22,7 +22,7 @@ function showSubmittedQReqs(){
 		'agency_id' : agency_id
 	       }
 
-    $.get("/admin/display_sub_qreqs", data, function(rs){
+    $.get("/main/display_sub_qreqs", data, function(rs){
 	$("#sqreqs").html(rs);
     });
 }
@@ -109,7 +109,7 @@ function submitQuarterReq(){
 	       };
 
     $.ajax({
-	url  : "/admin/submit_quarter_reqs",
+	url  : "/main/submit_quarter_reqs",
 	data : data,
 	type : "GET",
 	success: function(json){

@@ -9,7 +9,7 @@
       <p>
 	<strong>Instruction:</strong>
 	Check the month if <b>{{agency.name}}</b> already submitted the <b>Monthly Physical and Financial Reports</b> for that month
-      </p>4
+      </p>
     </div>
     <form action="/main/submit_monthly_mpfr" class="form-horizontal" method="POST">{% csrf_token %}
       <input type="hidden" name="year" value="{{year}}">
