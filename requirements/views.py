@@ -5,24 +5,23 @@ from django.db.models import Sum, Avg
 from django.http import  HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
+from datetime import datetime, date
+from decimal import *
+import time
+import sys
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required, permission_required
 from rbmo.models import (Agency,
                          MonthlyReqSubmitted,
                          QuarterlyReq,
                          QuarterReqSubmission,
                          COSSubmission,
 )
-
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import (getMonthLookup, 
                              quarterofMonth,
                              dictfetchall,
                              stringify_month)
-from datetime import datetime, date
-from decimal import *
-import time
-import sys
 
 
 SYSTEM_NAME = 'e-RBMO Data Management System'

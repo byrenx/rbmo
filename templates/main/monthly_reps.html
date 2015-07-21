@@ -1,7 +1,7 @@
 {% extends "./main/base.html" %}
 
 {% block left-content %}
-  {% include "./admin/agency_tabs.html" %}
+  {% include "./main/agency_tabs.html" %}
 {% endblock %}
 
 {% block right-content %}
@@ -10,7 +10,7 @@
   <hr/>
   {% include "msg_pane.html" %}
   <div class="col-sm-12">
-    <form action="/admin/monthly_reports/{{agency.id}}/" method="POST" class="form-inline">
+    <form action="/main/monthly_reports/{{agency.id}}/" method="POST" class="form-inline">
       {%csrf_token%}
       <input type="hidden" name="agency_id" value="{{agency.id}}">
       <div class="form-group">
@@ -32,7 +32,7 @@
   </div>
   </br></br></br>
 
-  {% include "./admin/monthly_rep_table.html"%}
+  {% include "./main/monthly_rep_table.html"%}
 
 </div>
 {% endblock %}

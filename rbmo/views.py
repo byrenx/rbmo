@@ -1,3 +1,10 @@
+#python libraries
+from datetime import datetime, date
+from decimal import *
+import time
+import sys
+import hashlib
+import json
 #django imports
 from django.shortcuts import render, render_to_response, redirect, RequestContext
 from django.http import  HttpResponseRedirect, HttpResponse
@@ -8,7 +15,11 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core import serializers
 from django.conf import settings
 from django.conf.urls.static import static
-
+from helpers.helpers import *
+from fund.views import isMRS, is_allQRS, lqm, getReleaseAmount, getBudget, getRelease
+from .forms import (UserForm, LoginForm, AgencyForm, 
+                    MonthForm, ChangePassForm, AllocationMonthYearForm)
+from fund.forms import MCASearchForm
 #models
 from rbmo.models import (User,
                          UserGroup,
@@ -27,21 +38,7 @@ from rbmo.models import (User,
                          CoRequest
 )
 #project subpackages, forms, views etc
-from helpers.helpers import *
 
-from fund.views import isMRS, is_allQRS, lqm, getReleaseAmount, getBudget, getRelease
-
-from .forms import (UserForm, LoginForm, AgencyForm, 
-                    MonthForm, ChangePassForm, AllocationMonthYearForm)
-from fund.forms import MCASearchForm
-
-#python libraries
-from datetime import datetime, date
-from decimal import *
-import time
-import sys
-import hashlib
-import json
 
 SYSTEM_NAME = 'e-RBMO Data Management System'
 
@@ -559,21 +556,15 @@ def hasWFP(year, agency):
 @transaction.atomic
 def manageAgencyDocs(request, agency_id, year = datetime.today().year):
     context = RequestContext(request)
-    if "year" in request.GET:
-        year = request.GET.get("year")
-        #    try:
+    year = request.GET.get('year', datetime.today().year)
     current_year = datetime.today().year
-    years = []
-    while current_year>=2013:
-        years.append(current_year)
-        current_year-=1
+    years = [x for x in range(2013, current_year + 1)]
     #get the agency
     agency = Agency.objects.get(id=agency_id)
     #year
     monthly   = getAgencyMonthlyReq(year, agency)
     quarter_of_month = exactQuarterofMonth(datetime.today().month)
-    q_reqs  = getSumittedQReq(year, agency, quarter_of_month) #1st quarter submitted requirements
-    #get submitted contract of service
+    q_reqs  = getSumittedQReq(year, agency, quarter_of_month)
     cos_submitted = COSSubmission.objects.filter(date_submitted__year=year, agency=agency)
 
     data = {'system_name'  : SYSTEM_NAME,
