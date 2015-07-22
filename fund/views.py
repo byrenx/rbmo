@@ -6,27 +6,27 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .forms import *
 from wfp.forms import YearSelectForm
-from rbmo.models import (Agency, 
-WFPData,
-MonthlyReqSubmitted,
-QuarterlyReq,
-QuarterReqSubmission,
-AllotmentReleases,
-COSSubmission
-)
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from helpers.helpers import *
 from datetime import datetime, date
 import time
+from rbmo.models import (Agency, 
+                         WFPData,
+                         MonthlyReqSubmitted,
+                         QuarterlyReq,
+                         QuarterReqSubmission,
+                         AllotmentReleases,
+                         COSSubmission
+)
 
 # Create your views here.
 SYSTEM_NAME = 'e-RBMO Data Management System'
 MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
           'jul', 'aug', 'sept', 'oct', 'nov', 'dec' ]
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 @transaction.atomic
 def allotmentReleases(request, agency_id):
     context       = RequestContext(request)
@@ -103,10 +103,10 @@ def allotmentReleases(request, agency_id):
         #get releases
         return render_to_response('./fund/allotment_releases.html', data, context)
     except Agency.DoesNotExist:
-        return HttpResponseRedirect('/admin/agencies')
+        return HttpResponseRedirect('/main/agencies')
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 @transaction.atomic
 def monthlyAlloc(request, agency_id):
         context = RequestContext(request)
@@ -177,7 +177,7 @@ def monthlyAlloc(request, agency_id):
             
         return render_to_response('./fund/monthly_allocation.html', data, context)
    # except:
-    #    return HttpResponseRedirect('/admin/agencies')
+    #    return HttpResponseRedirect('/main/agencies')
                                         
                                         
 def hasCOSSubmitted(agency, year):
@@ -324,25 +324,25 @@ def is_allQRS(year, month, agency): # is all quarter requirement submitted
         return (q_reqs-qrs_count == 0)
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def fundReleaseForm(request, agency_id=None):
-    try:
-        if request.method == 'POST':
-            agency = Agency.objects.get(id=request.POST.get('agency_id'))
-            action = request.POST.get('action')
-            if action == 'add':
-                return addAllotmentRelease(request, agency)
-            else:
-                return editFundRelease(request, agency)
+    #try:
+    if request.method == 'POST':
+        agency = Agency.objects.get(id=request.POST.get('agency_id'))
+        action = request.POST.get('action')
+        if action == 'add':
+            return addAllotmentRelease(request, agency)
         else:
-            agency = Agency.objects.get(id=agency_id)
-            action = request.GET.get('action', 'add')
-            if action == 'add':
-                return showAddForm(request, agency)
-            else:
-                return showEditFundRelForm(request, agency)
-    except:
-        return HttpResponse('Error! No Agency Found')
+            return editFundRelease(request, agency)
+    else:
+        agency = Agency.objects.get(id=agency_id)
+        action = request.GET.get('action', 'add')
+        if action == 'add':
+            return showAddForm(request, agency)
+        else:
+            return showEditFundRelForm(request, agency)
+                #except:
+                #   return HttpResponse(404)
 
 
 def showAddForm(request, agency):
@@ -380,7 +380,7 @@ def showEditFundRelForm(request, agency):
 
         return render_to_response('./fund/fund_release_form.html', data, context)
     #except:
-     #   return HttpResponseRedirect('/admin/')
+     #   return HttpResponseRedirect('/main/')
         
 
 def addAllotmentRelease(request, agency):
@@ -474,7 +474,7 @@ def editFundRelease(request, agency):
         return HttpResponseRedirect('/agency/fund/allotment_releases/'+str(allotment_release.agency.id)+'/')
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def delFundRelease(request):
     try:
         allotment_release = AllotmentReleases.objects.get(id=request.GET.get('release_id'))
@@ -482,7 +482,7 @@ def delFundRelease(request):
         allotment_release.delete()
         return HttpResponseRedirect('/agency/fund/allotment_releases/'+str(agency.id)+'/')
     except AllotmentReleases.DoesNotExist:
-        return HttpResponse('/admin/')
+        return HttpResponse('/main/')
 
 
 total_budget = 0
@@ -490,7 +490,7 @@ total_release = 0
 total_balance = 0
 count = 1.0
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 @transaction.atomic
 def agenciesBalanceSummary(request):
     context = RequestContext(request)
@@ -814,7 +814,7 @@ def isAllowedForRelease(month, agency, year):
             return False    
 
     
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def viewFundStatDetails(request):
     cursor = connection.cursor()
     context = RequestContext(request)
@@ -849,7 +849,7 @@ def viewFundStatDetails(request):
     return render_to_response('./fund/fund_stat_details.html', data, context)
 
 
-@login_required(login_url='/admin/')
+@login_required(login_url='/main/')
 def AgenciesbalanceSumm(request):
     context = RequestContext(request)
     cursor = connection.cursor()
