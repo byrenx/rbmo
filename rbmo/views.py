@@ -55,7 +55,7 @@ wfp_month_lookup = {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr',
                   9: 'sept', 10: 'oct', 11: 'nov', 12: 'dec'
 }
 
-
+agency_default_access_key = 'armm_agency'
 
 def home(request):
     context = RequestContext(request)
