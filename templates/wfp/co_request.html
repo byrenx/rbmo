@@ -10,9 +10,7 @@
 <div class="col-sm-9" style="background-color: white; min-height: 550px;">
   <h3>{{agency.name}}</h3>
   <hr/>
-  <h4>Request Received <small>As of {{month_str}}, {{year}}</small></h4>
-  <hr/>
-  <div class="col-sm-8">
+    <div class="col-sm-8">
     <a href="/agency/wfp/co_request_form/{{agency.id}}/" class="btn btn-default">
       <span class="glyphicon glyphicon-plus-sign"></span>
       Add Request
@@ -35,21 +33,29 @@
 	</div>
     </form>
   </div>
+  <br/>
+  <h3>Request Received <small>As of {{month_str}}, {{year}}</small></h3>
 
   <div class="col-sm-12">
     {% if co_requests %}
        <table class="table table-condensed">
 	 <thead>
-	   <th colspan="2"></th>
 	   <th><span class="glyphicon glyphicon-calendar"></span>Date</th>
 	   <th>Subject</th>
 	   <th>Action Taken</th>
 	   <th>Status</th>
 	   <th>Remarks</th>
+	   <th colspan="2"></th>
 	 </thead>
 	 <tbody>
 	   {%for request in co_requests%}
 	   <tr>
+	     <td>{{request.date_received}}</td>
+	     <td>{{request.subject}}</td>
+	     <td>{{request.action}}</td>
+	     <td>{{request.status}}</td>
+	     <td width="200px">{{request.remarks}}</td>
+
 	     <td width="30px">
 	       <a href="/agency/wfp/co_request_form/{{agency.id}}/{{request.id}}/?action=edit" alt="Edit" title="Edit">
 		 <span class="glyphicon glyphicon-pencil"></span>
@@ -60,11 +66,6 @@
 		 <span class="glyphicon glyphicon-trash text-danger"></span>
 	       </a>
 	     </td>
-	     <td>{{request.date_received}}</td>
-	     <td>{{request.subject}}</td>
-	     <td>{{request.action}}</td>
-	     <td>{{request.status}}</td>
-	     <td width="200px">{{request.remarks}}</td>
 	   </tr>
 	   {%endfor%}
 	 </tbody>
