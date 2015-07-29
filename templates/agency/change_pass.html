@@ -8,6 +8,7 @@
       <p>It's your first time to login and It's required that you change your password immediately</p>
       <hr>
       {%include "msg_pane.html"%}
+      {%if s_msg%}<a href="/agency/requirements" class="btn btn-primary btn-sm">Proceed to your Agency Profile</a>{%endif%}
       <div class="col-sm-4">
 	<form action="" method="POST">
 	  {%csrf_token%}
