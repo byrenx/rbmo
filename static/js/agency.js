@@ -298,7 +298,8 @@ function deleteReport(report_id){
 		type        : "POST",
 		processData : false,
 		url         : "/agency/remove_report",
-		data        : JSON.stringify(params)})
+		data        : JSON.stringify(params)
+	       })
 	    .done(function(data){
 		console.log(data)
 		if (data.status == "success"){

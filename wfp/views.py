@@ -740,7 +740,7 @@ def getUnreportedPrograms(request):
     json_response = json.dumps(prog_list)
     return HttpResponse(json_response, content_type="application/json");
 
-
+@require_http_methods(['GET'])
 def getURLPhysicalTargets(request):
     program_id = request.GET.get('program_id')
     targets_list = getPhysicalTargets(program_id)
@@ -808,8 +808,7 @@ def updateAccTarget(request):
 
     return HttpResponse(status=200)
 
-@require_http_methods(["GET"])
-def getPerformanceIndicator(request, indicator_id):
+def getPerformanceIndicator(indicator_id):
     indicator = PerformanceTarget.objects.get(id = target_id)
     json_response = json.dumps({'id': indicator.id,
                                 'indicator': indicator.indicator,
@@ -839,7 +838,6 @@ def getPerformanceIndicator(request, indicator_id):
                                 'dec_acc': indicator.dec_acc})
     return HttpResponse(json_response, content_type='application/json')
 
-@require_http_methods(["GET"])
 def getPhysicalTargets(program_id):
     program = WFPData.objects.get(id = program_id)
     targets = PerformanceTarget.objects.filter(wfp_activity = program)

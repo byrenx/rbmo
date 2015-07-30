@@ -522,6 +522,7 @@ delete monthly performance report
 '''
 @csrf_exempt
 @transaction.atomic
+@require_http_methods(['POST'])
 def removeMonthlyReport(request):
     '''
     params:
@@ -568,13 +569,12 @@ def removeMonthlyReport(request):
                 perf_target.nov_acc = 0
             else:
                 perf_target.dec_acc = 0
-
-        perf_target.save()
+            perf_target.save()
         performance.delete()
         response = json.dumps({'status': 'success', 'year': year, 'month': month})
         return HttpResponse(response, content_type="application/json")
     except PerformanceReport.DoesNotExist:
-        response = json.dumps({'status': 'error'})
+        response = json.dumps({'status': 'fail'})
         return HttpResponse(response, content_type="application/json")
 
 
