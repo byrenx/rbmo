@@ -246,8 +246,6 @@ function showAccomplishedTargets(program_id, row_obj){
 	});
 }
 
-
-
 function savePerformanceReport(){
     var performances = [];
     $("#accomplished_targets_table > tbody tr").each(function(){

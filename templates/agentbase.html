@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html>
+<html ng-app="agency">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
@@ -54,6 +54,21 @@
   <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>
   <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/static/js/jquery.PrintArea.js_4.js"></script>
+  
+
+  <script src="/static/angular-app/components/angular/angular.min.js"></script>
+  <script src="/static/angular-app/components/angular-route/angular-route.min.js"></script>
+  <script src="/static/angular-app/components/angular-sanitize/angular-sanitize.min.js"></script>
+  <!-- CS Utilities -->
+  <script src="/static/angular-app/components/cs-angular-utilities/loading.js"></script>
+  <script src="/static/angular-app/components/cs-angular-utilities/pubsub.js"></script>
+  <script src="/static/angular-app/components/cs-angular-utilities/modal.js"></script>
+  <script src="/static/angular-app/components/cs-angular-utilities/passive-messenger.js"></script>
+  <script src="/static/angular-app/components/angular-ui-select/dist/select.js"></script>
+  <script src="/static/angular-app/components/materialize/angular-materialize.js"></script>
+  <!-- Application Code -->
+  <script src="/static/angular-app/agency/module.js"></script>
+  <script src="/static/angular-app/agency/performance_report/controller.js"></script>
   
   {% block scripts %}
   {% endblock scripts %}

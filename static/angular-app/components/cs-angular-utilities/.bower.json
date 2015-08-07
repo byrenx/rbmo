@@ -1,0 +1,18 @@
+{
+  "name": "cs-angular-utilities",
+  "main": [
+    "pubsub.js",
+    "loading.js",
+    "passive-messenger.js",
+    "passive-messenger.css"
+  ],
+  "_release": "be5cd12d2f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "be5cd12d2fddfbcaf45864cbe3ab16dd06fef6da"
+  },
+  "_source": "git@bitbucket.org:yowmamasita_cs/angular-utilities.git",
+  "_target": "master",
+  "_originalSource": "git@bitbucket.org:yowmamasita_cs/angular-utilities.git"
+}

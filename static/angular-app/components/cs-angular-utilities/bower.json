@@ -1,0 +1,10 @@
+{
+  "name": "cs-angular-utilities",
+  "version": "0.0.7",
+  "main": [
+    "pubsub.js",
+    "loading.js",
+    "passive-messenger.js",
+    "passive-messenger.css"
+  ]
+}
