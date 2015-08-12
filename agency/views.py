@@ -40,6 +40,21 @@ month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
                   9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
 }
 
+from rest_framework import viewsets
+from rbmo.serializers import AgencySerializer
+from agency.serializers import PerformanceReportSerializer
+
+class AgencyViewSet(viewsets.ModelViewSet):
+    queryset = Agency.objects.all()
+    serializer_class = AgencySerializer
+
+    def create(self, request):
+        pass
+
+class PerformaceReportViewSet(viewsets.ModelViewSet):
+    queryset = PerformanceReport.objects.all()
+    serializer_class = PerformanceReportSerializer
+
 def login(request):
     context = RequestContext(request)
     h = hashlib.sha256()

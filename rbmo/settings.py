@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.auth.hashers',
     'django.contrib.humanize',
+    'rest_framework',
     'rbmo',
     'fund',
     'wfp',
