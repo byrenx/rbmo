@@ -68,7 +68,6 @@ def logout_user(request):
     return HttpResponseRedirect('home')
 
 
-
 @login_required(login_url='/main/')
 def submitCOS(request):#submit Contract of Service
     submit = request.POST.get('cos_submit')

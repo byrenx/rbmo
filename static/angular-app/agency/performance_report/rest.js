@@ -1,22 +1,21 @@
 (function(){
-    'use strict';
+  'use strict';
 
-    angular
-	.module('agency.services')
-	.service('PerformanceReportREST', performanceReportREST);
+  angular
+  .module('agency.services')
+  .service('PerformanceReportREST', performanceReportREST);
 
-    performanceReportREST.$inject = [
-	'$http'
-    ];
+  performanceReportREST.$inject = [
+    '$http'
+  ];
 
-    function performanceReportREST(){
+  function performanceReportREST(){
 
-	this.url = '/rest/agency/performance_reports';
+    this.url = '/rest/agency/performance_reports';
 
-	this.list_all = function (){
-	    return $http.get(url);
-	}
+    this.list_all = function (){
+      return $http.get(url);
     }
-
+  }
     
 })();

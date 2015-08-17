@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.core import serializers
 from helpers.helpers import *
 from datetime import date, datetime
 from rbmo.forms import MonthForm
@@ -34,26 +35,12 @@ from rbmo.models import (UserGroup,
                          CoRequest)
 
 
+
 months = getMonthLookup()
 month_acc_dict = {1: 'jan_acc', 2: 'feb_acc', 3: 'mar_acc', 4: 'apr_acc',
                   5: 'may_acc', 6: 'jun_acc', 7: 'jul_acc', 8: 'aug_acc',
                   9: 'sept_acc', 10: 'oct_acc', 11: 'nov_acc', 12: 'dec_acc'
 }
-
-from rest_framework import viewsets
-from rbmo.serializers import AgencySerializer
-from agency.serializers import PerformanceReportSerializer
-
-class AgencyViewSet(viewsets.ModelViewSet):
-    queryset = Agency.objects.all()
-    serializer_class = AgencySerializer
-
-    def create(self, request):
-        pass
-
-class PerformaceReportViewSet(viewsets.ModelViewSet):
-    queryset = PerformanceReport.objects.all()
-    serializer_class = PerformanceReportSerializer
 
 def login(request):
     context = RequestContext(request)
@@ -676,21 +663,54 @@ def saveMonthlyReport(request):
     
 def getPerformanceReport(report_id):
     perf_report = PerformanceReport.objects.get(id = report_id)
-    perf_acc_targets = PerformanceTargets.objects.filter(wfp_acitivy = perf_report.activity)
-    acc_taget_dicts = []
+    perf_acc_targets = PerformanceTarget.objects.filter(wfp_activity = perf_report.activity)
+    acc_target_dicts = []
     for acc in perf_acc_targets:
         acc_target_dicts.append({'id' : acc.id,
                                  'indicator' : acc.indicator,
+                                 'jan': acc.jan,
+                                 'jan_acc': acc.jan_acc,
+                                 'feb': acc.feb,
+                                 'feb_acc': acc.feb_acc,
+                                 'mar': acc.mar,
+                                 'mar_acc': acc.mar_acc,
+                                 'apr': acc.apr,
+                                 'apr_acc': acc.apr_acc,
+                                 'may': acc.may,
+                                 'may_acc': acc.may_acc,
+                                 'jun': acc.jun,
+                                 'jun_acc': acc.jun_acc,
+                                 'jan': acc.jan,
+                                 'jan_acc': acc.jun_acc,
+                                 'jan': acc.jul,
+                                 'jan_acc': acc.jul_acc,
+                                 'jan': acc.aug,
+                                 'jan_acc': acc.aug_acc,
+                                 'jan': acc.sept,
+                                 'jan_acc': acc.sept_acc,
+                                 'jan': acc.oct,
+                                 'jan_acc': acc.oct_acc,
+                                 'jan': acc.nov,
+                                 'jan_acc': acc.nov_acc,
+                                 'jan': acc.nov,
+                                 'jan_acc': acc.nov_acc,
+                                 'jan': acc.dec,
+                                 'jan_acc': acc.dec_acc,
                              })
         
     perf_rep_dict = {'id' : perf_report.id,
-                     'activity' : perf_report.activity.name,
-                     'received' : perf_report.received,
-                     'incurred' : perf_report.incurred,
+                     'activity' : perf_report.activity.activity,
+                     'month': perf_report.month,
+                     'year' : perf_report.year,
+                     'received' : float(perf_report.received),
+                     'incurred' : float(perf_report.incurred),
                      'remarks'  : perf_report.remarks,
                      'acc_targets' : acc_target_dicts}
 
     return perf_rep_dict
 
-
-    
+def performance_report(request, **kwargs):
+    id = kwargs['id']
+    details = getPerformanceReport(id)
+    print details
+    return HttpResponse(json.dumps(details), content_type = 'application/json')

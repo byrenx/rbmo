@@ -13,6 +13,8 @@ urlpatterns = patterns('',
         url(r'^monthly_reports', monthlyReports),
         url(r'^co_request/?', coRequest),
         url(r'^monthly_report_form', mpfro_form),
+        #performance report uris
+        url(r'^performance_report/(?P<id>[0-9]+)$', performance_report),
         url(r'^add_performance_report', saveMonthlyReport),
         url(r'^unreported_activities', getUnreportedAct),
         url(r'^remove_report$', removeMonthlyReport),

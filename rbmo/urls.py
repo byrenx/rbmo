@@ -1,18 +1,10 @@
-from rest_framework import routers
 from django.conf.urls import patterns, include, url
 from .views import *
 from django.contrib import admin
-from agency.views import *
 admin.autodiscover()
-
-
-router = routers.DefaultRouter()
-router.register(r'agencies', AgencyViewSet)
-router.register(r'performance_reports', PerformaceReportViewSet)
 
 urlpatterns = patterns('',
                        url(r'^$', home),
-                       url(r'^api/', include(router.urls)),
                        url(r'^home$', home),
                        url(r'^logout$', logout_user),
                        url(r'^agency/wfp/', include('wfp.urls')),
