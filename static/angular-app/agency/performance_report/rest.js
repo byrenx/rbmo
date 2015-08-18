@@ -16,6 +16,11 @@
     this.list_all = function (){
       return $http.get(url);
     }
+
+    this.list = function(){
+      kljdsflkj
+      sdsd
+    }
   }
-    
+
 })();

@@ -1,22 +1,22 @@
 (function(angular){
-    'use strict';
+  'use strict';
 
-    angular
+  angular
     .module('agency.controllers')
     .controller('PerformanceReportCtrl', performanceReportCtrl);
 
-    performanceReportCtrl.$inject = [
-	
-    ];
+  performanceReportCtrl.$inject = [
 
-    function performanceReportCtrl(){
-	var vm = this;
+  ];
 
-	activate();
+  function performanceReportCtrl(){
+	  var vm = this;
 
-	function activate(){
+	  activate();
+
+	  function activate(){
 	    console.log();
-	}
+	  }
 
-    }
+  }
 })(window.angular);

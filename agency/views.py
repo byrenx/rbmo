@@ -16,16 +16,18 @@ from helpers.helpers import *
 from datetime import date, datetime
 from rbmo.forms import MonthForm
 from wfp.views import getProgOverview, getWFPTotal
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from requirements.views import (getSubmittedReqs,
                                 getLackingReqs)
-from .forms import (BudgetProposalForm, 
+from .forms import (BudgetProposalForm,
                     LoginForm,
                     ChangePassForm,
                     YearFilterForm)
-from rbmo.models import (UserGroup, 
+from rbmo.models import (UserGroup,
                          Groups,
-                         Agency, 
-                         Notification, 
+                         Agency,
+                         Notification,
                          AllotmentReleases,
                          WFPData,
                          PerformanceTarget,
@@ -51,7 +53,7 @@ def login(request):
         loginform = LoginForm(request.POST)
         if loginform.is_valid():
             email = loginform.cleaned_data['email']
-            h2.update(email)            
+            h2.update(email)
             default_pword = h2.hexdigest()
             h.update(loginform.cleaned_data['acces_key'])
             accesskey = h.hexdigest()
@@ -70,7 +72,7 @@ def login(request):
             return render_to_response('./agency/login.html', data, context)
     else:
         return render_to_response('./agency/login.html', data, context)
-    
+
 
 def home(request):
     if "agency_id" in request.session:
@@ -105,11 +107,11 @@ def requirements(request):
     if "agency_id" in request.session:
         agency_id = request.session["agency_id"]
         agency = Agency.objects.get(id=agency_id)
-                
+
         context = RequestContext(request)
         year = int(request.POST.get('year', datetime.today().year))
         month = int(request.POST.get('month', datetime.today().month))
-        
+
         #submitted requirements
         srs = getSubmittedReqs(agency, year, month)
         #lacking requirements
@@ -130,7 +132,7 @@ def requirements(request):
         return HttpResponse('????')
 
 
-@transaction.atomic        
+@transaction.atomic
 def balance(request):
     if "agency_id" in request.session:
         cursor = connection.cursor()
@@ -150,18 +152,18 @@ def balance(request):
         co_total =  WFPData.objects.filter(agency=agency, year=year, allocation='CO').aggregate(Sum('total'))
         co_release = AllotmentReleases.objects.filter(agency=agency, year=year, allocation='CO').aggregate(Sum('amount_release'))
         co_bal = numify(co_total['total__sum']) - numify(co_release['amount_release__sum'])
-        balances = [{'allocation': 'Personnel Services', 
-                     'beginning_bal': numify(ps_total['total__sum']), 
-                     'release': numify(ps_release['amount_release__sum']), 
+        balances = [{'allocation': 'Personnel Services',
+                     'beginning_bal': numify(ps_total['total__sum']),
+                     'release': numify(ps_release['amount_release__sum']),
                      'ending_bal':ps_bal},
-                    {'allocation': 'Maintenance and Other Operating Expenses', 
-                     'beginning_bal': numify(mooe_total['total__sum']), 
-                     'release': numify(mooe_release['amount_release__sum']), 
+                    {'allocation': 'Maintenance and Other Operating Expenses',
+                     'beginning_bal': numify(mooe_total['total__sum']),
+                     'release': numify(mooe_release['amount_release__sum']),
                      'ending_bal':mooe_bal},
-                    {'allocation': 'Capital Outlay', 
-                     'beginning_bal': numify(co_total['total__sum']), 
-                     'release': numify(co_release['amount_release__sum']), 
-                     'ending_bal':co_bal}                   
+                    {'allocation': 'Capital Outlay',
+                     'beginning_bal': numify(co_total['total__sum']),
+                     'release': numify(co_release['amount_release__sum']),
+                     'ending_bal':co_bal}
                    ]
         total_balance =  {'allocation'   : 'Total',
                      'beginning_bal': numify(ps_total['total__sum']) + numify(mooe_total['total__sum']) + numify(co_total['total__sum']),
@@ -180,8 +182,8 @@ def balance(request):
                 'year_form'   : YearFilterForm({'year':year})
                }
         return render_to_response('./agency/Balances.html', data, context)
-        
-                    
+
+
 @transaction.atomic
 def approved(request):
     if "agency_id" in request.session:
@@ -195,7 +197,7 @@ def approved(request):
         cos = getProgOverview('CO', agency, year)
         wfp_total = getWFPTotal(agency, year)
 
-        data = {'system_name' : agency.name, 
+        data = {'system_name' : agency.name,
                 'email'       : agency.email,
                 'page'        : 'wfp',
                 'cur_date'    : time.strftime('%B %d, %Y'),
@@ -222,7 +224,7 @@ def allotmentReleases(request):
     total_MOOE    = 0
     total_CO      = 0
     year = int(request.POST.get('year',datetime.today().year))
-    
+
     try:
         if "agency_id" in request.session:
             agency = Agency.objects.get(id=request.session['agency_id'])
@@ -232,7 +234,7 @@ def allotmentReleases(request):
             allotment_releases      = AllotmentReleases.objects.filter(agency=agency, year=year).order_by('year', 'month')
             remaining_balance       = numify(wfp_data_PS['total_sum']) + numify(wfp_data_MOOE['total_sum']) + numify(wfp_data_CO['total_sum'])
             total_remaining_balance = remaining_balance
-            
+
             for allotment_release in allotment_releases:
                 if allotment_release.allocation == 'PS':
                     total_PS = total_PS + allotment_release.amount_release
@@ -240,7 +242,7 @@ def allotmentReleases(request):
                     total_MOOE = total_MOOE + allotment_release.amount_release
                 else:
                     total_CO = total_CO + allotment_release.amount_release
-                    
+
                 total_release += allotment_release.amount_release
                 total_remaining_balance -= allotment_release.amount_release
                 allotments.append({
@@ -253,18 +255,18 @@ def allotmentReleases(request):
                     'allocation'        : {'name' : allotment_release.allocation,
                                            'amount_release'    : allotment_release.amount_release},
                 })
-            
+
             total_PS_balance   = numify(wfp_data_PS['total_sum']) - total_PS
             total_MOOE_balance = numify(wfp_data_MOOE['total_sum']) - total_MOOE
             total_CO_balance   = numify(wfp_data_CO['total_sum']) - total_CO
-            
+
             data = {
                 'system_name'             : agency.name,
                 'agency'                  : agency,
                 'email'                   : agency.email,
                 'allotments'              : allotments,
                 'wfp_data_PS'             : wfp_data_PS,
-                'wfp_data_MOOE'           : wfp_data_MOOE,   
+                'wfp_data_MOOE'           : wfp_data_MOOE,
                 'wfp_data_CO'             : wfp_data_CO,
                 'remaining_balance'       : remaining_balance,
                 'total_remaining_balance' : total_remaining_balance,
@@ -281,7 +283,7 @@ def allotmentReleases(request):
                 'page'                    : 'releases',
                 'years_select'            : [x for x in range(2014, datetime.today().year+1)]
             }
-            
+
             #get releases
             return render_to_response('./agency/allotment_releases.html', data, context)
     except Agency.DoesNotExist:
@@ -313,7 +315,7 @@ def monthlyReports(request):
                     'month_form' : MonthForm({'month' : month}),
                     'page'   : 'report'
             }
-            
+
             return render_to_response('./agency/monthly_reports.html', data, context)
     except Agency.DoesNotExist:
         pass
@@ -330,7 +332,7 @@ def mpfro_form(request):
         if "agency_id" in request.session:
             action = request.GET.get('action', 'add')
             agency = Agency.objects.get(id=request.session['agency_id'])
-          
+
             if action == 'add':
                 year = datetime.today().year
                 month = datetime.today().month
@@ -347,12 +349,12 @@ def mpfro_form(request):
 
                 return render_to_response('./agency/mpfro_form.html', data, context)
             else: #edit
-                
+
                 mpfro_id = request.GET.get('mpfro_id')
                 performance_info = PerformanceReport.objects.get(id = mpfro_id)
-                    
+
                 accs_query = "select id, indicator, "+months[performance_info.month]+" as target," + month_acc_dict[performance_info.month] + " as accomplished, (" +month_acc_dict[performance_info.month]+" - "+months[performance_info.month]+") as variance from performancetarget where wfp_activity_id = %s"
-                
+
                 cursor.execute(accs_query, [performance_info.activity.id])
                 performance_accs = dictfetchall(cursor)
                 data = {'activity_info'    : performance_info,
@@ -374,7 +376,7 @@ def mpfro_form(request):
 def savePerformanceReport(request):
     cursor = connection.cursor()
     action = request.POST.get('action')
-    
+
     if action == "add":
         month = int(request.POST.get('month'))
         year = int(request.POST.get('year', datetime.today().year))
@@ -383,7 +385,7 @@ def savePerformanceReport(request):
         incurred = request.POST.get('incurred')
         remarks = request.POST.get('remarks')
         accomplished_target = request.POST.getlist('pt_ids[]')
-        
+
         #update activity
         perf_rep = PerformanceReport(activity = activity,
                          year = year,
@@ -407,7 +409,7 @@ def savePerformanceReport(request):
         incurred = request.POST.get('incurred')
         remarks = request.POST.get('remarks')
         accomplished_target = request.POST.getlist('pt_ids[]')
-        
+
         perf_rep = PerformanceReport.objects.get(id=mpfro_id)
         perf_rep.received = received
         perf_rep.incurred = incurred
@@ -419,7 +421,7 @@ def savePerformanceReport(request):
             acc_target_query+= month_acc_dict[month] + " = %s "
             acc_target_query+= "where id=%s"
             cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
-        
+
         return HttpResponseRedirect('/agency/monthly_reports')
 '''
 
@@ -428,8 +430,8 @@ def logout(request):
         del request.session['agency_id']
     return HttpResponseRedirect('/home')
 
-    
-    
+
+
 def changePass(request):
     context = RequestContext(request)
     h = hashlib.sha256()
@@ -441,7 +443,7 @@ def changePass(request):
                     'agency'      : agency,
                     'form'        : ChangePassForm({'agency_id' : agency.id})
             }
-            
+
             if request.method=='POST':
                 cp_form = ChangePassForm(request.POST)
                 if cp_form.is_valid():
@@ -466,7 +468,7 @@ def changePass(request):
                         agency.save()
                         data['s_msg']  = 'Access key successfully changed'
                         return render_to_response("./agency/change_pass.html", data, context)
-                
+
             return render_to_response("./agency/change_pass.html", data, context)
         except Agency.DoesNotExist:
             return HttpRsponseRedirect('/home')
@@ -516,8 +518,8 @@ def getUnreportedActivities(year, month, agency):
     else:
         unreported_activity = WFPData.objects.filter(year=year,  dec__gt = 0, agency=agency).exclude(id__in = reported_activities)
     return unreported_activity
-    
-    
+
+
 
 '''
 delete monthly performance report
@@ -534,7 +536,7 @@ def removeMonthlyReport(request):
 
     postcondition: delete the report in PerformanceReport model
                    and at the same time update the accomplihment target to 0
-                   if deletion is complete it returns a JSON response with 
+                   if deletion is complete it returns a JSON response with
                       {status: success, year: <year_of_report>, month: <month_of_report>}
                    otherwise returns with {status: fail}
     '''
@@ -605,7 +607,7 @@ def coRequest(request):
                     'year'         : year,
                     'month'        : month,
                     'month_str'    : months[month]}
-            
+
             return render_to_response("./agency/co_request.html", data, context)
         except Agency.DoesNotExist:
             return HttpResponse('<h3>Invalid Request Error!</h3>')
@@ -659,8 +661,8 @@ def saveMonthlyReport(request):
         response = {"year" : year,
                     "month": month}
         return HttpResponse(json.dumps(response), content_type="application/json")
-    
-    
+
+
 def getPerformanceReport(report_id):
     perf_report = PerformanceReport.objects.get(id = report_id)
     perf_acc_targets = PerformanceTarget.objects.filter(wfp_activity = perf_report.activity)
@@ -680,24 +682,20 @@ def getPerformanceReport(report_id):
                                  'may_acc': acc.may_acc,
                                  'jun': acc.jun,
                                  'jun_acc': acc.jun_acc,
-                                 'jan': acc.jan,
-                                 'jan_acc': acc.jun_acc,
-                                 'jan': acc.jul,
-                                 'jan_acc': acc.jul_acc,
-                                 'jan': acc.aug,
-                                 'jan_acc': acc.aug_acc,
-                                 'jan': acc.sept,
-                                 'jan_acc': acc.sept_acc,
-                                 'jan': acc.oct,
-                                 'jan_acc': acc.oct_acc,
-                                 'jan': acc.nov,
-                                 'jan_acc': acc.nov_acc,
-                                 'jan': acc.nov,
-                                 'jan_acc': acc.nov_acc,
-                                 'jan': acc.dec,
-                                 'jan_acc': acc.dec_acc,
+                                 'jul': acc.jul,
+                                 'jul_acc': acc.jul_acc,
+                                 'aug': acc.aug,
+                                 'aug_acc': acc.aug_acc,
+                                 'sept': acc.sept,
+                                 'sept_acc': acc.sept_acc,
+                                 'oct': acc.oct,
+                                 'oct_acc': acc.oct_acc,
+                                 'nov': acc.nov,
+                                 'nov_acc': acc.nov_acc,
+                                 'dec': acc.dec,
+                                 'dec_acc': acc.dec_acc,
                              })
-        
+
     perf_rep_dict = {'id' : perf_report.id,
                      'activity' : perf_report.activity.activity,
                      'month': perf_report.month,
@@ -714,3 +712,49 @@ def performance_report(request, **kwargs):
     details = getPerformanceReport(id)
     print details
     return HttpResponse(json.dumps(details), content_type = 'application/json')
+
+
+
+
+
+@require_http_methods(["POST", "PUT"])
+@csrf_exempt
+@transaction.atomic
+def updatePerformanceReport(request, **kwargs):
+    id = kwargs['id']
+    params = json.loads(request.body)
+
+    perf_report = PerformanceReport.objects.get(id = id)
+    perf_report.received = params['received']
+    perf_report.received = params['incurred']
+    perf_report.remarks = params['remarks']
+    acc_targets = params['acc_targets']
+    for acc in acc_targets:
+        acc_target = PerformanceTarget.objects.get(id = acc['id'])
+        if params['month'] == 1:
+            acc_target.jan_acc = acc['accomplished']
+        elif params['month'] == 2:
+            acc_target.feb_acc = acc['accomplished']
+        elif params['month'] == 3:
+            acc_target.mar_acc = acc['accomplished']
+        elif params['month'] == 4:
+            acc_target.apr_acc = acc['accomplished']
+        elif params['month'] == 5:
+            acc_target.may_acc = acc['accomplished']
+        elif params['month'] == 6:
+            acc_target.jun_acc = acc['accomplished']
+        elif params['month'] == 7:
+            acc_target.jul_acc = acc['accomplished']
+        elif params['month'] == 8:
+            acc_target.aug_acc = acc['accomplished']
+        elif params['month'] == 9:
+            acc_target.sept_acc = acc['accomplished']
+        elif params['month'] == 10:
+            acc_target.oct_acc = acc['accomplished']
+        elif params['month'] == 11:
+            acc_target.nov_acc = acc['accomplished']
+        elif params['month'] == 12:
+            acc_target.dec_acc = acc['accomplished']
+        acc_target.save()
+    perf_report.save()
+    return HttpResponse(status = 200)

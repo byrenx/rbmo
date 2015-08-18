@@ -7,7 +7,7 @@
     <div class="col-sm-6">
       {{year_form.year}}
       {{month_form.month}}
-    </div> 
+    </div>
   </form>
   <div class="cols-sm-6" style="text-align:right">
     <a href="#" class="btn btn-default" data-toggle="modal" data-target="#monthlyreport_modal">
@@ -23,7 +23,7 @@
   <h3>Performance Report for {{str_month}}&nbsp;{{year}}</h3>
   <input type="hidden" id="month" value="{{month}}">
   <input type="hidden" id="year" value="{{year}}">
-  
+
   <div class="col-sm-5"><!---start of program table container-->
     {%if monthly_reports%}
     <table class="table table-condensed table-responsive table-hover">
@@ -41,7 +41,7 @@
   	    {{acc.activity}}
   	  </td>
 	  <td style="text-align: right;">
-	    <a href=""><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
+	    <a href="javascript:setEditPerformanceReport({{acc.id}})"><span class="glyphicon glyphicon-edit"></span></a>&nbsp;
 	    <a href="javascript:deleteReport({{acc.id}})"><span class="glyphicon glyphicon-remove text-danger"></span></a>
 	  </td>
 	</tr>
@@ -59,11 +59,11 @@
   <!--start of physical accomplishments table -->
   <div class="col-sm-4 panel panel-default" id="performance_table" style="min-height: 400px;">
   </div><!--/end of acoomplished target table-->
-  
+
   <!---start program report info-->
   <div class="col-sm-3" style="min-height: 400px;">
     {%load humanize%}
-    <div id="notify_block" style="display: block; text-align:center; padding-top: 10px;"> 
+    <div id="notify_block" style="display: block; text-align:center; padding-top: 10px;">
       <i class="fa fa-question-circle fa-4x"></i><br>
       Select Accomplished program to show other details!
     </div>
