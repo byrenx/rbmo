@@ -4,6 +4,7 @@ $(function(){
   getPrograms();
 });
 
+
 function getPrograms(){
   //get activities not in monthly reports for entry
   //parameters: agency_id, month, year
@@ -280,7 +281,7 @@ function showAccomplishedTargets(program_id, row_obj){
 		      break;
 
 		    case 8: content += "<td style='text-align: right;'>" + data[i].aug + "</td>";
-		      content += "<td style='text-align: right;'>"+data[i].aug+"</td>";
+		      content += "<td style='text-align: right;'>"+data[i].aug_acc+"</td>";
 		      content += "<td style='text-align: right;'>"+(data[i].aug_acc - data[i].aug)+"</td>";
 		      break;
 
@@ -353,8 +354,13 @@ function savePerformanceReport(){
     });
 }
 
+function setAddPerfReport(){
+  $('input#action_id').val('add');
+  $("input#month_select").removeAttr('disabled');
+  $("select#activity").removeAttr('disabled');
+}
+
 function setEditPerformanceReport(report_id){
-  console.log('report_id:===>', report_id);
   var params = {'id': report_id};
   var url = '/agency/performance_report/' + report_id;
   $.get(url)
@@ -363,7 +369,6 @@ function setEditPerformanceReport(report_id){
       $('input#report_id').val(report_id);
       $('input#action_id').val('edit');
       $('input#month_select').val(d.year + '-' + (d.month < 10? '0' + d.month: d.month));
-      $('#monthlyreport_modal').modal("show");
       $("select#activity").val(d.activity);
       $("input#received").val(d.received);
       $("input#incurred").val(d.incurred);
@@ -373,6 +378,7 @@ function setEditPerformanceReport(report_id){
       $("select#activity").attr('disabled', 'disabled');
       //performance targets
       renderAccTargets(d.acc_targets, d.month);
+      $('#monthlyreport_modal').modal("show");
     });
 }
 
