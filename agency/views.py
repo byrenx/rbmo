@@ -370,61 +370,6 @@ def mpfro_form(request):
     except Agency.DoesNotExist and PerformanceReport.DoesNotExist:
         return HttpResponse('Page Not Found Error!')
 
-
-'''
-@transaction.atomic
-def savePerformanceReport(request):
-    cursor = connection.cursor()
-    action = request.POST.get('action')
-
-    if action == "add":
-        month = int(request.POST.get('month'))
-        year = int(request.POST.get('year', datetime.today().year))
-        activity = WFPData.objects.get(id=request.POST.get('activity'))
-        received = request.POST.get('received')
-        incurred = request.POST.get('incurred')
-        remarks = request.POST.get('remarks')
-        accomplished_target = request.POST.getlist('pt_ids[]')
-
-        #update activity
-        perf_rep = PerformanceReport(activity = activity,
-                         year = year,
-                         month = month,
-                         received = received,
-                         incurred = incurred,
-                         remarks = remarks
-        )
-        perf_rep.save()
-        for acc_t in accomplished_target:
-            acc_target_query = "update performancetarget set "
-            acc_target_query+= month_acc_dict[month] + " = %s "
-            acc_target_query+= "where id=%s"
-            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
-
-        return HttpResponseRedirect('/agency/monthly_reports')
-    else:
-        mpfro_id = request.POST.get('mpfro_id')
-        month = int(request.POST.get('month'))
-        received = request.POST.get('received')
-        incurred = request.POST.get('incurred')
-        remarks = request.POST.get('remarks')
-        accomplished_target = request.POST.getlist('pt_ids[]')
-
-        perf_rep = PerformanceReport.objects.get(id=mpfro_id)
-        perf_rep.received = received
-        perf_rep.incurred = incurred
-        perf_rep.remarks = remarks
-        perf_rep.save()
-
-        for acc_t in accomplished_target:
-            acc_target_query = "update performancetarget set "
-            acc_target_query+= month_acc_dict[month] + " = %s "
-            acc_target_query+= "where id=%s"
-            cursor.execute(acc_target_query, [request.POST.get(acc_t),acc_t])
-
-        return HttpResponseRedirect('/agency/monthly_reports')
-'''
-
 def logout(request):
     if "agency_id" in request.session:
         del request.session['agency_id']
@@ -616,20 +561,39 @@ def coRequest(request):
 @transaction.atomic
 def saveMonthlyReport(request):
     request_body = json.loads(request.body)
-    print request_body
+
+    action = request_body['action']
     activity_id = request_body["activity_id"]
     performances = request_body["performances"]
     month = request_body["month"]
     year = request_body["year"]
     activity = WFPData.objects.get(id = activity_id)
-    PerformanceReport(activity = activity,
-                       month = month,
-                       year = year,
-                       received = request_body["received"],
-                       incurred = request_body["incurred"],
-                       remarks = request_body["remarks"]
-                   ).save()
-    #loop through all performance reports
+
+    if action == 'add':
+        PerformanceReport(activity = activity,
+                          month = month,
+                          year = year,
+                          received = request_body["received"],
+                          incurred = request_body["incurred"],
+                          remarks = request_body["remarks"]
+        ).save()
+    if action == 'edit':
+        id = request_body['id']
+        performance_report = PerformanceReport.objects.get(id = id)
+        performance_report.received = request_body['received']
+        performance_report.incurred = request_body['incurred']
+        performance_report.remarks = request_body['remarks']
+        performance_report.save()
+
+
+    updatePerformanceTarget(performances, month)
+
+    response = {"year" : year,
+                "month": month}
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
+
+def updatePerformanceTarget(performances, month):
     for acc in performances:
         performance_target = PerformanceTarget.objects.get(id = acc["id"])
         if month == 1:
@@ -658,9 +622,6 @@ def saveMonthlyReport(request):
             performance_target.dec_acc = acc["acc"]
         performance_target.save()
 
-        response = {"year" : year,
-                    "month": month}
-        return HttpResponse(json.dumps(response), content_type="application/json")
 
 
 def getPerformanceReport(report_id):

@@ -101,6 +101,7 @@ function getPhysicalTargets(){
 		      content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].dec_acc+"'></td>";
 		      break;
 		    }
+        content += "</tr>";
 	    }
 	    content += "</tbody>";
 	    content += "</table>";
@@ -109,7 +110,6 @@ function getPhysicalTargets(){
 }
 
 function renderAccTargets(data, month){
-  console.log(data, month);
   $("#performance_indicator").html("");
 	var content = "<table class='table table-condensed' id='accomplished_targets_table'>";
   content += "<thead>";
@@ -121,58 +121,69 @@ function renderAccTargets(data, month){
 	content += "<tbody>";
 
 	for(var i=0; i<data.length; i++){
+    console.log(month);
 		content += "<tr id='"+data[i].id+"'>";
 		content += "<td>"+data[i].indicator+"</td>";
 		switch(month){
-		case 1: content += "<td>" + data[i].jan + "</td>";
+		case 1:
+      content += "<td>" + data[i].jan + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].jan_acc+"'></td>";
-		  content += "";
-
 		  break;
-		case 2: content += "<td>" + data[i].feb + "</td>";
+		case 2:
+      content += "<td>" + data[i].feb + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].feb_acc+"'></td>";
-
 		  break;
-		case 3: content += "<td>" + data[i].mar + "</td>";
+		case 3:
+      content += "<td>" + data[i].mar + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].mar_acc+"'></td>";
 		  break;
 
-		case 4: content += "<td>" + data[i].apr + "</td>";
+		case 4:
+      content += "<td>" + data[i].apr + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].apr_acc+"'></td>";
 		  break;
 
-		case 5: content += "<td>" + data[i].may + "</td>";
+		case 5:
+      content += "<td>" + data[i].may + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].may_acc+"'></td>";
 		  break;
 
-		case 6: content += "<td>" + data[i].jun + "</td>";
+		case 6:
+      content += "<td>" + data[i].jun + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].jun_acc+"'></td>";
 		  break;
 
-		case 7: content += "<td>" + data[i].jul + "</td>";
+		case 7:
+      content += "<td>" + data[i].jul + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].jul_acc+"'></td>";
 		  break;
 
-		case 8: content += "<td>" + data[i].aug + "</td>";
+		case 8:
+      content += "<td>" + data[i].aug + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].aug_acc+"'></td>";
 		  break;
 
-		case 9: content += "<td>" + data[i].sept + "</td>";
+		case 9:
+      content += "<td>" + data[i].sept + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].sept_acc+"'></td>";
 		  break;
 
-		case 10: content += "<td>" + data[i].oct + "</td>";
+		case 10:
+      content += "<td>" + data[i].oct + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].oct_acc+"'></td>";
 		  break;
 
-		case 11: content += "<td>" + data[i].nov + "</td>";
+		case 11:
+      content += "<td>" + data[i].nov + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].nov_acc+"'></td>";
 		  break;
 
-		case 12: content += "<td>" + data[i].dec + "</td>";
+		case 12:
+      content += "<td>" + data[i].dec + "</td>";
 		  content += "<td> <input type='number' class='form-control input-sm' id='"+data[i].id+"' value='"+data[i].dec_acc+"'></td>";
 		  break;
 		}
+    content += '</tr>';
 	}
 	content += "</tbody>";
 	content += "</table>";
@@ -220,7 +231,7 @@ function showAccomplishedTargets(program_id, row_obj){
 	  .done(function(data){
 		  //data is expected to be in json format
 	    $("#performance_indicator").html("");
-	    var content = "<table class='table table-condensed' id='accomplished_targets_table'>";
+	    var content = "<table class='table table-condensed'>";
       content += "<thead>";
       content += "<tr><th>Indicator</th>";
       content += "<th style='text-align: right;'>Target</th>";
@@ -313,16 +324,18 @@ function savePerformanceReport(){
 
   var month_year = new String($("#month_select").val()).split("-");
 
-  var params = {"activity_id"    : $("#activity").val(),
+  var params = {"action": $('#action_id').val(),
+                "id": $('#report_id').val(),
+                "activity_id"    : $("#activity").val(),
 		            "received"       : $("#received").val(),
 		            "incurred"       : $("#incurred").val(),
 		            "performances"   : performances ,
 		            "year"           : parseInt(month_year[0]),
 		            "month"          : parseInt(month_year[1]),
 		            "remarks"        : $("#remarks_id").val()
-		           }
+		           };
 
-  console.log(params);
+  console.log('params ===>' ,params);
 
   $.ajax({contentType: "application/json",
     	    dataType : "json",
@@ -336,7 +349,7 @@ function savePerformanceReport(){
     	window.location = "/agency/monthly_reports?year=" + params.year + "&month=" + params.month;
     })
     .fail(function(data){
-    	console.log(data.responseText);
+      console.log(data.responseText);
     });
 }
 
@@ -347,7 +360,8 @@ function setEditPerformanceReport(report_id){
   $.get(url)
     .success(function(d){
       //set values on modal fields
-      console.log(d);
+      $('input#report_id').val(report_id);
+      $('input#action_id').val('edit');
       $('input#month_select').val(d.year + '-' + (d.month < 10? '0' + d.month: d.month));
       $('#monthlyreport_modal').modal("show");
       $("select#activity").val(d.activity);
